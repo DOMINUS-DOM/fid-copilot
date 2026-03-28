@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
-import { type Document, type ConfidenceLevel } from "@/types";
+import {
+  type Document,
+  type AssistantMode,
+  type ConfidenceLevel,
+  type GallilexHint,
+} from "@/types";
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -13,32 +18,161 @@ function getOpenAIClient() {
 }
 
 const MAX_CONTEXT_DOCS = 7;
+const VALID_MODES: AssistantMode[] = ["examen", "terrain", "portfolio"];
 
-/**
- * Score un document selon sa pertinence par rapport à la question.
- * Plus le score est élevé, plus le document est pertinent.
- */
-function scoreDocument(doc: Document, keywords: string[]): number {
+// ============================================================
+// Détection de l'intention de la question
+// ============================================================
+
+type QuestionIntent = "juridique" | "portfolio" | "direction" | "organisation" | "general";
+
+const INTENT_SIGNALS: Record<QuestionIntent, string[]> = {
+  juridique: [
+    "décret", "article", "loi", "code", "légal", "juridique", "droit",
+    "obligation", "recours", "sanction", "discipline", "exclusion",
+    "redoublement", "inscription", "renvoi", "absence", "congé",
+    "nomination", "désignation", "statut", "barème", "ancienneté",
+    "inspection", "audit", "contrôle", "plainte", "contestation",
+    "pacte", "missions", "enseignement", "scolaire", "règlement",
+    "circulaire", "arrêté", "royal", "gouvernement", "communauté",
+  ],
+  portfolio: [
+    "portfolio", "réflexif", "réflexive", "posture", "identité",
+    "professionnel", "développement", "bilan", "autoévaluation",
+    "compétence", "acquis", "parcours", "progression", "trace",
+  ],
+  direction: [
+    "directeur", "directrice", "direction", "chef", "pilotage",
+    "leadership", "stratégique", "pédagogique", "managérial",
+    "équipe", "personnel", "enseignant", "collaborateur",
+    "communication", "sens", "vision", "projet", "établissement",
+    "pouvoir organisateur",
+  ],
+  organisation: [
+    "formation", "fid", "évaluation", "certificative", "examen",
+    "épreuve", "module", "programme", "organisation", "calendrier",
+    "méthodologie", "consigne", "critère", "grille",
+  ],
+  general: [],
+};
+
+function detectIntent(questionLower: string): QuestionIntent {
+  let bestIntent: QuestionIntent = "general";
+  let bestScore = 0;
+
+  for (const [intent, signals] of Object.entries(INTENT_SIGNALS) as [QuestionIntent, string[]][]) {
+    if (intent === "general") continue;
+    let score = 0;
+    for (const signal of signals) {
+      if (questionLower.includes(signal)) score++;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestIntent = intent;
+    }
+  }
+
+  return bestIntent;
+}
+
+// ============================================================
+// Scoring des documents — adapté au mode
+// ============================================================
+
+/** L'intent est influencé par le mode sélectionné */
+function resolveIntent(
+  detectedIntent: QuestionIntent,
+  mode: AssistantMode
+): QuestionIntent {
+  // Le mode force l'intent dans certains cas
+  if (mode === "portfolio") return "portfolio";
+  if (mode === "examen" && detectedIntent === "general") return "juridique";
+  return detectedIntent;
+}
+
+const CATEGORY_INTENT_BOOST: Record<QuestionIntent, Record<string, number>> = {
+  juridique: {
+    incontournable_commun: 8,
+    incontournable_secondaire_specialise: 6,
+    synthese: 4,
+    fonction_direction: 1,
+    organisation: 0,
+    portfolio: 0,
+  },
+  portfolio: {
+    portfolio: 10,
+    fonction_direction: 4,
+    synthese: 2,
+    incontournable_commun: 0,
+    incontournable_secondaire_specialise: 0,
+    organisation: 0,
+  },
+  direction: {
+    fonction_direction: 10,
+    incontournable_commun: 3,
+    synthese: 2,
+    incontournable_secondaire_specialise: 2,
+    organisation: 1,
+    portfolio: 1,
+  },
+  organisation: {
+    organisation: 10,
+    synthese: 3,
+    fonction_direction: 2,
+    incontournable_commun: 1,
+    incontournable_secondaire_specialise: 1,
+    portfolio: 0,
+  },
+  general: {
+    incontournable_commun: 4,
+    synthese: 3,
+    fonction_direction: 2,
+    incontournable_secondaire_specialise: 2,
+    organisation: 1,
+    portfolio: 1,
+  },
+};
+
+function scoreDocument(
+  doc: Document,
+  keywords: string[],
+  intent: QuestionIntent
+): number {
   let score = 0;
 
-  // Priorité aux textes incontournables
-  if (doc.is_core) score += 3;
+  // 1. Boost catégorie
+  score += CATEGORY_INTENT_BOOST[intent]?.[doc.category] ?? 0;
 
+  // 2. is_core
+  if (doc.is_core) score += 4;
+
+  // 3. Boost type selon intent
+  const typeBoosts: Record<string, Record<string, number>> = {
+    juridique: { texte_legal: 3 },
+    portfolio: { portfolio: 3, guide: 1 },
+    direction: { guide: 2, synthese: 1 },
+    organisation: { methodologie: 3, organisation: 3, guide: 1 },
+    general: { texte_legal: 1, synthese: 1 },
+  };
+  score += typeBoosts[intent]?.[doc.type] ?? 0;
+
+  // 4. CDA bonus
+  if (doc.cda_code && (intent === "juridique" || intent === "general")) score += 2;
+
+  // 5. Keywords (title > tags > summary)
   const titleLower = doc.title.toLowerCase();
   const summaryLower = (doc.summary ?? "").toLowerCase();
+  const docTags = (doc.tags ?? []).map((t) => t.toLowerCase());
 
   for (const keyword of keywords) {
     if (titleLower.includes(keyword)) score += 5;
+    if (docTags.some((tag) => tag.includes(keyword))) score += 3;
     if (summaryLower.includes(keyword)) score += 2;
   }
 
   return score;
 }
 
-/**
- * Extrait des mots-clés significatifs de la question.
- * Retire les mots vides courants en français.
- */
 function extractKeywords(question: string): string[] {
   const stopWords = new Set([
     "le", "la", "les", "un", "une", "des", "de", "du", "au", "aux",
@@ -48,6 +182,7 @@ function extractKeywords(question: string): string[] {
     "ne", "pas", "plus", "peut", "faire", "fait", "être", "avoir",
     "quels", "quel", "quelle", "quelles", "comment", "quoi",
     "tant", "comme", "entre", "vers", "chez", "sans", "sous",
+    "doit", "dois", "doivent", "faut", "pourquoi",
   ]);
 
   return question
@@ -58,9 +193,43 @@ function extractKeywords(question: string): string[] {
     .filter((word) => word.length > 2 && !stopWords.has(word));
 }
 
+// ============================================================
+// Gallilex fallback
+// ============================================================
+
+function buildGallilexHints(
+  selectedDocs: Document[],
+  keywords: string[]
+): GallilexHint[] {
+  // Prendre les 2 docs les plus pertinents qui ont un CDA
+  const docsWithCda = selectedDocs.filter((d) => d.cda_code);
+  const topDocs = docsWithCda.slice(0, 2);
+
+  // Si aucun doc avec CDA, proposer des mots-clés généraux
+  if (topDocs.length === 0) {
+    return [
+      {
+        text: "Recherche générale",
+        cda_code: null,
+        keywords: keywords.slice(0, 5),
+      },
+    ];
+  }
+
+  return topDocs.map((doc) => ({
+    text: doc.title,
+    cda_code: doc.cda_code,
+    keywords: keywords.slice(0, 3),
+  }));
+}
+
+// ============================================================
+// Route handler
+// ============================================================
+
 export async function POST(request: Request) {
   try {
-    // 1. Vérifier l'authentification
+    // 1. Auth
     const supabase = await createClient();
     const {
       data: { user },
@@ -70,20 +239,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    // 2. Extraire la question
+    // 2. Body
     const body = await request.json();
     const question = body.question?.trim();
+    const mode: AssistantMode = VALID_MODES.includes(body.mode) ? body.mode : "examen";
 
     if (!question) {
       return NextResponse.json({ error: "Question manquante" }, { status: 400 });
     }
 
-    // 2b. Enregistrer la question dans l'historique
+    // 2b. Log
     await supabase
       .from("assistant_logs")
       .insert({ user_id: user.id, question });
 
-    // 3. Récupérer TOUS les documents depuis Supabase
+    // 3. Documents
     const { data: allDocuments } = await supabase
       .from("documents")
       .select("*")
@@ -97,30 +267,32 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Filtrer et scorer les documents selon la question
+    // 4. Intent + scoring (influencé par le mode)
+    const questionLower = question.toLowerCase();
+    const rawIntent = detectIntent(questionLower);
+    const intent = resolveIntent(rawIntent, mode);
     const keywords = extractKeywords(question);
 
     const scored = allDocuments
-      .map((doc) => ({ doc, score: scoreDocument(doc, keywords) }))
+      .map((doc) => ({ doc, score: scoreDocument(doc, keywords, intent) }))
       .sort((a, b) => b.score - a.score);
 
-    // Prendre les docs avec score > 0, ou fallback sur les 5 premiers (is_core en tête)
     const relevant = scored.filter((s) => s.score > 0);
     const selectedDocs =
       relevant.length > 0
         ? relevant.slice(0, MAX_CONTEXT_DOCS).map((s) => s.doc)
         : allDocuments.slice(0, 5);
 
-    // 5. Appeler OpenAI
+    // 5. OpenAI (avec mode)
     const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: buildSystemPrompt(selectedDocs) },
-        { role: "user", content: buildUserMessage(question) },
+        { role: "system", content: buildSystemPrompt(selectedDocs, mode) },
+        { role: "user", content: buildUserMessage(question, mode) },
       ],
-      temperature: 0.3,
-      max_tokens: 2000,
+      temperature: 0.2,
+      max_tokens: 2500,
     });
 
     const answer = completion.choices[0]?.message?.content;
@@ -132,7 +304,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. Construire les sources utilisées
+    // 6. Sources
     const sources = selectedDocs.map((doc) => ({
       title: doc.title,
       cda_code: doc.cda_code,
@@ -140,20 +312,28 @@ export async function POST(request: Request) {
       source_url: doc.source_url,
     }));
 
-    // 7. Calculer le score de confiance
+    // 7. Confiance
     const coreCount = selectedDocs.filter((d) => d.is_core).length;
+    const legalCount = selectedDocs.filter((d) => d.type === "texte_legal").length;
     const topScore = relevant.length > 0 ? relevant[0].score : 0;
 
     let confidence: ConfidenceLevel;
-    if (relevant.length >= 3 || (relevant.length >= 2 && coreCount >= 1 && topScore >= 8)) {
+    if (
+      (relevant.length >= 3 && coreCount >= 1) ||
+      (relevant.length >= 2 && legalCount >= 2 && topScore >= 10)
+    ) {
       confidence = "high";
-    } else if (relevant.length >= 1 && topScore >= 3) {
+    } else if (relevant.length >= 1 && topScore >= 5) {
       confidence = "medium";
     } else {
       confidence = "low";
     }
 
-    return NextResponse.json({ answer, sources, confidence });
+    // 8. Gallilex hints (si confiance faible ou moyenne)
+    const gallilex: GallilexHint[] =
+      confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
+
+    return NextResponse.json({ answer, sources, confidence, gallilex });
   } catch (error) {
     console.error("[API /assistant]", error);
     return NextResponse.json(
