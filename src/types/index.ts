@@ -144,6 +144,16 @@ export const ASSISTANT_MODE_CONFIG: Record<
   },
 };
 
+/** Chunk de texte légal extrait d'un PDF */
+export interface LegalChunk {
+  id: string;
+  cda_code: string;
+  chunk_index: number;
+  chunk_title: string;
+  content: string;
+  tags: string[] | null;
+}
+
 /** Source renvoyée par l'API assistant */
 export interface AssistantSource {
   title: string;

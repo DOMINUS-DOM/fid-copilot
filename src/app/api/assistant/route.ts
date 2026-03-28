@@ -7,6 +7,7 @@ import {
   type AssistantMode,
   type ConfidenceLevel,
   type GallilexHint,
+  type LegalChunk,
 } from "@/types";
 
 function getOpenAIClient() {
@@ -18,6 +19,8 @@ function getOpenAIClient() {
 }
 
 const MAX_CONTEXT_DOCS = 7;
+const MAX_LEGAL_CHUNKS = 5;
+const MAX_CHUNK_CHARS = 8000; // budget total en chars pour les chunks
 const VALID_MODES: AssistantMode[] = ["examen", "terrain", "portfolio"];
 
 // ============================================================
@@ -283,13 +286,55 @@ export async function POST(request: Request) {
         ? relevant.slice(0, MAX_CONTEXT_DOCS).map((s) => s.doc)
         : allDocuments.slice(0, 5);
 
-    // 5. OpenAI (avec mode)
+    // 5. Recherche de chunks légaux pertinents (full-text PostgreSQL)
+    const selectedCdaCodes = selectedDocs
+      .map((d) => d.cda_code)
+      .filter(Boolean) as string[];
+
+    let legalExtracts = "";
+
+    if (selectedCdaCodes.length > 0 && keywords.length > 0) {
+      // Construire la requête full-text avec les mots-clés
+      const tsQuery = keywords.slice(0, 5).join(" | ");
+
+      const { data: chunks } = await supabase
+        .from("legal_chunks")
+        .select("cda_code, chunk_title, content")
+        .in("cda_code", selectedCdaCodes)
+        .textSearch("content", tsQuery, { config: "french" })
+        .limit(MAX_LEGAL_CHUNKS)
+        .returns<LegalChunk[]>();
+
+      if (chunks && chunks.length > 0) {
+        // Limiter le volume total de texte
+        let totalChars = 0;
+        const kept: typeof chunks = [];
+        for (const chunk of chunks) {
+          if (totalChars + chunk.content.length > MAX_CHUNK_CHARS) break;
+          kept.push(chunk);
+          totalChars += chunk.content.length;
+        }
+
+        if (kept.length > 0) {
+          legalExtracts = kept
+            .map((c) => `[CDA ${c.cda_code}${c.chunk_title ? ` — ${c.chunk_title}` : ""}]\n${c.content}`)
+            .join("\n\n---\n\n");
+        }
+      }
+    }
+
+    // 6. OpenAI (avec mode + extraits légaux)
     const openai = getOpenAIClient();
+    const systemPrompt = buildSystemPrompt(selectedDocs, mode);
+    const userMsg = legalExtracts
+      ? `${buildUserMessage(question, mode)}\n\n═══════════════════════════════════════\nEXTRAITS JURIDIQUES PERTINENTS (texte officiel)\n═══════════════════════════════════════\n${legalExtracts}`
+      : buildUserMessage(question, mode);
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: buildSystemPrompt(selectedDocs, mode) },
-        { role: "user", content: buildUserMessage(question, mode) },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMsg },
       ],
       temperature: 0.2,
       max_tokens: 2500,
@@ -304,7 +349,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. Sources
+    // 7. Sources
     const sources = selectedDocs.map((doc) => ({
       title: doc.title,
       cda_code: doc.cda_code,
@@ -312,7 +357,7 @@ export async function POST(request: Request) {
       source_url: doc.source_url,
     }));
 
-    // 7. Confiance
+    // 8. Confiance
     const coreCount = selectedDocs.filter((d) => d.is_core).length;
     const legalCount = selectedDocs.filter((d) => d.type === "texte_legal").length;
     const topScore = relevant.length > 0 ? relevant[0].score : 0;
@@ -329,7 +374,7 @@ export async function POST(request: Request) {
       confidence = "low";
     }
 
-    // 8. Gallilex hints (si confiance faible ou moyenne)
+    // 9. Gallilex hints (si confiance faible ou moyenne)
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
 
