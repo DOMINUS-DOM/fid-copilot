@@ -1,86 +1,148 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Search, BookOpen, Lightbulb, GraduationCap, User } from "lucide-react";
+
 export function Demo() {
   return (
-    <section
-      id="demo"
-      className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 sm:py-24 dark:border-zinc-800 dark:bg-zinc-950"
-    >
-      <div className="mx-auto max-w-4xl">
-        <p className="text-center text-sm font-medium uppercase tracking-widest text-zinc-500 dark:text-zinc-500">
-          En action
-        </p>
-        <h2 className="mt-3 text-center text-2xl font-bold text-zinc-900 sm:text-3xl dark:text-white">
-          Voici un exemple réel de réponse
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-          Un directeur pose une question concrète. FID Copilot lui répond avec la base légale,
-          le raisonnement et les sources officielles.
-        </p>
+    <section id="demo" className="bg-white px-6 py-20 sm:py-28">
+      <div className="mx-auto max-w-5xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <span className="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            En action
+          </span>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Voici un exemple réel de réponse
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500">
+            Un directeur pose une question concrète. FID Copilot répond avec la base légale,
+            le raisonnement et les sources officielles.
+          </p>
+        </motion.div>
 
-        {/* Bloc démo simulé */}
-        <div className="mt-12 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-          {/* Barre titre */}
-          <div className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-            <div className="h-3 w-3 rounded-full bg-red-400" />
-            <div className="h-3 w-3 rounded-full bg-amber-400" />
-            <div className="h-3 w-3 rounded-full bg-emerald-400" />
-            <span className="ml-2 text-xs text-zinc-400">FID Copilot — Assistant</span>
-          </div>
-
-          <div className="flex flex-col gap-6 p-4 sm:p-8">
-            {/* Question */}
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-                Question
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-                Un parent conteste la décision du conseil de classe de faire redoubler son enfant.
-                En tant que directeur, quelle est la procédure à suivre ?
-              </p>
-            </div>
-
-            {/* Réponse simulée */}
-            <div className="flex flex-col gap-4">
-              {[
-                {
-                  title: "Analyse du problème",
-                  body: "La contestation d'une décision de redoublement soulève la question du droit de recours des parents et des obligations du directeur...",
-                },
-                {
-                  title: "Réponse",
-                  body: "Le directeur doit informer les parents de la procédure de conciliation interne, puis orienter vers le conseil de recours si nécessaire...",
-                },
-                {
-                  title: "Base légale",
-                  body: "Code de l'enseignement (CDA 49466) — Décret Missions du 24 juillet 1997 (CDA 21557)",
-                },
-                {
-                  title: "Raisonnement",
-                  body: "Le Code de l'enseignement prévoit une procédure de recours en deux étapes : conciliation interne puis recours externe...",
-                },
-              ].map((section) => (
-                <div key={section.title}>
-                  <h4 className="text-xs font-semibold text-zinc-900 dark:text-white">
-                    {section.title}
-                  </h4>
-                  <p className="mt-1 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                    {section.body}
-                  </p>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-12"
+        >
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-100">
+            {/* Top bar */}
+            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-5 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-red-400" />
+                  <div className="h-3 w-3 rounded-full bg-amber-400" />
+                  <div className="h-3 w-3 rounded-full bg-emerald-400" />
                 </div>
-              ))}
+                <span className="ml-2 text-xs font-medium text-slate-400">FID Copilot</span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-1">
+                <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="text-xs font-medium text-emerald-700">Confiance : Élevée</span>
+              </div>
             </div>
 
-            {/* Confiance */}
-            <div className="inline-flex items-center gap-2 self-start rounded-lg bg-emerald-50 px-3 py-1.5 dark:bg-emerald-900/20">
-              <svg className="h-4 w-4 text-emerald-700 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                Confiance : Élevée — 3 sources consultées
-              </span>
+            <div className="p-6 sm:p-8">
+              {/* Question */}
+              <div className="mb-8 rounded-xl bg-blue-50/50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">Question</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Un parent conteste la décision du conseil de classe de faire redoubler son enfant en 4e secondaire.
+                  En tant que directeur, quelle est la procédure à suivre ?
+                </p>
+              </div>
+
+              {/* Sections */}
+              <div className="space-y-4">
+                <DemoSection
+                  icon={<Search className="h-4 w-4" />}
+                  color="border-l-slate-400"
+                  title="1. Identification du problème"
+                  content="Un parent conteste une décision de maintien (redoublement) prise par le conseil de classe. Il s&apos;agit d&apos;un recours contre une décision d&apos;échec scolaire en 4e secondaire. Les acteurs : le directeur, le conseil de classe, les parents, l&apos;élève."
+                />
+                <DemoSection
+                  icon={<BookOpen className="h-4 w-4" />}
+                  color="border-l-blue-500"
+                  title="2. Règle juridique"
+                  content="Articles 96 à 102 du Code de l&apos;enseignement (CDA 49466) — la procédure de recours comporte deux étapes : la conciliation interne auprès du chef d&apos;établissement, puis le recours externe devant le Conseil de recours."
+                  badge="CDA 49466"
+                />
+                <DemoSection
+                  icon={<Lightbulb className="h-4 w-4" />}
+                  color="border-l-amber-500"
+                  title="3. Application concrète"
+                  content="1) Réceptionner la demande écrite du parent dans les 2 jours ouvrables. 2) Réunir le conseil de classe pour réexamen. 3) Notifier la décision motivée. 4) En cas de refus, informer des voies de recours externe."
+                />
+                <DemoSection
+                  icon={<GraduationCap className="h-4 w-4" />}
+                  color="border-l-emerald-500"
+                  title="4. Conclusion (format examen)"
+                  content="Le directeur doit organiser la conciliation interne dans les délais légaux, réunir le conseil de classe, et notifier sa décision motivée par écrit au parent."
+                />
+                <DemoSection
+                  icon={<User className="h-4 w-4" />}
+                  color="border-l-violet-500"
+                  title="5. Posture professionnelle"
+                  content='Phrase terrain : "Je comprends votre inquiétude. La loi prévoit une procédure que nous allons suivre ensemble. Je réunis le conseil de classe pour réexaminer la situation."'
+                />
+              </div>
+
+              {/* Sources */}
+              <div className="mt-6 rounded-xl bg-slate-50 p-4">
+                <p className="text-xs font-semibold text-slate-700">Sources consultées (3)</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                    CDA 49466 ↗
+                  </span>
+                  <span className="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                    CDA 21557 ↗
+                  </span>
+                  <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+                    Incontournable commun
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function DemoSection({
+  icon,
+  color,
+  title,
+  content,
+  badge,
+}: {
+  icon: React.ReactNode;
+  color: string;
+  title: string;
+  content: string;
+  badge?: string;
+}) {
+  return (
+    <div className={`rounded-xl border border-slate-100 border-l-[3px] ${color} bg-white p-4`}>
+      <div className="flex items-center gap-2">
+        <span className="text-slate-400">{icon}</span>
+        <h4 className="text-sm font-semibold text-slate-800">{title}</h4>
+        {badge && (
+          <span className="ml-auto rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className="mt-2 text-sm leading-relaxed text-slate-500">{content}</p>
+    </div>
   );
 }

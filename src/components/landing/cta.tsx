@@ -1,26 +1,39 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section className="px-4 py-16 sm:py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-2xl font-bold text-zinc-900 sm:text-3xl dark:text-white">
+    <section className="px-6 py-20 sm:py-28">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-violet-700 p-10 text-center shadow-2xl shadow-blue-500/20 sm:p-16"
+      >
+        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Ne perdez plus de temps à chercher dans les décrets
         </h2>
-        <p className="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
-          Essayez FID Copilot gratuitement et prenez vos décisions en toute sécurité
-          juridique, dès aujourd&apos;hui.
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-blue-100">
+          Rejoignez les directeurs qui utilisent FID Copilot pour prendre
+          des décisions sûres, rapidement, et avec la bonne base légale.
         </p>
-        <Link
-          href="/signup"
-          className="mt-8 inline-flex h-12 items-center justify-center rounded-lg bg-zinc-900 px-8 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 active:bg-zinc-950 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
-          Commencer gratuitement
-        </Link>
-        <p className="mt-3 text-xs text-zinc-400 dark:text-zinc-600">
-          Aucune carte bancaire requise — accès immédiat
+        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <Link
+            href="/signup"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-blue-700 shadow-lg transition-all hover:bg-blue-50 hover:shadow-xl"
+          >
+            Commencer gratuitement
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <p className="mt-4 text-sm text-blue-200">
+          Aucune carte bancaire requise — Accès immédiat
         </p>
-      </div>
+      </motion.div>
     </section>
   );
 }

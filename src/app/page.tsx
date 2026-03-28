@@ -5,6 +5,8 @@ import { Problem } from "@/components/landing/problem";
 import { Solution } from "@/components/landing/solution";
 import { Demo } from "@/components/landing/demo";
 import { Benefits } from "@/components/landing/benefits";
+import { UseCases } from "@/components/landing/use-cases";
+import { Credibility } from "@/components/landing/credibility";
 import { Pricing } from "@/components/landing/pricing";
 import { CTA } from "@/components/landing/cta";
 import { Footer } from "@/components/landing/footer";
@@ -17,7 +19,7 @@ export default async function HomePage() {
   const isAuthenticated = !!user;
 
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="flex min-h-full flex-col bg-white">
       <Header isAuthenticated={isAuthenticated} />
       <main className="flex-1">
         <Hero isAuthenticated={isAuthenticated} />
@@ -25,6 +27,8 @@ export default async function HomePage() {
         <Solution />
         <Demo />
         <Benefits />
+        <UseCases />
+        <Credibility />
         <Pricing />
         <CTA />
       </main>
