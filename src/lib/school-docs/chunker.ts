@@ -1,7 +1,9 @@
 /**
  * Extraction et chunking de documents PDF scolaires.
- * Compatible avec les environnements serverless (Vercel).
+ * Utilise `unpdf` — compatible serverless (Vercel), pas de dépendance DOM.
  */
+
+import { extractText } from "unpdf";
 
 const MAX_CHUNK_SIZE = 2000;
 const MAX_CHUNKS = 200;
@@ -24,20 +26,18 @@ export interface ExtractionResult {
 export async function extractAndChunk(
   buffer: Buffer
 ): Promise<ExtractionResult> {
-  // Dynamic import to avoid bundling issues
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const pdfParse = require("pdf-parse");
+  const uint8 = new Uint8Array(buffer);
+  const { text: fullText, totalPages } = await extractText(uint8, { mergePages: true });
 
-  // Simple parse without custom pagerender (more compatible with serverless)
-  const result = await pdfParse(buffer);
+  const text = typeof fullText === "string" ? fullText : (fullText as string[]).join("\n\n");
 
-  if (!result.text || result.text.trim().length === 0) {
+  if (!text || text.trim().length === 0) {
     return { text: "", pageCount: 0, chunks: [] };
   }
 
   // Split by form feed (page break) or large gaps
   const pages: string[] = [];
-  const rawPages = result.text.split(/\f|\n{3,}/);
+  const rawPages = text.split(/\f|\n{3,}/);
   for (const page of rawPages) {
     const cleaned = cleanText(page);
     if (cleaned.length > 20) {
@@ -46,7 +46,7 @@ export async function extractAndChunk(
   }
 
   if (pages.length === 0) {
-    pages.push(cleanText(result.text));
+    pages.push(cleanText(text));
   }
 
   // Generate chunks
@@ -93,8 +93,8 @@ export async function extractAndChunk(
   }
 
   return {
-    text: result.text,
-    pageCount: result.numpages || pages.length,
+    text,
+    pageCount: totalPages || pages.length,
     chunks,
   };
 }
