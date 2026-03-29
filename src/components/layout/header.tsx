@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Menu, X } from "lucide-react";
@@ -13,15 +14,20 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-slate-100/80 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600">
-            <span className="text-sm font-bold text-white">F</span>
-          </div>
-          <span className="text-lg font-bold text-slate-900">
-            FID Copilot
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image
+            src="/logo.svg"
+            alt="FID Copilot"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+            priority
+          />
+          <span className="text-lg font-bold tracking-tight text-slate-900">
+            FID <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">Copilot</span>
           </span>
         </Link>
 
@@ -34,23 +40,20 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
             <>
               <Link
                 href="/assistant"
-                className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+                className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-500/20 hover:brightness-110 active:scale-[0.97]"
               >
-                Ouvrir l&apos;application
+                Ouvrir l&#x2019;application
               </Link>
               <LogoutButton />
             </>
           ) : (
             <>
-              <Link
-                href="/login"
-                className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
-              >
+              <Link href="/login" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900">
                 Connexion
               </Link>
               <Link
                 href="/signup"
-                className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110"
+                className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-500/20 hover:brightness-110 active:scale-[0.97]"
               >
                 Inscription
               </Link>
@@ -62,7 +65,7 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="sm:hidden rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+          className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 sm:hidden"
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -72,25 +75,19 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
       {mobileOpen && (
         <div className="border-t border-slate-100 bg-white px-6 py-4 sm:hidden">
           <div className="flex flex-col gap-3">
-            <a
-              href="#demo"
-              onClick={() => setMobileOpen(false)}
-              className="text-sm font-medium text-slate-600"
-            >
+            <a href="#demo" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600">
               Démo
             </a>
             {isAuthenticated ? (
               <>
                 <Link href="/assistant" className="text-sm font-medium text-slate-600">
-                  Ouvrir l&apos;application
+                  Ouvrir l&#x2019;application
                 </Link>
                 <LogoutButton />
               </>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-medium text-slate-600">
-                  Connexion
-                </Link>
+                <Link href="/login" className="text-sm font-medium text-slate-600">Connexion</Link>
                 <Link
                   href="/signup"
                   className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white"

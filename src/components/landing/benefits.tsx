@@ -22,7 +22,7 @@ const benefits = [
   {
     icon: <Heart className="h-6 w-6" />,
     title: "Pensé pour vous",
-    description: "Conçu avec des directions d&apos;école, pour le terrain réel.",
+    description: "Conçu avec des directions d&#x2019;école, pour le terrain réel.",
   },
 ];
 

@@ -194,6 +194,48 @@ export const CONFIDENCE_CONFIG: Record<
 };
 
 // ============================================================
+// School Documents (documents d'école uploadés par l'utilisateur)
+// ============================================================
+
+export type SchoolDocType =
+  | "roi"
+  | "reglement_etudes"
+  | "projet_etablissement"
+  | "plan_pilotage"
+  | "note_interne"
+  | "autre";
+
+export const SCHOOL_DOC_TYPE_LABELS: Record<SchoolDocType, string> = {
+  roi: "ROI",
+  reglement_etudes: "Règlement des études",
+  projet_etablissement: "Projet d'établissement",
+  plan_pilotage: "Plan de pilotage",
+  note_interne: "Note interne",
+  autre: "Autre document",
+};
+
+export interface SchoolDocument {
+  id: string;
+  user_id: string;
+  title: string;
+  doc_type: SchoolDocType;
+  file_path: string;
+  file_size: number;
+  page_count: number | null;
+  chunk_count: number;
+  created_at: string;
+}
+
+export interface SchoolChunk {
+  id: string;
+  school_doc_id: string;
+  user_id: string;
+  chunk_index: number;
+  chunk_title: string | null;
+  content: string;
+}
+
+// ============================================================
 // Assistant Logs
 // ============================================================
 

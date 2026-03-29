@@ -16,7 +16,7 @@ const cases = [
   {
     emoji: "⚖️",
     situation: "Conflit RH",
-    question: "Quels leviers face aux absences répétées d&apos;un enseignant ?",
+    question: "Quels leviers face aux absences répétées d&#x2019;un enseignant ?",
   },
   {
     emoji: "🚨",
@@ -26,12 +26,12 @@ const cases = [
   {
     emoji: "📝",
     situation: "Inscription",
-    question: "Puis-je refuser une inscription en cours d&apos;année ?",
+    question: "Puis-je refuser une inscription en cours d&#x2019;année ?",
   },
   {
     emoji: "🎓",
     situation: "Examen FID",
-    question: "Un élève est blessé lors d&apos;une activité facultative. Responsabilité ?",
+    question: "Un élève est blessé lors d&#x2019;une activité facultative. Responsabilité ?",
   },
 ];
 

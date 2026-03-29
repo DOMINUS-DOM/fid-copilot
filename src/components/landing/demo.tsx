@@ -65,13 +65,13 @@ export function Demo() {
                   icon={<Search className="h-4 w-4" />}
                   color="border-l-slate-400"
                   title="1. Identification du problème"
-                  content="Un parent conteste une décision de maintien (redoublement) prise par le conseil de classe. Il s&apos;agit d&apos;un recours contre une décision d&apos;échec scolaire en 4e secondaire. Les acteurs : le directeur, le conseil de classe, les parents, l&apos;élève."
+                  content="Un parent conteste une décision de maintien (redoublement) prise par le conseil de classe. Il s&#x2019;agit d&#x2019;un recours contre une décision d&#x2019;échec scolaire en 4e secondaire. Les acteurs : le directeur, le conseil de classe, les parents, l&#x2019;élève."
                 />
                 <DemoSection
                   icon={<BookOpen className="h-4 w-4" />}
                   color="border-l-blue-500"
                   title="2. Règle juridique"
-                  content="Articles 96 à 102 du Code de l&apos;enseignement (CDA 49466) — la procédure de recours comporte deux étapes : la conciliation interne auprès du chef d&apos;établissement, puis le recours externe devant le Conseil de recours."
+                  content="Articles 96 à 102 du Code de l&#x2019;enseignement (CDA 49466) — la procédure de recours comporte deux étapes : la conciliation interne auprès du chef d&#x2019;établissement, puis le recours externe devant le Conseil de recours."
                   badge="CDA 49466"
                 />
                 <DemoSection

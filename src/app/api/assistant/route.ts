@@ -323,12 +323,67 @@ export async function POST(request: Request) {
       }
     }
 
-    // 6. OpenAI (avec mode + extraits légaux)
+    // 5c. Recherche de documents d'école (contexte local de l'utilisateur)
+    const MAX_SCHOOL_CHUNKS = 3;
+    const MAX_SCHOOL_CHARS = 4000;
+    let schoolExtracts = "";
+
+    if (keywords.length > 0) {
+      const schoolTsQuery = keywords.slice(0, 5).join(" | ");
+
+      const { data: schoolChunks } = await supabase
+        .from("school_chunks")
+        .select("chunk_title, content, school_doc_id")
+        .eq("user_id", user.id)
+        .textSearch("content", schoolTsQuery, { config: "french" })
+        .limit(MAX_SCHOOL_CHUNKS);
+
+      if (schoolChunks && schoolChunks.length > 0) {
+        let schoolTotalChars = 0;
+        const keptSchool: typeof schoolChunks = [];
+        for (const chunk of schoolChunks) {
+          if (schoolTotalChars + chunk.content.length > MAX_SCHOOL_CHARS) break;
+          keptSchool.push(chunk);
+          schoolTotalChars += chunk.content.length;
+        }
+
+        if (keptSchool.length > 0) {
+          // Fetch parent doc titles
+          const docIds = [...new Set(keptSchool.map((c) => c.school_doc_id))];
+          const { data: parentDocs } = await supabase
+            .from("school_documents")
+            .select("id, title, doc_type")
+            .in("id", docIds);
+
+          const docMap = new Map(
+            parentDocs?.map((d: { id: string; title: string; doc_type: string }) => [d.id, d]) ?? []
+          );
+
+          schoolExtracts = keptSchool
+            .map((c) => {
+              const parent = docMap.get(c.school_doc_id);
+              const label = parent
+                ? `${parent.title} (${parent.doc_type})`
+                : "Document école";
+              return `[ÉCOLE — ${label}${c.chunk_title ? ` — ${c.chunk_title}` : ""}]\n${c.content}`;
+            })
+            .join("\n\n---\n\n");
+        }
+      }
+    }
+
+    // 6. OpenAI (avec mode + extraits légaux + contexte école)
     const openai = getOpenAIClient();
     const systemPrompt = buildSystemPrompt(selectedDocs, mode);
-    const userMsg = legalExtracts
-      ? `${buildUserMessage(question, mode)}\n\n═══════════════════════════════════════\nEXTRAITS JURIDIQUES PERTINENTS (texte officiel)\n═══════════════════════════════════════\n${legalExtracts}`
-      : buildUserMessage(question, mode);
+    let userMsg = buildUserMessage(question, mode);
+
+    if (legalExtracts) {
+      userMsg += `\n\n═══════════════════════════════════════\nEXTRAITS JURIDIQUES PERTINENTS (texte officiel)\n═══════════════════════════════════════\n${legalExtracts}`;
+    }
+
+    if (schoolExtracts) {
+      userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE LOCAL — DOCUMENTS DE L'ÉCOLE (informatif, NE REMPLACE PAS la loi)\n═══════════════════════════════════════\n${schoolExtracts}`;
+    }
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -378,7 +433,14 @@ export async function POST(request: Request) {
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
 
-    return NextResponse.json({ answer, sources, confidence, gallilex, mode });
+    return NextResponse.json({
+      answer,
+      sources,
+      confidence,
+      gallilex,
+      mode,
+      schoolContextUsed: schoolExtracts.length > 0,
+    });
   } catch (error) {
     console.error("[API /assistant]", error);
     return NextResponse.json(

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="shield-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M20 2L4 8v12c0 10.5 6.8 17.3 16 20 9.2-2.7 16-9.5 16-20V8L20 2z" fill="url(#shield-grad)"/>
+  <!-- Balance / scales -->
+  <path d="M20 10v14M14 14l6-2 6 2M11 18l3-4 3 4M23 18l3-4 3 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Arrow up -->
+  <path d="M16 28l4-4 4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M20 24v6" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

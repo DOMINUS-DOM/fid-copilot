@@ -101,6 +101,7 @@ export function AssistantChat() {
   const [sources, setSources] = useState<AssistantSource[]>([]);
   const [confidence, setConfidence] = useState<ConfidenceLevel | null>(null);
   const [gallilex, setGallilex] = useState<GallilexHint[]>([]);
+  const [schoolContextUsed, setSchoolContextUsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -114,6 +115,7 @@ export function AssistantChat() {
     setSources([]);
     setConfidence(null);
     setGallilex([]);
+    setSchoolContextUsed(false);
     setLoading(true);
 
     try {
@@ -131,6 +133,7 @@ export function AssistantChat() {
       setSources(data.sources ?? []);
       setConfidence(data.confidence ?? null);
       setGallilex(data.gallilex ?? []);
+      setSchoolContextUsed(data.schoolContextUsed ?? false);
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -184,9 +187,23 @@ export function AssistantChat() {
         </div>
       )}
 
-      {/* Confidence */}
-      {answer && confidence && (
-        <ConfidenceBadge level={confidence} sourcesCount={sources.length} />
+      {/* Confidence + school context badge */}
+      {answer && (
+        <div className="flex flex-wrap items-center gap-3">
+          {confidence && (
+            <ConfidenceBadge level={confidence} sourcesCount={sources.length} />
+          )}
+          {schoolContextUsed && (
+            <div className="inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3.5 py-2 dark:bg-blue-950/30">
+              <svg className="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+              </svg>
+              <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                Contexte de votre école pris en compte
+              </span>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Response */}
