@@ -42,7 +42,7 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
                 href="/assistant"
                 className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-500/20 hover:brightness-110 active:scale-[0.97]"
               >
-                Ouvrir l&#x2019;application
+                Ouvrir l'application
               </Link>
               <LogoutButton />
             </>
@@ -81,7 +81,7 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
             {isAuthenticated ? (
               <>
                 <Link href="/assistant" className="text-sm font-medium text-slate-600">
-                  Ouvrir l&#x2019;application
+                  Ouvrir l'application
                 </Link>
                 <LogoutButton />
               </>

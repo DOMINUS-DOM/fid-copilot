@@ -78,10 +78,10 @@ export function DecisionEngine() {
           <Scale className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600 dark:text-indigo-400" />
           <div>
             <p className="text-sm font-medium text-indigo-900 dark:text-indigo-200">
-              D&#x00e9;crivez votre situation. Recevez un plan d&#x2019;action.
+              Décrivez votre situation. Recevez un plan d'action.
             </p>
             <p className="mt-1 text-xs text-indigo-600/70 dark:text-indigo-400/70">
-              Analyse avec options, risques, recommandation et phrase pr&#x00ea;te &#x00e0; utiliser.
+              Analyse avec options, risques, recommandation et phrase prête à utiliser.
             </p>
           </div>
         </div>
@@ -100,7 +100,7 @@ export function DecisionEngine() {
               rows={5}
               value={situation}
               onChange={(e) => setSituation(e.target.value)}
-              placeholder="Ex : Un parent furieux appelle pour contester le redoublement de son fils d&#x00e9;cid&#x00e9; hier par le conseil de classe. Il menace de saisir un avocat. Que dois-je faire ?"
+              placeholder="Ex : Un parent furieux appelle pour contester le redoublement de son fils décidé hier par le conseil de classe. Il menace de saisir un avocat. Que dois-je faire ?"
               className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base leading-relaxed text-zinc-900 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
             />
           </div>
@@ -109,14 +109,14 @@ export function DecisionEngine() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                Cat&#x00e9;gorie (optionnel)
+                Catégorie (optionnel)
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as DecisionCategory | "")}
                 className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-700 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
               >
-                <option value="">D&#x00e9;tection automatique</option>
+                <option value="">Détection automatique</option>
                 {Object.entries(DECISION_CATEGORY_LABELS).map(([k, v]) => (
                   <option key={k} value={k}>{v}</option>
                 ))}
@@ -176,7 +176,7 @@ export function DecisionEngine() {
           <svg className="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
           </svg>
-          <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Contexte de votre &#x00e9;cole pris en compte</span>
+          <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Contexte de votre école pris en compte</span>
         </div>
       )}
 
@@ -188,7 +188,7 @@ export function DecisionEngine() {
         <Card>
           <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-white">
             <BookOpen className="h-4 w-4 text-zinc-400" />
-            Textes consult&#x00e9;s ({sources.length})
+            Textes consultés ({sources.length})
           </h3>
           <div className="flex flex-wrap gap-2">
             {sources.map((s, i) => (
