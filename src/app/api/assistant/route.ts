@@ -336,8 +336,8 @@ export async function POST(request: Request) {
         { role: "system", content: systemPrompt },
         { role: "user", content: userMsg },
       ],
-      temperature: 0.2,
-      max_tokens: 2500,
+      temperature: 0.15,
+      max_tokens: 3500,
     });
 
     const answer = completion.choices[0]?.message?.content;
@@ -378,7 +378,7 @@ export async function POST(request: Request) {
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
 
-    return NextResponse.json({ answer, sources, confidence, gallilex });
+    return NextResponse.json({ answer, sources, confidence, gallilex, mode });
   } catch (error) {
     console.error("[API /assistant]", error);
     return NextResponse.json(
