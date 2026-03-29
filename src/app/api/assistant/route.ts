@@ -251,10 +251,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Question manquante" }, { status: 400 });
     }
 
-    // 2b. Log
-    await supabase
+    // 2b. Log (insert now, update response later)
+    const { data: logRow } = await supabase
       .from("assistant_logs")
-      .insert({ user_id: user.id, question });
+      .insert({ user_id: user.id, question })
+      .select("id")
+      .single();
 
     // 3. Documents
     const { data: allDocuments } = await supabase
@@ -442,6 +444,11 @@ export async function POST(request: Request) {
     // 9. Gallilex hints (si confiance faible ou moyenne)
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
+
+    // Update log with response
+    if (logRow?.id) {
+      await supabase.from("assistant_logs").update({ response: answer }).eq("id", logRow.id);
+    }
 
     return NextResponse.json({
       answer,

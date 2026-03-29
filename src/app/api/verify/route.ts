@@ -32,9 +32,11 @@ export async function POST(request: Request) {
       );
     }
 
-    await supabase
+    const { data: logRow } = await supabase
       .from("assistant_logs")
-      .insert({ user_id: user.id, question: `[verify:${type}:${depth}] ${content.slice(0, 200)}` });
+      .insert({ user_id: user.id, question: `[verify:${type}:${depth}] ${content.slice(0, 200)}` })
+      .select("id")
+      .single();
 
     const openai = getOpenAIClient();
     const maxTokens = depth === "rapide" ? 1500 : depth === "standard" ? 2500 : 3500;
@@ -52,6 +54,10 @@ export async function POST(request: Request) {
     const analysis = completion.choices[0]?.message?.content;
     if (!analysis) {
       return NextResponse.json({ error: "Réponse vide du modèle" }, { status: 500 });
+    }
+
+    if (logRow?.id) {
+      await supabase.from("assistant_logs").update({ response: analysis }).eq("id", logRow.id);
     }
 
     return NextResponse.json({ analysis, type, depth });

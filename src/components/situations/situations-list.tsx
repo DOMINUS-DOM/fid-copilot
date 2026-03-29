@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   type AssistantSource,
   type ConfidenceLevel,
@@ -217,8 +218,8 @@ function MarkdownResponse({ content }: { content: string }) {
             <h2 className="mb-2 text-base font-semibold text-zinc-900 dark:text-white">
               {title.trim()}
             </h2>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              {body}
+            <div>
+              <MarkdownContent content={body} />
             </div>
           </div>
         );

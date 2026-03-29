@@ -77,9 +77,11 @@ export async function POST(request: Request) {
     }
 
     // 3. Log
-    await supabase
+    const { data: logRow } = await supabase
       .from("assistant_logs")
-      .insert({ user_id: user.id, question: `[decision] ${situation.slice(0, 200)}` });
+      .insert({ user_id: user.id, question: `[decision] ${situation.slice(0, 200)}` })
+      .select("id")
+      .single();
 
     // 4. Documents
     const { data: allDocuments } = await supabase
@@ -259,6 +261,10 @@ export async function POST(request: Request) {
       category: doc.category,
       source_url: doc.source_url,
     }));
+
+    if (logRow?.id) {
+      await supabase.from("assistant_logs").update({ response: analysis }).eq("id", logRow.id);
+    }
 
     return NextResponse.json({
       id: decision?.id ?? null,

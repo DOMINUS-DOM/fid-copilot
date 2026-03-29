@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   type DecisionCategory,
   type DecisionUrgency,
@@ -278,12 +279,9 @@ function DecisionResult({ content }: { content: string }) {
                 {titleLine.trim()}
               </h3>
             </div>
-            <div className={cn(
-              "whitespace-pre-wrap text-[15px] leading-relaxed sm:text-sm",
-              isRecommandation ? "font-medium text-emerald-800 dark:text-emerald-200" : "text-zinc-600 dark:text-zinc-400"
-            )}>
-              <HighlightedText text={body} />
-            </div>
+            <MarkdownContent content={body} className={cn(
+              isRecommandation ? "[&_p]:text-emerald-800 [&_strong]:text-emerald-900 dark:[&_p]:text-emerald-200" : ""
+            )} />
           </div>
         );
       })}

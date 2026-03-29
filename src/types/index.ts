@@ -432,6 +432,7 @@ export interface AssistantLog {
   id: string;
   user_id: string;
   question: string;
+  response: string | null;
   created_at: string;
 }
 

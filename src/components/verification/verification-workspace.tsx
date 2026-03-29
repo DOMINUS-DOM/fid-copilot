@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   type VerifyType,
   type VerifyDepth,
@@ -328,8 +329,8 @@ function VerificationResult({ content }: { content: string }) {
                 {titleLine.trim()}
               </h3>
             </div>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              <HighlightedVerifyBody text={body} />
+            <div>
+              <MarkdownContent content={body} />
             </div>
           </div>
         );

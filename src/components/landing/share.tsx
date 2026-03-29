@@ -9,14 +9,14 @@ export function Share() {
   const shareUrl = "https://fidcopilot.be";
 
   function handleCopy() {
-    navigator.clipboard.writeText(`FID Copilot \u2014 Assistant juridique pour directions d\u2019\u00e9cole en FWB. Essayez gratuitement : ${shareUrl}`);
+    navigator.clipboard.writeText(`FID Copilot — Assistant juridique pour directions d'école en FWB. Essayez gratuitement : ${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   }
 
   function handleEmail() {
-    const subject = encodeURIComponent("Un outil qui pourrait t\u2019int\u00e9resser \u2014 FID Copilot");
-    const body = encodeURIComponent(`Bonjour,\n\nJe te partage FID Copilot, un assistant juridique con\u00e7u pour les directions d\u2019\u00e9cole en FWB et la formation FID.\n\nTu peux l\u2019essayer gratuitement ici : ${shareUrl}\n\nBonne d\u00e9couverte !`);
+    const subject = encodeURIComponent("Un outil qui pourrait t'intéresser — FID Copilot");
+    const body = encodeURIComponent(`Bonjour,\n\nJe te partage FID Copilot, un assistant juridique conçu pour les directions d'école en FWB et la formation FID.\n\nTu peux l'essayer gratuitement ici : ${shareUrl}\n\nBonne découverte !`);
     window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
   }
 
@@ -51,7 +51,7 @@ export function Share() {
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md active:scale-[0.97]"
           >
             {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4 text-slate-400" />}
-            {copied ? "Lien copi\u00e9 !" : "Copier le lien"}
+            {copied ? "Lien copié !" : "Copier le lien"}
           </button>
         </div>
       </motion.div>

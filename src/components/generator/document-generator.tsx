@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   type DocGenCategory,
   type DocGenTone,
@@ -340,8 +341,8 @@ export function DocumentGenerator() {
               <div className="absolute right-4 top-4">
                 <FileText className="h-4 w-4 text-zinc-200 dark:text-zinc-700" />
               </div>
-              <div className="whitespace-pre-wrap pr-8 font-mono text-[13px] leading-relaxed text-zinc-700 dark:text-zinc-300">
-                {content}
+              <div className="pr-8">
+                <MarkdownContent content={content} />
               </div>
             </Card>
 

@@ -67,7 +67,7 @@ export function SchoolDocsManager() {
         return;
       }
 
-      setSuccess(`"${data.title}" analys\u00e9 : ${data.chunk_count} sections extraites de ${data.page_count} pages.`);
+      setSuccess(`"${data.title}" analysé : ${data.chunk_count} sections extraites de ${data.page_count} pages.`);
       setTitle("");
       setFile(null);
       setDocType("roi");
@@ -85,13 +85,13 @@ export function SchoolDocsManager() {
   }
 
   async function handleDelete(id: string, docTitle: string) {
-    if (!confirm(`Supprimer "${docTitle}" et toutes ses donn\u00e9es ?`)) return;
+    if (!confirm(`Supprimer "${docTitle}" et toutes ses données ?`)) return;
 
     try {
       const res = await fetch(`/api/school-docs/${id}`, { method: "DELETE" });
       if (res.ok) {
         setDocuments((prev) => prev.filter((d) => d.id !== id));
-        setSuccess(`"${docTitle}" supprim\u00e9.`);
+        setSuccess(`"${docTitle}" supprimé.`);
       }
     } catch {
       setError("Erreur lors de la suppression");
@@ -103,8 +103,8 @@ export function SchoolDocsManager() {
       {/* Info banner */}
       <div className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3 dark:border-blue-900/30 dark:bg-blue-950/20">
         <p className="text-sm text-blue-800 dark:text-blue-300">
-          Uploadez les documents de votre \u00e9cole pour contextualiser les r\u00e9ponses de l'assistant.
-          Ces documents ne remplacent jamais les textes l\u00e9gaux officiels.
+          Uploadez les documents de votre école pour contextualiser les réponses de l'assistant.
+          Ces documents ne remplacent jamais les textes légaux officiels.
         </p>
       </div>
 
@@ -197,7 +197,7 @@ export function SchoolDocsManager() {
       {/* Document list */}
       <div>
         <h3 className="mb-4 text-sm font-semibold text-zinc-900 dark:text-white">
-          Documents de votre \u00e9cole ({documents.length})
+          Documents de votre école ({documents.length})
         </h3>
 
         {loading ? (

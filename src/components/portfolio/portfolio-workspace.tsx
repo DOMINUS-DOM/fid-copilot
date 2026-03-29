@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { MarkdownContent } from "@/components/ui/markdown-content";
 import {
   type PortfolioAction,
   type PortfolioContext,
@@ -318,9 +319,7 @@ function PortfolioResponse({ content }: { content: string }) {
   if (sections.length <= 1) {
     return (
       <Card>
-        <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-400">
-          {content}
-        </div>
+        <MarkdownContent content={content} />
       </Card>
     );
   }
@@ -340,9 +339,7 @@ function PortfolioResponse({ content }: { content: string }) {
             <h3 className="mb-2 text-sm font-semibold text-zinc-900 dark:text-white">
               {titleLine.trim()}
             </h3>
-            <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-zinc-600 sm:text-sm dark:text-zinc-400">
-              {body}
-            </div>
+            <MarkdownContent content={body} />
           </div>
         );
       })}
