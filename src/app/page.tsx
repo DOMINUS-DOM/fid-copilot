@@ -8,6 +8,7 @@ import { Benefits } from "@/components/landing/benefits";
 import { UseCases } from "@/components/landing/use-cases";
 import { Credibility } from "@/components/landing/credibility";
 import { Pricing } from "@/components/landing/pricing";
+import { Share } from "@/components/landing/share";
 import { CTA } from "@/components/landing/cta";
 import { Footer } from "@/components/landing/footer";
 
@@ -30,6 +31,7 @@ export default async function HomePage() {
         <UseCases />
         <Credibility />
         <Pricing />
+        <Share />
         <CTA />
       </main>
       <Footer />

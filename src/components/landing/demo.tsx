@@ -5,7 +5,7 @@ import { Search, BookOpen, Lightbulb, GraduationCap, User } from "lucide-react";
 
 export function Demo() {
   return (
-    <section id="demo" className="bg-white px-6 py-20 sm:py-28">
+    <section id="demo" className="bg-white px-6 py-28 sm:py-36">
       <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -18,11 +18,10 @@ export function Demo() {
             En action
           </span>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Voici un exemple réel de réponse
+            Voyez par vous-même
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500">
-            Un directeur pose une question concrète. FID Copilot répond avec la base légale,
-            le raisonnement et les sources officielles.
+          <p className="mx-auto mt-4 max-w-lg text-base text-slate-500">
+            Une question concrète, une réponse structurée avec base légale et sources officielles.
           </p>
         </motion.div>
 
