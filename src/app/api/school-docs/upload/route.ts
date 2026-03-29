@@ -5,68 +5,62 @@ import { type SchoolDocType } from "@/types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const VALID_TYPES: SchoolDocType[] = [
-  "roi",
-  "reglement_etudes",
-  "projet_etablissement",
-  "plan_pilotage",
-  "note_interne",
-  "autre",
+  "roi", "reglement_etudes", "projet_etablissement",
+  "plan_pilotage", "note_interne", "autre",
 ];
 
 export async function POST(request: Request) {
   try {
     // 1. Auth
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+      return NextResponse.json({ error: "Non authentifié. Veuillez vous reconnecter." }, { status: 401 });
     }
 
     // 2. Parse form data
-    const formData = await request.formData();
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return NextResponse.json({ error: "Erreur lors de la lecture du formulaire." }, { status: 400 });
+    }
+
     const file = formData.get("file") as File | null;
     const title = (formData.get("title") as string)?.trim();
     const docType = formData.get("doc_type") as SchoolDocType;
 
     if (!file || !title || !docType) {
-      return NextResponse.json(
-        { error: "Fichier, titre et type de document requis" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Fichier, titre et type de document requis." }, { status: 400 });
     }
 
     if (!VALID_TYPES.includes(docType)) {
-      return NextResponse.json(
-        { error: "Type de document invalide" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Type de document invalide." }, { status: 400 });
     }
 
     if (file.type !== "application/pdf") {
-      return NextResponse.json(
-        { error: "Seuls les fichiers PDF sont acceptés" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Seuls les fichiers PDF sont acceptés." }, { status: 400 });
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "Le fichier ne doit pas dépasser 10 MB" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Le fichier fait ${(file.size / 1024 / 1024).toFixed(1)} MB. Maximum : 10 MB.` }, { status: 400 });
     }
 
-    // 3. Generate doc ID for file path
+    // 3. Read file buffer
     const docId = crypto.randomUUID();
     const filePath = `${user.id}/${docId}.pdf`;
 
-    // 4. Upload to Supabase Storage
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    let buffer: Buffer;
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      buffer = Buffer.from(arrayBuffer);
+    } catch (err) {
+      console.error("[Upload buffer]", err);
+      return NextResponse.json({ error: "Erreur lors de la lecture du fichier." }, { status: 500 });
+    }
 
+    // 4. Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from("school-docs")
       .upload(filePath, buffer, {
@@ -75,9 +69,9 @@ export async function POST(request: Request) {
       });
 
     if (uploadError) {
-      console.error("[Upload]", uploadError);
+      console.error("[Upload storage]", uploadError);
       return NextResponse.json(
-        { error: "Erreur lors de l'upload du fichier" },
+        { error: `Erreur upload : ${uploadError.message || "bucket inaccessible"}` },
         { status: 500 }
       );
     }
@@ -88,10 +82,10 @@ export async function POST(request: Request) {
       extraction = await extractAndChunk(buffer);
     } catch (err) {
       console.error("[Extract]", err);
-      // Cleanup uploaded file
       await supabase.storage.from("school-docs").remove([filePath]);
+      const msg = err instanceof Error ? err.message : "erreur inconnue";
       return NextResponse.json(
-        { error: "Impossible d'extraire le texte du PDF" },
+        { error: `Impossible d'extraire le texte du PDF : ${msg}` },
         { status: 400 }
       );
     }
@@ -99,7 +93,7 @@ export async function POST(request: Request) {
     if (extraction.chunks.length === 0) {
       await supabase.storage.from("school-docs").remove([filePath]);
       return NextResponse.json(
-        { error: "Le PDF ne contient pas de texte extractible" },
+        { error: "Le PDF ne contient pas de texte extractible. Vérifiez qu'il ne s'agit pas d'un scan image." },
         { status: 400 }
       );
     }
@@ -124,7 +118,7 @@ export async function POST(request: Request) {
       console.error("[DB doc]", docError);
       await supabase.storage.from("school-docs").remove([filePath]);
       return NextResponse.json(
-        { error: "Erreur lors de l'enregistrement" },
+        { error: `Erreur base de données : ${docError.message}` },
         { status: 500 }
       );
     }
@@ -144,11 +138,6 @@ export async function POST(request: Request) {
 
     if (chunksError) {
       console.error("[DB chunks]", chunksError);
-      // Doc already inserted, update chunk_count to 0
-      await supabase
-        .from("school_documents")
-        .update({ chunk_count: 0 })
-        .eq("id", docId);
     }
 
     return NextResponse.json({
@@ -160,9 +149,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("[API /school-docs/upload]", error);
-    return NextResponse.json(
-      { error: "Erreur interne du serveur" },
-      { status: 500 }
-    );
+    const msg = error instanceof Error ? error.message : "Erreur interne";
+    return NextResponse.json({ error: `Erreur serveur : ${msg}` }, { status: 500 });
   }
 }

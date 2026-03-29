@@ -404,9 +404,9 @@ function StructuredResponse({ content }: { content: string }) {
           </svg>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Résumé rapide</p>
-            <p className="mt-1 text-sm font-medium leading-relaxed text-emerald-800 dark:text-emerald-300">
-              {quickSummary}
-            </p>
+            <div className="mt-1 [&_p]:text-sm [&_p]:font-medium [&_p]:text-emerald-800 dark:[&_p]:text-emerald-300 [&_strong]:text-emerald-900 dark:[&_strong]:text-emerald-200">
+              <MarkdownContent content={quickSummary} />
+            </div>
           </div>
         </div>
       )}
@@ -558,7 +558,7 @@ function FidEvaluation({ content }: { content: string }) {
       {justification && (
         <div className="mt-4 rounded-xl bg-zinc-50 px-4 py-3 dark:bg-zinc-800/50">
           <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Justification</p>
-          <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{justification}</p>
+          <MarkdownContent content={justification} />
         </div>
       )}
 
@@ -566,7 +566,7 @@ function FidEvaluation({ content }: { content: string }) {
       {axe && (
         <div className="mt-3 rounded-xl bg-blue-50/50 px-4 py-3 dark:bg-blue-950/20">
           <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">Axe d'amélioration</p>
-          <p className="mt-1 text-sm leading-relaxed text-blue-700 dark:text-blue-300">{axe}</p>
+          <MarkdownContent content={axe} />
         </div>
       )}
     </div>

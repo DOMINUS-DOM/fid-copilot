@@ -220,19 +220,25 @@ export function HistoryView({ logs, error }: { logs: AssistantLog[]; error: bool
                     {cfg.icon}{cfg.label}
                   </span>
 
-                  {/* Content preview */}
-                  <p className={cn("min-w-0 flex-1 text-sm text-zinc-700 dark:text-zinc-300", !isExpanded && "truncate")}>
+                  {/* Content preview — only visible when collapsed */}
+                  <button
+                    onClick={() => !selectMode && setExpandedId(isExpanded ? null : log.id)}
+                    className={cn(
+                      "min-w-0 flex-1 text-left text-sm text-zinc-700 dark:text-zinc-300",
+                      isExpanded && "hidden",
+                      !isExpanded && "truncate",
+                      !selectMode && "cursor-pointer hover:text-zinc-900 dark:hover:text-white"
+                    )}
+                  >
                     {log.content}
-                  </p>
+                  </button>
 
                   {/* Actions */}
                   {!selectMode && (
                     <div className="flex shrink-0 items-center gap-0.5">
-                      {hasResponse && (
-                        <button onClick={() => setExpandedId(isExpanded ? null : log.id)} className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800" title={isExpanded ? "Réduire" : "Voir la réponse"}>
-                          {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                        </button>
-                      )}
+                      <button onClick={() => setExpandedId(isExpanded ? null : log.id)} className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800" title={isExpanded ? "Réduire" : "Déplier"}>
+                        {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </button>
                       <button onClick={() => handleCopy(log.id, log.response || log.content)} className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800" title="Copier">
                         {copiedId === log.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                       </button>
@@ -249,20 +255,30 @@ export function HistoryView({ logs, error }: { logs: AssistantLog[]; error: bool
                   )}
                 </div>
 
-                {/* Expanded response */}
-                {isExpanded && log.response && (
-                  <div className="border-t border-zinc-100 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/20">
-                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Réponse complète</p>
-                    <div className="max-h-96 overflow-y-auto">
-                      <MarkdownContent content={log.response} />
+                {/* Expanded: full question + response */}
+                {isExpanded && (
+                  <div className="border-t border-zinc-100 dark:border-zinc-800">
+                    {/* Full question */}
+                    <div className="bg-blue-50/30 px-4 py-3 dark:bg-blue-950/10">
+                      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-blue-500 dark:text-blue-400">Question complète</p>
+                      <div className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+                        <MarkdownContent content={log.content} />
+                      </div>
                     </div>
-                  </div>
-                )}
 
-                {/* No response yet */}
-                {isExpanded && !log.response && (
-                  <div className="border-t border-zinc-100 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/20">
-                    <p className="text-xs italic text-zinc-400">Réponse non disponible pour les anciens éléments.</p>
+                    {/* Full response */}
+                    {log.response ? (
+                      <div className="border-t border-zinc-100 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/20">
+                        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">Réponse complète</p>
+                        <div className="max-h-[600px] overflow-y-auto">
+                          <MarkdownContent content={log.response} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-t border-zinc-100 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800/20">
+                        <p className="text-xs italic text-zinc-400">Réponse non disponible pour les anciens éléments.</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

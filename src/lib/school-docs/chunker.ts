@@ -1,10 +1,7 @@
 /**
  * Extraction et chunking de documents PDF scolaires.
- * Stratégie : découpage par page, puis par paragraphe si page trop longue.
+ * Compatible avec les environnements serverless (Vercel).
  */
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfParse = require("pdf-parse");
 
 const MAX_CHUNK_SIZE = 2000;
 const MAX_CHUNKS = 200;
@@ -27,35 +24,32 @@ export interface ExtractionResult {
 export async function extractAndChunk(
   buffer: Buffer
 ): Promise<ExtractionResult> {
+  // Dynamic import to avoid bundling issues
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const pdfParse = require("pdf-parse");
+
+  // Simple parse without custom pagerender (more compatible with serverless)
+  const result = await pdfParse(buffer);
+
+  if (!result.text || result.text.trim().length === 0) {
+    return { text: "", pageCount: 0, chunks: [] };
+  }
+
+  // Split by form feed (page break) or large gaps
   const pages: string[] = [];
-
-  // pdf-parse avec callback par page pour capturer le texte page par page
-  const result = await pdfParse(buffer, {
-    pagerender: (pageData: { getTextContent: () => Promise<{ items: { str: string }[] }> }) => {
-      return pageData.getTextContent().then((textContent: { items: { str: string }[] }) => {
-        return textContent.items.map((item: { str: string }) => item.str).join(" ");
-      });
-    },
-  });
-
-  // Si le callback ne fonctionne pas comme prévu, fallback sur le texte brut
-  if (result.text) {
-    // Découper le texte brut par double saut de ligne (approximation de page)
-    const rawPages = result.text.split(/\f|\n{3,}/);
-    for (const page of rawPages) {
-      const cleaned = cleanText(page);
-      if (cleaned.length > 20) {
-        pages.push(cleaned);
-      }
+  const rawPages = result.text.split(/\f|\n{3,}/);
+  for (const page of rawPages) {
+    const cleaned = cleanText(page);
+    if (cleaned.length > 20) {
+      pages.push(cleaned);
     }
   }
 
-  // Si aucune page détectée, traiter tout comme un seul bloc
-  if (pages.length === 0 && result.text) {
+  if (pages.length === 0) {
     pages.push(cleanText(result.text));
   }
 
-  // Générer les chunks
+  // Generate chunks
   const chunks: ExtractedChunk[] = [];
   let chunkIndex = 0;
 
@@ -69,16 +63,12 @@ export async function extractAndChunk(
         content: pageText,
       });
     } else {
-      // Découper par paragraphe (double saut de ligne)
       const paragraphs = pageText.split(/\n\n+/);
       let currentChunk = "";
       let partNum = 1;
 
       for (const para of paragraphs) {
-        if (
-          currentChunk.length + para.length > MAX_CHUNK_SIZE &&
-          currentChunk.length > 0
-        ) {
+        if (currentChunk.length + para.length > MAX_CHUNK_SIZE && currentChunk.length > 0) {
           chunks.push({
             chunk_index: chunkIndex++,
             chunk_title: `Page ${i + 1} (partie ${partNum})`,
@@ -95,8 +85,7 @@ export async function extractAndChunk(
       if (currentChunk.trim() && chunkIndex < MAX_CHUNKS) {
         chunks.push({
           chunk_index: chunkIndex++,
-          chunk_title:
-            partNum > 1 ? `Page ${i + 1} (partie ${partNum})` : `Page ${i + 1}`,
+          chunk_title: partNum > 1 ? `Page ${i + 1} (partie ${partNum})` : `Page ${i + 1}`,
           content: currentChunk.trim(),
         });
       }
@@ -104,7 +93,7 @@ export async function extractAndChunk(
   }
 
   return {
-    text: result.text || "",
+    text: result.text,
     pageCount: result.numpages || pages.length,
     chunks,
   };

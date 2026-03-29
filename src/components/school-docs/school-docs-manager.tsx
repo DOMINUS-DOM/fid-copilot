@@ -60,10 +60,16 @@ export function SchoolDocsManager() {
         body: formData,
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        setError(`Erreur serveur (${res.status}). Réessayez ou contactez le support.`);
+        return;
+      }
 
       if (!res.ok) {
-        setError(data.error || "Erreur lors de l'upload");
+        setError(data.error || `Erreur ${res.status} lors de l'upload`);
         return;
       }
 
@@ -77,8 +83,9 @@ export function SchoolDocsManager() {
       if (fileInput) fileInput.value = "";
 
       fetchDocuments();
-    } catch {
-      setError("Impossible de contacter le serveur");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "erreur inconnue";
+      setError(`Impossible de contacter le serveur : ${msg}`);
     } finally {
       setUploading(false);
     }
