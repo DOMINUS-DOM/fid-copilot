@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { setTheme } from "@/components/theme-provider";
 import { Card } from "@/components/ui/card";
 import { type UserPreferences } from "@/types";
 import {
@@ -108,11 +109,11 @@ export function SettingsWorkspace() {
       const data = await res.json();
       if (res.ok && data.preferences) {
         setPrefs(data.preferences);
-        // Apply saved theme
-        if (data.preferences.theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
+        // Sync localStorage with server preference (if different)
+        const serverTheme = data.preferences.theme ?? "light";
+        const localTheme = localStorage.getItem("fid-theme") ?? "light";
+        if (serverTheme !== localTheme) {
+          setTheme(serverTheme as "light" | "dark");
         }
       }
     } catch { /* silent */ }
@@ -328,7 +329,7 @@ export function SettingsWorkspace() {
                 type="button"
                 onClick={() => {
                   update("theme", "light");
-                  document.documentElement.classList.remove("dark");
+                  setTheme("light");
                 }}
                 className={`rounded-l-xl px-4 py-2 text-xs font-medium transition-all ${
                   (prefs.theme ?? "light") === "light"
@@ -342,7 +343,7 @@ export function SettingsWorkspace() {
                 type="button"
                 onClick={() => {
                   update("theme", "dark");
-                  document.documentElement.classList.add("dark");
+                  setTheme("dark");
                 }}
                 className={`rounded-r-xl px-4 py-2 text-xs font-medium transition-all ${
                   prefs.theme === "dark"
