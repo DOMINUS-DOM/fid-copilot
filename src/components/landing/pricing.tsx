@@ -5,12 +5,14 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 const features = [
-  "Assistant juridique illimité",
-  "Modes Examen, Terrain et Portfolio",
-  "Base documentaire évolutive",
-  "Sources officielles vérifiables",
-  "Auto-évaluation FID intégrée",
-  "Historique de vos questions",
+  "Assistant juridique illimité (3 modes)",
+  "Moteur d'aide à la décision",
+  "Citations exactes et vérifiables",
+  "Upload de vos documents d'école",
+  "Portfolio FID avec guidage IA",
+  "Auto-évaluation calibrée /20",
+  "Sources CDA avec liens Gallilex",
+  "Base juridique mise à jour en continu",
 ];
 
 export function Pricing() {
@@ -19,9 +21,9 @@ export function Pricing() {
       <div className="mx-auto max-w-md text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Commencez gratuitement
+            Accès complet. Gratuit.
           </h2>
-          <p className="mt-3 text-base text-slate-500">Accès complet, sans engagement.</p>
+          <p className="mt-3 text-base text-slate-500">Toutes les fonctionnalités, sans engagement.</p>
         </motion.div>
 
         <motion.div

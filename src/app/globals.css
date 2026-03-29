@@ -35,6 +35,15 @@ body {
 .hero-glow-2 { animation: hero-glow 10s ease-in-out infinite 2s; }
 .hero-glow-3 { animation: hero-glow 12s ease-in-out infinite 4s; }
 
+/* Parallax scroll effect */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.float-1 { animation: float-slow 6s ease-in-out infinite; }
+.float-2 { animation: float-slow 8s ease-in-out infinite 1s; }
+.float-3 { animation: float-slow 7s ease-in-out infinite 2s; }
+
 /* Subtle grid pattern for hero depth */
 .hero-grid {
   background-image:

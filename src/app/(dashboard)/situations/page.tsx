@@ -8,7 +8,7 @@ export default function SituationsPage() {
           Situations de terrain
         </h1>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Cas concrets rencontrés par les directions d&apos;école. Choisissez une
+          Cas concrets rencontrés par les directions d'école. Choisissez une
           situation pour obtenir une analyse juridique structurée.
         </p>
       </div>

@@ -299,14 +299,13 @@ export async function POST(request: Request) {
 
       const { data: chunks } = await supabase
         .from("legal_chunks")
-        .select("cda_code, chunk_title, content")
+        .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
         .in("cda_code", selectedCdaCodes)
         .textSearch("content", tsQuery, { config: "french" })
         .limit(MAX_LEGAL_CHUNKS)
         .returns<LegalChunk[]>();
 
       if (chunks && chunks.length > 0) {
-        // Limiter le volume total de texte
         let totalChars = 0;
         const kept: typeof chunks = [];
         for (const chunk of chunks) {
@@ -317,7 +316,18 @@ export async function POST(request: Request) {
 
         if (kept.length > 0) {
           legalExtracts = kept
-            .map((c) => `[CDA ${c.cda_code}${c.chunk_title ? ` — ${c.chunk_title}` : ""}]\n${c.content}`)
+            .map((c, idx) => {
+              const lines: string[] = [`[LEGAL-${idx + 1}]`];
+              if (c.citation_display) {
+                lines.push(`Citation exacte : ${c.citation_display}`);
+              }
+              lines.push(`CDA : ${c.cda_code}`);
+              if (c.article_number) {
+                lines.push(`Article : ${c.article_number}${c.paragraph ? ` § ${c.paragraph}` : ""}`);
+              }
+              lines.push(`Extrait : ${c.content}`);
+              return lines.join("\n");
+            })
             .join("\n\n---\n\n");
         }
       }

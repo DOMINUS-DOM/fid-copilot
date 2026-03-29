@@ -6,20 +6,20 @@ import { FileText, Clock, AlertTriangle } from "lucide-react";
 const problems = [
   {
     icon: <FileText className="h-5 w-5" />,
-    title: "Trop de textes",
-    description: "D&#x00e9;crets, codes, circulaires... Impossible de tout conna&#x00ee;tre par c&#x0153;ur.",
+    title: "Des textes qui changent",
+    description: "Décrets modifiés, circulaires mises à jour, Code refondu. Rester à jour est un travail à plein temps.",
     color: "from-blue-500 to-blue-600",
   },
   {
     icon: <Clock className="h-5 w-5" />,
-    title: "Pas le temps",
-    description: "Votre agenda est plein. La recherche juridique ne peut pas attendre.",
+    title: "Des décisions urgentes",
+    description: "Recours, exclusion, inspection — il faut trancher vite, avec la bonne base légale.",
     color: "from-violet-500 to-violet-600",
   },
   {
     icon: <AlertTriangle className="h-5 w-5" />,
-    title: "Risque d&#x2019;erreur",
-    description: "Une mauvaise interpr&#x00e9;tation peut avoir des cons&#x00e9;quences r&#x00e9;elles.",
+    title: "Un risque juridique réel",
+    description: "Une erreur d'interprétation peut impacter un élève, un enseignant ou votre établissement.",
     color: "from-amber-500 to-amber-600",
   },
 ];
@@ -29,18 +29,12 @@ export function Problem() {
     <section className="bg-white px-6 py-28 sm:py-36">
       <div className="mx-auto max-w-5xl">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          {/* Left — text + cards */}
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                Diriger une &#x00e9;cole, c&#x2019;est d&#x00e9;cider vite.
+                Le droit scolaire évolue.
                 <br />
-                <span className="text-slate-400">Souvent sans filet juridique.</span>
+                <span className="text-slate-400">Votre outil doit suivre.</span>
               </h2>
             </motion.div>
 
@@ -66,7 +60,6 @@ export function Problem() {
             </div>
           </div>
 
-          {/* Right — human visual */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -75,8 +68,6 @@ export function Problem() {
             className="relative hidden lg:block"
           >
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-100 to-blue-50 shadow-lg">
-              {/* Photo placeholder — replace src with actual photo */}
-              {/* <Image src="/images/director-desk.jpg" alt="Directeur à son bureau" width={560} height={400} className="object-cover" /> */}
               <div className="flex aspect-[4/3] w-full items-center justify-center">
                 <div className="flex flex-col items-center gap-3 text-slate-300">
                   <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.8}>
@@ -85,10 +76,9 @@ export function Problem() {
                   <span className="text-sm font-medium text-slate-400">Photo : directeur au travail</span>
                 </div>
               </div>
-              {/* Floating stat badge */}
               <div className="absolute bottom-4 left-4 rounded-xl bg-white/90 px-4 py-2.5 shadow-lg backdrop-blur-sm">
-                <p className="text-xs font-medium text-slate-500">En moyenne</p>
-                <p className="text-lg font-bold text-slate-900">30+ <span className="text-sm font-normal text-slate-500">textes &#x00e0; ma&#x00ee;triser</span></p>
+                <p className="text-xs font-medium text-slate-500">Dernière mise à jour</p>
+                <p className="text-sm font-bold text-slate-900">Textes à jour 2025-2026</p>
               </div>
             </div>
           </motion.div>

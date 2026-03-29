@@ -13,8 +13,40 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FID Copilot",
-  description: "Votre assistant pour la gestion documentaire, les examens et le portfolio",
+  title: {
+    default: "FID Copilot — Assistant juridique pour directions d'école",
+    template: "%s | FID Copilot",
+  },
+  description:
+    "Assistant IA juridique pour directions d'école en Fédération Wallonie-Bruxelles. Aide à la décision, citations exactes, préparation FID. Toujours à jour avec les derniers textes légaux.",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_BE",
+    url: "https://fidcopilot.be",
+    siteName: "FID Copilot",
+    title: "FID Copilot — Assistant juridique pour directions d'école",
+    description:
+      "Droit scolaire, aide à la décision, préparation FID — fondé sur les décrets et le Code de l'enseignement en vigueur. Citations exactes. Aucune hallucination.",
+    images: [
+      {
+        url: "/og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "FID Copilot — Assistant juridique IA",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FID Copilot — Assistant juridique pour directions d'école",
+    description:
+      "Droit scolaire, aide à la décision, préparation FID — citations exactes, sources officielles.",
+    images: ["/og-image.svg"],
+  },
 };
 
 export default function RootLayout({

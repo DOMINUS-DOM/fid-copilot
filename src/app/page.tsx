@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
 import { Solution } from "@/components/landing/solution";
+import { Screenshots } from "@/components/landing/screenshots";
 import { Demo } from "@/components/landing/demo";
 import { Benefits } from "@/components/landing/benefits";
 import { UseCases } from "@/components/landing/use-cases";
@@ -26,6 +27,7 @@ export default async function HomePage() {
         <Hero isAuthenticated={isAuthenticated} />
         <Problem />
         <Solution />
+        <Screenshots />
         <Demo />
         <Benefits />
         <UseCases />

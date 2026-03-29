@@ -1,28 +1,38 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, ShieldCheck, RefreshCw, Heart } from "lucide-react";
+import { ShieldCheck, Quote, Scale, Upload, RefreshCw, Brain } from "lucide-react";
 
 const benefits = [
   {
-    icon: <Zap className="h-6 w-6" />,
-    title: "Réponse immédiate",
-    description: "Structurée et sourcée, en quelques secondes.",
+    icon: <Quote className="h-6 w-6" />,
+    title: "Citations vérifiables",
+    description: "Chaque référence provient directement du texte officiel. Lien CDA pour vérifier par vous-même.",
   },
   {
-    icon: <ShieldCheck className="h-6 w-6" />,
-    title: "Fiabilité juridique",
-    description: "Fondée sur les textes officiels. Vérifiable en un clic.",
+    icon: <Scale className="h-6 w-6" />,
+    title: "Décision, pas opinion",
+    description: "Options concrètes, risques identifiés, recommandation tranchée. Zéro formulation vague.",
   },
   {
     icon: <RefreshCw className="h-6 w-6" />,
-    title: "Base évolutive",
-    description: "Enrichie en continu avec les derniers textes et procédures.",
+    title: "Toujours à jour",
+    description: "Base juridique enrichie en continu avec les derniers décrets, circulaires et modifications légales.",
   },
   {
-    icon: <Heart className="h-6 w-6" />,
-    title: "Pensé pour vous",
-    description: "Conçu avec des directions d&#x2019;école, pour le terrain réel.",
+    icon: <Upload className="h-6 w-6" />,
+    title: "Votre école intégrée",
+    description: "Uploadez votre ROI et vos documents. L'assistant les croise avec le cadre légal applicable.",
+  },
+  {
+    icon: <Brain className="h-6 w-6" />,
+    title: "Auto-évaluation FID",
+    description: "Score calibré sur les vrais barèmes certificatifs. Identification de vos axes de progrès.",
+  },
+  {
+    icon: <ShieldCheck className="h-6 w-6" />,
+    title: "Zéro hallucination",
+    description: "Si la référence exacte n'est pas disponible, l'assistant le signale explicitement.",
   },
 ];
 
@@ -34,17 +44,15 @@ export function Benefits() {
         <div className="absolute -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-600/10 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-4xl">
+      <div className="relative mx-auto max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Un outil qui évolue avec vous
+          <span className="text-sm font-semibold uppercase tracking-widest text-blue-400">Pourquoi FID Copilot</span>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            La fiabilité juridique avant tout
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-base text-slate-400">
-            Mises à jour régulières. Base documentaire enrichie en continu.
-          </p>
         </motion.div>
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map((item, i) => (
             <motion.div
               key={item.title}

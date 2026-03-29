@@ -19,6 +19,30 @@ export interface Profile {
 }
 
 // ============================================================
+// User Preferences (Paramètres)
+// ============================================================
+
+export interface UserPreferences {
+  id: string;
+  user_id: string;
+  // Profil
+  first_name: string | null;
+  last_name: string | null;
+  job_title: string | null;
+  school_name: string | null;
+  school_network: string | null;
+  school_level: string | null;
+  // Préférences IA
+  default_tone: string;
+  default_mode: string;
+  default_length: string;
+  // Génération
+  signature: string | null;
+  closing_formula: string | null;
+  updated_at: string;
+}
+
+// ============================================================
 // Documents
 // ============================================================
 
@@ -152,6 +176,13 @@ export interface LegalChunk {
   chunk_title: string;
   content: string;
   tags: string[] | null;
+  source_title: string | null;
+  source_short_title: string | null;
+  article_number: string | null;
+  paragraph: string | null;
+  citation_display: string | null;
+  topics: string[] | null;
+  education_level: string | null;
 }
 
 /** Source renvoyée par l'API assistant */
@@ -192,6 +223,162 @@ export const CONFIDENCE_CONFIG: Record<
     bg: "bg-red-50 dark:bg-red-900/20",
   },
 };
+
+// ============================================================
+// Document Generator
+// ============================================================
+
+export type DocGenCategory = "parents" | "discipline" | "interne" | "formel";
+export type DocGenTone = "neutre" | "ferme" | "apaisant" | "formel";
+export type DocGenFormat = "email" | "courrier" | "note";
+
+export const DOC_GEN_CATEGORY_LABELS: Record<DocGenCategory, string> = {
+  parents: "Parents",
+  discipline: "Discipline / Élèves",
+  interne: "Interne école",
+  formel: "Administration / Formel",
+};
+
+export const DOC_GEN_TEMPLATES: Record<string, { label: string; category: DocGenCategory; description: string }> = {
+  convocation_parent: { label: "Convocation parent", category: "parents", description: "Inviter un parent à un entretien." },
+  reponse_contestation: { label: "Réponse à contestation", category: "parents", description: "Répondre à un parent qui conteste une décision." },
+  courrier_incident: { label: "Suite à incident", category: "parents", description: "Informer les parents d'un incident." },
+  rappel_cadre: { label: "Rappel de cadre", category: "parents", description: "Rappeler une règle ou une procédure." },
+  notification_discipline: { label: "Notification disciplinaire", category: "discipline", description: "Notifier une sanction ou mesure." },
+  convocation_discipline: { label: "Convocation disciplinaire", category: "discipline", description: "Convoquer dans un cadre disciplinaire." },
+  note_interne: { label: "Note interne", category: "interne", description: "Communiquer une information à l'équipe." },
+  mail_enseignant: { label: "Email à un enseignant", category: "interne", description: "Écrire à un membre du personnel." },
+  reponse_recours: { label: "Réponse à recours", category: "formel", description: "Répondre formellement à un recours." },
+  resume_decision: { label: "Résumé de décision", category: "formel", description: "Résumer une décision pour transmission." },
+};
+
+export const DOC_GEN_TONE_LABELS: Record<DocGenTone, string> = {
+  neutre: "Neutre",
+  ferme: "Ferme",
+  apaisant: "Apaisant",
+  formel: "Formel",
+};
+
+export const DOC_GEN_FORMAT_LABELS: Record<DocGenFormat, string> = {
+  email: "Email",
+  courrier: "Courrier structuré",
+  note: "Note interne",
+};
+
+// ============================================================
+// Verification
+// ============================================================
+
+export type VerifyType = "document" | "courrier" | "decision" | "formulation";
+export type VerifyDepth = "rapide" | "standard" | "approfondi";
+
+export const VERIFY_TYPE_CONFIG: Record<VerifyType, { label: string; description: string; placeholder: string }> = {
+  document: {
+    label: "Document interne",
+    description: "ROI, règlement, procédure, note",
+    placeholder: "Collez ici un extrait de votre ROI, règlement des études ou procédure interne...",
+  },
+  courrier: {
+    label: "Courrier / Réponse",
+    description: "Courrier parent, réponse, mail",
+    placeholder: "Collez ici le courrier, email ou la réponse que vous souhaitez vérifier...",
+  },
+  decision: {
+    label: "Décision",
+    description: "Exclusion, refus, mesure disciplinaire",
+    placeholder: "Décrivez la décision que vous envisagez de prendre...",
+  },
+  formulation: {
+    label: "Formulation",
+    description: "Phrase, ton, tournure à vérifier",
+    placeholder: "Collez la phrase ou la formulation que vous souhaitez faire vérifier...",
+  },
+};
+
+export const VERIFY_DEPTH_CONFIG: Record<VerifyDepth, { label: string; description: string }> = {
+  rapide: { label: "Rapide", description: "Diagnostic en quelques lignes" },
+  standard: { label: "Standard", description: "Analyse détaillée" },
+  approfondi: { label: "Approfondi", description: "Analyse complète avec recommandations" },
+};
+
+// ============================================================
+// Decision Engine
+// ============================================================
+
+// ============================================================
+// Saved Templates (Équipe / Partage)
+// ============================================================
+
+export type TemplateSource = "assistant" | "decision" | "generateur" | "verification" | "manuel";
+export type TemplateCategory = "courrier" | "reponse" | "convocation" | "note" | "procedure" | "formulation" | "autre";
+
+export const TEMPLATE_SOURCE_LABELS: Record<TemplateSource, string> = {
+  assistant: "Assistant",
+  decision: "Décision",
+  generateur: "Générateur",
+  verification: "Vérification",
+  manuel: "Manuel",
+};
+
+export const TEMPLATE_CATEGORY_LABELS: Record<TemplateCategory, string> = {
+  courrier: "Courrier",
+  reponse: "Réponse",
+  convocation: "Convocation",
+  note: "Note interne",
+  procedure: "Procédure",
+  formulation: "Formulation",
+  autre: "Autre",
+};
+
+export interface SavedTemplate {
+  id: string;
+  user_id: string;
+  title: string;
+  content: string;
+  source: TemplateSource;
+  category: TemplateCategory;
+  tags: string[] | null;
+  created_at: string;
+}
+
+export type DecisionCategory =
+  | "recours"
+  | "discipline"
+  | "personnel"
+  | "inspection"
+  | "parents"
+  | "autre";
+
+export type DecisionUrgency = "immediat" | "semaine" | "planifier";
+export type DecisionStatus = "open" | "in_progress" | "resolved";
+
+export const DECISION_CATEGORY_LABELS: Record<DecisionCategory, string> = {
+  recours: "Recours / Contestation",
+  discipline: "Discipline / Exclusion",
+  personnel: "Personnel / GRH",
+  inspection: "Inspection / Pilotage",
+  parents: "Relations parents",
+  autre: "Autre situation",
+};
+
+export const DECISION_URGENCY_LABELS: Record<DecisionUrgency, { label: string; icon: string }> = {
+  immediat: { label: "Immédiat", icon: "⏰" },
+  semaine: { label: "Cette semaine", icon: "📅" },
+  planifier: { label: "À planifier", icon: "📋" },
+};
+
+export interface Decision {
+  id: string;
+  user_id: string;
+  title: string;
+  situation: string;
+  category: DecisionCategory | null;
+  urgency: DecisionUrgency | null;
+  analysis: string;
+  status: DecisionStatus;
+  resolved_at: string | null;
+  created_at: string;
+}
 
 // ============================================================
 // School Documents (documents d'école uploadés par l'utilisateur)

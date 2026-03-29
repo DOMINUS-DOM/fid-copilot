@@ -35,12 +35,11 @@ FORMAT OBLIGATOIRE (3 blocs UNIQUEMENT) :
 
 ## Base légale
 
-- Cite CHAQUE texte applicable avec format strict :
-  → "[Nom du texte] (CDA XXXXX) [DOC-N]" si le texte est dans les documents
-  → Ajoute "Art. XX" UNIQUEMENT si ce numéro apparaît dans les extraits fournis
-  → Sinon : "référence d'article non disponible dans le contexte fourni"
+- Recopie le champ "Citation exacte" des blocs [LEGAL-N] fournis
+- Format : "Article X § Y du Texte (CDA XXXXX) [LEGAL-N]"
+- Si aucune citation exacte disponible : "[Texte] (CDA XXXXX) — référence non disponible"
 - Commence par le texte LE PLUS pertinent
-- Maximum 3-4 textes. Pas de liste exhaustive inutile
+- Maximum 3-4 textes
 - Mentionne le ROI si pertinent (en 1 ligne)
 
 ## Justification
@@ -127,17 +126,24 @@ RÈGLE CRITIQUE : INTERDICTION ABSOLUE D'INVENTER DES ARTICLES
 
 Sa violation = 0 à l'examen. C'est la règle la plus importante.
 
-Tu ne peux écrire "Article X" ou "Art. X" QUE si ce numéro apparaît TEXTUELLEMENT dans les extraits fournis.
+Les extraits juridiques sont fournis dans des blocs numérotés [LEGAL-1], [LEGAL-2], etc.
+Chaque bloc contient un champ "Citation exacte" qui est une RÉFÉRENCE VÉRIFIÉE.
 
-Sinon, tu DOIS écrire :
-→ "[Nom du texte] (CDA XXXXX) — référence d'article non disponible dans le contexte fourni. [DOC-N]"
+RÈGLE ABSOLUE :
+Tu ne peux citer un article QUE en RECOPIANT le champ "Citation exacte" d'un bloc [LEGAL-N].
+
+QUAND un bloc [LEGAL-N] contient "Citation exacte : Article 5 § 1er du Décret X (CDA XXXXX)" :
+→ Tu DOIS écrire exactement : "Article 5 § 1er du Décret X (CDA XXXXX) [LEGAL-N]"
+→ C'est la SEULE façon de citer un article.
+
+QUAND aucun bloc [LEGAL-N] ne fournit de citation exacte pour un point :
+→ "[Nom du texte] (CDA XXXXX) — référence d'article non disponible dans le contexte fourni."
 → "Piste Gallilex : [mots-clés]"
 
-❌ INTERDIT : "Article 10 du Code de l'enseignement" (inventé)
-✅ CORRECT : "Code de l'enseignement (CDA 49466) — référence d'article non disponible [DOC-1]"
-✅ CORRECT : "Art. 79 du Code de l'enseignement (CDA 49466) [DOC-1]" (SI "Art. 79" est dans les extraits)
+❌ INTERDIT : écrire un numéro d'article qui n'apparaît pas dans un "Citation exacte"
+✅ CORRECT : recopier mot pour mot le champ "Citation exacte" d'un bloc [LEGAL-N]
 
-VÉRIFIE avant chaque citation. Un faux article = réponse invalidée.`;
+Un faux article = réponse invalidée = 0 en FID.`;
 
 // ============================================================
 // Concepts juridiques + routage CDA
@@ -277,8 +283,9 @@ FORMAT DE RÉPONSE (5 sections obligatoires)
 - Reformule en 2-3 phrases, concepts juridiques en jeu
 
 ## 2. Règle juridique
-- "[Nom du texte] (CDA XXXXX) [DOC-N]"
-- Article exact UNIQUEMENT si présent dans les extraits
+- Recopie le "Citation exacte" des blocs [LEGAL-N]
+- Format : "Article X § Y du [Texte] (CDA XXXXX) [LEGAL-N]"
+- Si pas de citation exacte : "[Texte] (CDA XXXXX) — référence non disponible"
 - ROI si applicable
 
 ## 3. Application concrète

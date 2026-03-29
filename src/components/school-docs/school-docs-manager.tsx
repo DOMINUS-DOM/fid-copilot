@@ -103,7 +103,7 @@ export function SchoolDocsManager() {
       {/* Info banner */}
       <div className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3 dark:border-blue-900/30 dark:bg-blue-950/20">
         <p className="text-sm text-blue-800 dark:text-blue-300">
-          Uploadez les documents de votre \u00e9cole pour contextualiser les r\u00e9ponses de l&apos;assistant.
+          Uploadez les documents de votre \u00e9cole pour contextualiser les r\u00e9ponses de l'assistant.
           Ces documents ne remplacent jamais les textes l\u00e9gaux officiels.
         </p>
       </div>
@@ -207,7 +207,7 @@ export function SchoolDocsManager() {
         ) : documents.length === 0 ? (
           <Card>
             <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-              Aucun document. Uploadez votre premier document pour contextualiser l&apos;assistant.
+              Aucun document. Uploadez votre premier document pour contextualiser l'assistant.
             </p>
           </Card>
         ) : (

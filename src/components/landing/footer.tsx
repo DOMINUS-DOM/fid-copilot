@@ -6,7 +6,6 @@ export function Footer() {
     <footer className="border-t border-slate-100 bg-slate-50 px-6 py-14">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start">
-          {/* Brand */}
           <div className="flex flex-col items-center gap-3 sm:items-start">
             <div className="flex items-center gap-2.5">
               <Image src="/logo.svg" alt="FID Copilot" width={28} height={28} className="h-7 w-7" />
@@ -15,14 +14,13 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm text-slate-500">
-              Assistant juridique pour directions d&#x2019;&#x00e9;cole
+              {"Assistant juridique pour directions d'école"}
             </p>
             <p className="text-sm text-slate-500">
-              F&#x00e9;d&#x00e9;ration Wallonie-Bruxelles
+              Fédération Wallonie-Bruxelles
             </p>
           </div>
 
-          {/* Info */}
           <div className="flex flex-col items-center gap-2 text-sm sm:items-end">
             <Link href="mailto:info@conceptus.be" className="text-slate-500 transition-colors hover:text-blue-600">
               info@conceptus.be
@@ -35,7 +33,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-slate-200 pt-6 text-center">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} Conceptus BVA. Tous droits r&#x00e9;serv&#x00e9;s.
+            &copy; {new Date().getFullYear()} Conceptus BVA. Tous droits réservés.
           </p>
         </div>
       </div>

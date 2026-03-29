@@ -569,7 +569,7 @@ function FidEvaluation({ content }: { content: string }) {
       {/* Improvement axis */}
       {axe && (
         <div className="mt-3 rounded-xl bg-blue-50/50 px-4 py-3 dark:bg-blue-950/20">
-          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">Axe d&apos;amélioration</p>
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">Axe d'amélioration</p>
           <p className="mt-1 text-sm leading-relaxed text-blue-700 dark:text-blue-300">{axe}</p>
         </div>
       )}

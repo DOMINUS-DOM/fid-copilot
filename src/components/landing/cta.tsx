@@ -19,7 +19,7 @@ export function CTA() {
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-violet-400/10 blur-3xl" />
 
         <h2 className="relative text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-          Pr&#x00ea;t &#x00e0; diriger avec la bonne base l&#x00e9;gale ?
+          Prêt à diriger avec la bonne base légale ?
         </h2>
         <div className="relative mt-8">
           <Link

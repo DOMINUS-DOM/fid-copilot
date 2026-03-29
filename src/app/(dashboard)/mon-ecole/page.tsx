@@ -7,7 +7,7 @@ export default function MonEcolePage() {
         Mon école
       </h1>
       <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-        Documents internes de votre établissement pour contextualiser l&apos;assistant.
+        Documents internes de votre établissement pour contextualiser l'assistant.
       </p>
       <div className="mt-6">
         <SchoolDocsManager />

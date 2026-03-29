@@ -33,7 +33,7 @@ export function Share() {
           <Users className="h-6 w-6" />
         </div>
         <p className="mt-5 text-lg font-semibold text-slate-900">
-          Vous connaissez un(e) coll&#x00e8;gue que cela pourrait aider ?
+          Vous connaissez un(e) collègue que cela pourrait aider ?
         </p>
         <p className="mt-2 text-sm text-slate-500">
           Partagez FID Copilot avec une direction ou un futur directeur en formation.
