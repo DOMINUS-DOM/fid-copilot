@@ -39,6 +39,8 @@ export interface UserPreferences {
   // Génération
   signature: string | null;
   closing_formula: string | null;
+  // Apparence
+  theme: string;
   updated_at: string;
 }
 

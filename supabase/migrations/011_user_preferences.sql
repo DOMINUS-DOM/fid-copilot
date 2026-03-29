@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
   default_length text DEFAULT 'standard' CHECK (default_length IN ('courte','standard','detaillee')),
   signature     text,
   closing_formula text DEFAULT 'Veuillez agréer l''expression de mes salutations distinguées.',
+  theme         text DEFAULT 'light' CHECK (theme IN ('light','dark')),
   updated_at    timestamptz DEFAULT now()
 );
 

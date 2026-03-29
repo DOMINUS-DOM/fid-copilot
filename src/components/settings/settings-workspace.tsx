@@ -106,7 +106,15 @@ export function SettingsWorkspace() {
     try {
       const res = await fetch("/api/preferences");
       const data = await res.json();
-      if (res.ok && data.preferences) setPrefs(data.preferences);
+      if (res.ok && data.preferences) {
+        setPrefs(data.preferences);
+        // Apply saved theme
+        if (data.preferences.theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
     } catch { /* silent */ }
     finally { setLoading(false); }
   }
@@ -296,6 +304,56 @@ export function SettingsWorkspace() {
               </p>
             </div>
           )}
+        </Card>
+      </section>
+
+      {/* ============================================================ */}
+      {/* Section: Apparence */}
+      {/* ============================================================ */}
+      <section>
+        <div className="mb-4 flex items-center gap-2">
+          <svg className="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+          </svg>
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-white">Apparence</h2>
+        </div>
+        <Card>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Mode d{"'"}affichage</p>
+              <p className="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">Choisissez entre le mode clair et le mode sombre.</p>
+            </div>
+            <div className="flex rounded-xl border border-zinc-200 dark:border-zinc-700">
+              <button
+                type="button"
+                onClick={() => {
+                  update("theme", "light");
+                  document.documentElement.classList.remove("dark");
+                }}
+                className={`rounded-l-xl px-4 py-2 text-xs font-medium transition-all ${
+                  (prefs.theme ?? "light") === "light"
+                    ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                    : "text-zinc-500 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                }`}
+              >
+                Clair
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  update("theme", "dark");
+                  document.documentElement.classList.add("dark");
+                }}
+                className={`rounded-r-xl px-4 py-2 text-xs font-medium transition-all ${
+                  prefs.theme === "dark"
+                    ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                    : "text-zinc-500 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                }`}
+              >
+                Sombre
+              </button>
+            </div>
+          </div>
         </Card>
       </section>
 

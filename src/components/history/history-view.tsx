@@ -14,6 +14,8 @@ import {
   Filter,
   Copy,
   Check,
+  Trash2,
+  BookmarkPlus,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -60,11 +62,12 @@ interface HistoryViewProps {
 export function HistoryView({ logs, error }: HistoryViewProps) {
   const [filter, setFilter] = useState<LogType | "all">("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+  const [savedId, setSavedId] = useState<string | null>(null);
 
-  const parsed = logs.map(parseLog);
+  const parsed = logs.map(parseLog).filter((l) => !deletedIds.has(l.id));
   const filtered = filter === "all" ? parsed : parsed.filter((l) => l.type === filter);
 
-  // Count by type
   const counts: Record<string, number> = { all: parsed.length };
   for (const l of parsed) counts[l.type] = (counts[l.type] || 0) + 1;
 
@@ -72,6 +75,42 @@ export function HistoryView({ logs, error }: HistoryViewProps) {
     navigator.clipboard.writeText(content);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Supprimer cet élément de l'historique ?")) return;
+    const res = await fetch(`/api/history/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setDeletedIds((prev) => new Set(prev).add(id));
+    }
+  }
+
+  async function handleSaveAsTemplate(log: ParsedLog) {
+    const typeLabels: Record<LogType, string> = {
+      assistant: "Réponse assistant",
+      decision: "Analyse décisionnelle",
+      generateur: "Document généré",
+      verification: "Vérification",
+      portfolio: "Réflexion portfolio",
+      autre: "Contenu",
+    };
+    const title = `${typeLabels[log.type]} — ${log.content.slice(0, 50)}`;
+
+    const res = await fetch("/api/templates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        content: log.content,
+        source: log.type === "autre" ? "manuel" : log.type,
+        category: "autre",
+      }),
+    });
+
+    if (res.ok) {
+      setSavedId(log.id);
+      setTimeout(() => setSavedId(null), 2500);
+    }
   }
 
   if (error) {
@@ -138,15 +177,29 @@ export function HistoryView({ logs, error }: HistoryViewProps) {
                 <p className="min-w-0 flex-1 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
                   {log.content.length > 200 ? log.content.slice(0, 200) + "..." : log.content}
                 </p>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 items-center gap-1">
                   <button
                     onClick={() => handleCopy(log.id, log.content)}
-                    className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                    className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
                     title="Copier"
                   >
                     {copiedId === log.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                   </button>
-                  <span className="text-[11px] text-zinc-400 dark:text-zinc-600">
+                  <button
+                    onClick={() => handleSaveAsTemplate(log)}
+                    className="rounded p-1.5 text-zinc-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
+                    title="Sauvegarder comme modèle"
+                  >
+                    {savedId === log.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <BookmarkPlus className="h-3.5 w-3.5" />}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(log.id)}
+                    className="rounded p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="ml-1 text-[11px] text-zinc-400 dark:text-zinc-600">
                     {new Date(log.created_at).toLocaleDateString("fr-BE", { day: "numeric", month: "short" })}
                   </span>
                 </div>
