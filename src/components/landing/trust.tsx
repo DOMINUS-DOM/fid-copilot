@@ -6,23 +6,23 @@ import { Quote, ShieldCheck, RefreshCw, Upload } from "lucide-react";
 const trustPoints = [
   {
     icon: <Quote className="h-5 w-5" />,
-    title: "Citations v\u00e9rifiables",
-    description: "Chaque r\u00e9f\u00e9rence provient du texte officiel avec lien CDA.",
+    title: "Citations vérifiables",
+    description: "Chaque référence provient du texte officiel avec lien CDA.",
   },
   {
     icon: <ShieldCheck className="h-5 w-5" />,
-    title: "Z\u00e9ro hallucination",
-    description: "Si la r\u00e9f\u00e9rence exacte manque, l\u2019assistant le signale.",
+    title: "Zéro hallucination",
+    description: "Si la référence exacte manque, l'assistant le signale.",
   },
   {
     icon: <RefreshCw className="h-5 w-5" />,
-    title: "Toujours \u00e0 jour",
-    description: "Base juridique enrichie en continu avec les derniers d\u00e9crets.",
+    title: "Toujours à jour",
+    description: "Base juridique enrichie en continu avec les derniers décrets.",
   },
   {
     icon: <Upload className="h-5 w-5" />,
-    title: "Votre \u00e9cole int\u00e9gr\u00e9e",
-    description: "Uploadez votre ROI, crois\u00e9 automatiquement avec la loi.",
+    title: "Votre école intégrée",
+    description: "Uploadez votre ROI, croisé automatiquement avec la loi.",
   },
 ];
 
@@ -47,7 +47,7 @@ export function Trust() {
             Pourquoi FID Copilot
           </span>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            La fiabilit\u00e9 juridique avant tout
+            La fiabilité juridique avant tout
           </h2>
         </motion.div>
 

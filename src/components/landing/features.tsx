@@ -9,33 +9,33 @@ const modules = [
     title: "Assistant juridique",
     description: "Posez votre question, recevez une analyse structurée avec citations exactes des textes en vigueur.",
     color: "from-blue-500 to-blue-600",
-    tag: "Examen \u00b7 Terrain \u00b7 Portfolio",
+    tag: "Examen · Terrain · Portfolio",
   },
   {
     icon: <Scale className="h-5 w-5" />,
-    title: "Aide \u00e0 la d\u00e9cision",
-    description: "D\u00e9crivez une situation. Recevez les options, une analyse des risques et une recommandation tranch\u00e9e.",
+    title: "Aide à la décision",
+    description: "Décrivez une situation. Recevez les options, une analyse des risques et une recommandation tranchée.",
     color: "from-indigo-500 to-indigo-600",
-    tag: "Options \u00b7 Risques \u00b7 Plan d\u2019action",
+    tag: "Options · Risques · Plan d'action",
   },
   {
     icon: <GraduationCap className="h-5 w-5" />,
-    title: "Pr\u00e9paration FID",
-    description: "Format align\u00e9 sur l\u2019\u00e9valuation certificative. Auto-\u00e9valuation calibr\u00e9e sur les bar\u00e8mes r\u00e9els.",
+    title: "Préparation FID",
+    description: "Format aligné sur l'évaluation certificative. Auto-évaluation calibrée sur les barèmes réels.",
     color: "from-violet-500 to-violet-600",
     tag: "Objectif 16-18/20",
   },
   {
     icon: <BookOpen className="h-5 w-5" />,
     title: "Portfolio professionnel",
-    description: "Structurez votre r\u00e9flexion sans que l\u2019IA n\u2019\u00e9crive \u00e0 votre place. Guidage, pas substitution.",
+    description: "Structurez votre réflexion sans que l'IA n'écrive à votre place. Guidage, pas substitution.",
     color: "from-emerald-500 to-emerald-600",
-    tag: "Structurer \u00b7 Am\u00e9liorer \u00b7 Challenger",
+    tag: "Structurer · Améliorer · Challenger",
   },
   {
     icon: <Building2 className="h-5 w-5" />,
-    title: "Contexte de votre \u00e9cole",
-    description: "Uploadez votre ROI et vos documents internes. L\u2019assistant les croise avec le cadre l\u00e9gal.",
+    title: "Contexte de votre école",
+    description: "Uploadez votre ROI et vos documents internes. L'assistant les croise avec le cadre légal.",
     color: "from-amber-500 to-amber-600",
     tag: "Loi > document interne",
   },
@@ -53,13 +53,13 @@ export function Features() {
           className="text-center"
         >
           <span className="text-sm font-semibold uppercase tracking-widest text-blue-600">
-            Plateforme compl\u00e8te
+            Plateforme complète
           </span>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Un seul outil pour tout ce qui compte
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
-            Juridique, d\u00e9cisionnel, FID et pilotage \u2014 toujours align\u00e9 sur les derniers textes.
+            {"Juridique, décisionnel, FID et pilotage — toujours aligné sur les derniers textes."}
           </p>
         </motion.div>
 
