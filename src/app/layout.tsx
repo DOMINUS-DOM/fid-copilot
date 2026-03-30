@@ -24,29 +24,21 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
     apple: "/favicon.svg",
   },
+  metadataBase: new URL("https://www.fid-copilot.com"),
   openGraph: {
     type: "website",
     locale: "fr_BE",
-    url: "https://fidcopilot.be",
+    url: "https://www.fid-copilot.com",
     siteName: "FID Copilot",
     title: "FID Copilot — Assistant juridique pour directions d'école",
     description:
       "Droit scolaire, aide à la décision, préparation FID — fondé sur les décrets et le Code de l'enseignement en vigueur. Citations exactes. Aucune hallucination.",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "FID Copilot — Assistant juridique IA",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "FID Copilot — Assistant juridique pour directions d'école",
     description:
       "Droit scolaire, aide à la décision, préparation FID — citations exactes, sources officielles.",
-    images: ["/og-image.svg"],
   },
 };
 
