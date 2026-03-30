@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/login-form";
 import { Card } from "@/components/ui/card";
@@ -12,7 +13,9 @@ export default function LoginPage() {
             Accédez à votre espace FID Copilot
           </p>
         </div>
-        <LoginForm />
+        <Suspense fallback={<div className="h-48" />}>
+          <LoginForm />
+        </Suspense>
         <p className="mt-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Pas encore de compte ?{" "}
           <Link href="/signup" className="font-medium text-zinc-900 hover:underline dark:text-white">
