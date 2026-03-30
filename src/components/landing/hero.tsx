@@ -82,9 +82,12 @@ export function Hero({ isAuthenticated = false }: HeroProps) {
               {isAuthenticated ? "Ouvrir l'application" : "Essayer gratuitement"}
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
-            <a href="#fonctionnalites" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98]">
-              Découvrir les fonctionnalités
-            </a>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98]"
+            >
+              Voir les tarifs
+            </Link>
           </motion.div>
 
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }} className="mt-6 flex items-center gap-2 text-sm text-slate-400">

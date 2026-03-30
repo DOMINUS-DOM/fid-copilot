@@ -33,9 +33,9 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-6 sm:flex">
-          <a href="#demo" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900">
-            Démo
-          </a>
+          <Link href="/pricing" className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900">
+            Tarifs
+          </Link>
           {isAuthenticated ? (
             <>
               <Link
@@ -75,9 +75,9 @@ export function Header({ isAuthenticated = false }: HeaderProps) {
       {mobileOpen && (
         <div className="border-t border-slate-100 bg-white px-6 py-4 sm:hidden">
           <div className="flex flex-col gap-3">
-            <a href="#demo" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600">
-              Démo
-            </a>
+            <Link href="/pricing" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600">
+              Tarifs
+            </Link>
             {isAuthenticated ? (
               <>
                 <Link href="/assistant" className="text-sm font-medium text-slate-600">

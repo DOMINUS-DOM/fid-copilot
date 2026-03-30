@@ -22,6 +22,9 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col items-center gap-2 text-sm sm:items-end">
+            <Link href="/pricing" className="text-slate-500 transition-colors hover:text-blue-600">
+              Tarifs
+            </Link>
             <Link href="mailto:info@conceptus.be" className="text-slate-500 transition-colors hover:text-blue-600">
               info@conceptus.be
             </Link>
