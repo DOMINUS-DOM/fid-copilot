@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckCircle, Mail } from "lucide-react";
+import { CheckCircle, Mail, ShieldAlert } from "lucide-react";
+import { isPasswordLeaked } from "@/lib/password-check";
 
 export function SignupForm() {
   const router = useRouter();
@@ -19,6 +20,14 @@ export function SignupForm() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    // Vérification HaveIBeenPwned (k-anonymity)
+    const leaked = await isPasswordLeaked(password);
+    if (leaked) {
+      setError("Ce mot de passe a été compromis dans une fuite de données connue. Veuillez en choisir un autre pour protéger votre compte.");
+      setLoading(false);
+      return;
+    }
 
     const supabase = createClient();
     const redirectTo = `${window.location.origin}/auth/callback`;
@@ -87,7 +96,12 @@ export function SignupForm() {
         minLength={6}
         required
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
       <Button type="submit" disabled={loading}>
         {loading ? "Inscription..." : "S'inscrire"}
       </Button>
