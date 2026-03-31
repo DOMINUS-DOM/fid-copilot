@@ -5,7 +5,8 @@ export function Footer() {
   return (
     <footer className="border-t border-slate-100 bg-slate-50 px-6 py-14">
       <div className="mx-auto max-w-5xl">
-        <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start">
+        <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
+          {/* Logo + tagline */}
           <div className="flex flex-col items-center gap-3 sm:items-start">
             <div className="flex items-center gap-2.5">
               <Image src="/logo.svg" alt="FID Copilot" width={28} height={28} className="h-7 w-7" />
@@ -17,14 +18,22 @@ export function Footer() {
               {"Assistant juridique pour directions d'école"}
             </p>
             <p className="text-sm text-slate-500">
-              Fédération Wallonie-Bruxelles
+              {"Fédération Wallonie-Bruxelles"}
             </p>
           </div>
 
+          {/* Navigation */}
+          <div className="flex flex-col items-center gap-2 text-sm sm:items-start">
+            <span className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Navigation</span>
+            <Link href="/decouvrir" className="text-slate-500 transition-colors hover:text-blue-600">Découvrir</Link>
+            <Link href="/guide" className="text-slate-500 transition-colors hover:text-blue-600">Guide</Link>
+            <Link href="/pricing" className="text-slate-500 transition-colors hover:text-blue-600">Tarifs</Link>
+            <Link href="/europe" className="text-slate-500 transition-colors hover:text-blue-600">Europe</Link>
+          </div>
+
+          {/* Contact */}
           <div className="flex flex-col items-center gap-2 text-sm sm:items-end">
-            <Link href="/pricing" className="text-slate-500 transition-colors hover:text-blue-600">
-              Tarifs
-            </Link>
+            <span className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</span>
             <Link href="mailto:info@conceptus.be" className="text-slate-500 transition-colors hover:text-blue-600">
               info@conceptus.be
             </Link>

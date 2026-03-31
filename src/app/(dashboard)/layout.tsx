@@ -1,5 +1,6 @@
 import { Sidebar, MobileHeader } from "@/components/layout/sidebar";
 import { WelcomeBetaModal } from "@/components/feedback/welcome-beta-modal";
+import { FloatingFeedbackButton } from "@/components/feedback/floating-feedback-button";
 
 export default function DashboardLayout({
   children,
@@ -15,6 +16,7 @@ export default function DashboardLayout({
           <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
+      <FloatingFeedbackButton />
       <WelcomeBetaModal />
     </div>
   );
