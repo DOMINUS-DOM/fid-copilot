@@ -173,7 +173,8 @@ export function DocumentGenerator() {
       await exportToPdf("document-for-pdf", filename);
     } catch (err) {
       console.error("PDF export error:", err);
-      setError("Erreur lors de la génération du PDF. Essayez de réduire la taille du document.");
+      const msg = err instanceof Error ? err.message : "Erreur inconnue";
+      setError(`Erreur PDF : ${msg}`);
     } finally {
       setExportingPdf(false);
     }
