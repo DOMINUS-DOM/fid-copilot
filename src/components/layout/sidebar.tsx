@@ -249,15 +249,18 @@ export function Sidebar() {
       <div className="border-t border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <Link
           href="/feedback"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-white"
+          className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-50 to-violet-50 px-3 py-2.5 text-[13px] font-semibold text-blue-700 ring-1 ring-blue-200/60 transition-all hover:from-blue-100 hover:to-violet-100 hover:shadow-sm dark:from-blue-900/20 dark:to-violet-900/20 dark:text-blue-400 dark:ring-blue-800/40 dark:hover:from-blue-900/30 dark:hover:to-violet-900/30"
         >
-          <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-          </svg>
-          Feedback
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-500 text-white">
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+          </span>
+          Donner mon avis
+          <span className="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[9px] font-bold text-white">!</span>
         </Link>
-        <div className="mt-1 px-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+        <div className="mt-2 px-1">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-semibold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500">
             {APP_VERSION_LABEL}
           </span>
         </div>
