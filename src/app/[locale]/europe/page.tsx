@@ -20,7 +20,7 @@ export default async function EuropePage({ params }: { params: Promise<{ locale:
     <div className="flex min-h-full flex-col bg-white">
       <Header isAuthenticated={isAuthenticated} locale={locale as Locale} t={msgs.header} />
       <main className="flex-1">
-        <EuropeShowcase />
+        <EuropeShowcase t={msgs.europe} />
       </main>
       <Footer t={msgs.footer} headerT={msgs.header} locale={locale as Locale} />
     </div>
