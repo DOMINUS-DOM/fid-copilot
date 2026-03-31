@@ -10,35 +10,38 @@ export async function exportToPdf(
   if (!element) throw new Error("Élément introuvable");
 
   // Dynamic imports to avoid SSR issues
-  const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
-    import("jspdf"),
-    import("html2canvas"),
-  ]);
+  const html2canvasModule = await import("html2canvas");
+  const html2canvas = html2canvasModule.default;
+
+  const jspdfModule = await import("jspdf");
+  const jsPDF = jspdfModule.jsPDF || jspdfModule.default;
 
   // Apply export styles for clean rendering
   element.classList.add("pdf-export-mode");
 
-  // Wait a tick for styles to apply
-  await new Promise((r) => setTimeout(r, 100));
+  // Wait for styles to apply + images to load
+  await new Promise((r) => setTimeout(r, 200));
 
-  const canvas = await html2canvas(element, {
-    scale: 2.5, // Higher resolution for sharp text
-    useCORS: true,
-    backgroundColor: "#ffffff",
-    logging: false,
-    windowWidth: 794, // A4 width at 96 DPI (210mm)
-  });
-
-  element.classList.remove("pdf-export-mode");
+  let canvas: HTMLCanvasElement;
+  try {
+    canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+    });
+  } finally {
+    element.classList.remove("pdf-export-mode");
+  }
 
   const pdf = new jsPDF("p", "mm", "a4");
   const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
   const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
-  const marginX = 20; // 20mm left/right margins
-  const marginTop = 20;
-  const marginBottom = 20;
+  const marginX = 18;
+  const marginTop = 18;
   const contentWidth = pageWidth - 2 * marginX;
-  const pageContentHeight = pageHeight - marginTop - marginBottom;
+  const pageContentHeight = pageHeight - marginTop - 18;
 
   const imgWidth = canvas.width;
   const imgHeight = canvas.height;
@@ -46,11 +49,10 @@ export async function exportToPdf(
   const scaledHeight = imgHeight * ratio;
 
   if (scaledHeight <= pageContentHeight) {
-    // Single page
-    const imgData = canvas.toDataURL("image/png");
-    pdf.addImage(imgData, "PNG", marginX, marginTop, contentWidth, scaledHeight);
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+    pdf.addImage(imgData, "JPEG", marginX, marginTop, contentWidth, scaledHeight);
   } else {
-    // Multi-page: slice canvas into page-sized chunks
+    // Multi-page
     const sliceHeightPx = Math.floor(pageContentHeight / ratio);
     const totalPages = Math.ceil(imgHeight / sliceHeightPx);
 
@@ -67,17 +69,11 @@ export async function exportToPdf(
       const ctx = sliceCanvas.getContext("2d");
       if (!ctx) continue;
 
-      ctx.drawImage(
-        canvas,
-        0, yStart,
-        imgWidth, thisSliceHeight,
-        0, 0,
-        imgWidth, thisSliceHeight
-      );
+      ctx.drawImage(canvas, 0, yStart, imgWidth, thisSliceHeight, 0, 0, imgWidth, thisSliceHeight);
 
-      const sliceData = sliceCanvas.toDataURL("image/png");
+      const sliceData = sliceCanvas.toDataURL("image/jpeg", 0.95);
       const sliceScaledHeight = thisSliceHeight * ratio;
-      pdf.addImage(sliceData, "PNG", marginX, marginTop, contentWidth, sliceScaledHeight);
+      pdf.addImage(sliceData, "JPEG", marginX, marginTop, contentWidth, sliceScaledHeight);
     }
   }
 

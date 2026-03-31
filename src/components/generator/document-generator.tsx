@@ -166,12 +166,14 @@ export function DocumentGenerator() {
 
   async function handleExportPdf() {
     setExportingPdf(true);
+    setError("");
     try {
       const templateLabel = template ? DOC_GEN_TEMPLATES[template]?.label : "document";
       const filename = `FID-Copilot-${templateLabel?.replace(/\s+/g, "-") || "document"}.pdf`;
       await exportToPdf("document-for-pdf", filename);
     } catch (err) {
       console.error("PDF export error:", err);
+      setError("Erreur lors de la génération du PDF. Essayez de réduire la taille du document.");
     } finally {
       setExportingPdf(false);
     }
