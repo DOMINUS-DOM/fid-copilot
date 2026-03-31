@@ -493,7 +493,7 @@ export function DocumentGenerator() {
               </Card>
             ) : (
               <Card className="relative">
-                <div id="document-for-pdf">
+                <div id="document-for-pdf" className="document-print-layout">
                   {/* School header */}
                   {showHeader && prefs && (
                     <SchoolHeader
@@ -501,13 +501,30 @@ export function DocumentGenerator() {
                       schoolAddress={prefs.school_address}
                       schoolPhone={prefs.school_phone}
                       schoolEmail={prefs.school_email}
+                      schoolLogoUrl={prefs.school_logo_url}
                     />
                   )}
 
                   {/* Document content */}
-                  <div className="pr-8">
+                  <div className="document-body">
                     <MarkdownContent content={displayContent} />
                   </div>
+
+                  {/* Signature block */}
+                  {prefs && (prefs.signature || prefs.closing_formula) && (
+                    <div className="document-signature mt-10 border-t border-zinc-100 pt-6">
+                      {prefs.closing_formula && (
+                        <p className="text-sm text-zinc-700" style={{ fontSize: "12px", lineHeight: "1.6" }}>
+                          {prefs.closing_formula}
+                        </p>
+                      )}
+                      {prefs.signature && (
+                        <p className="mt-6 whitespace-pre-line text-sm font-medium text-zinc-900" style={{ fontSize: "12px" }}>
+                          {prefs.signature}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Remaining placeholders indicator */}

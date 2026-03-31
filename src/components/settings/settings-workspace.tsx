@@ -12,6 +12,7 @@ import {
   FileText,
   Building2,
   MapPin,
+  ImageIcon,
   Loader2,
   Save,
   CheckCircle,
@@ -220,6 +221,48 @@ export function SettingsWorkspace() {
                 onChange={(v) => update("school_email", v)}
                 placeholder="Ex : direction@monecole.be"
               />
+            </div>
+            {/* Logo upload */}
+            <div>
+              <label className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">{"Logo de l'école"}</label>
+              <div className="flex items-center gap-4">
+                {prefs.school_logo_url ? (
+                  <img
+                    src={prefs.school_logo_url}
+                    alt="Logo école"
+                    className="h-14 w-14 rounded-lg border border-zinc-200 object-contain p-1 dark:border-zinc-700"
+                  />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 dark:border-zinc-700">
+                    <ImageIcon className="h-5 w-5 text-zinc-300 dark:text-zinc-600" />
+                  </div>
+                )}
+                <div className="flex flex-col gap-1.5">
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 transition-all hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
+                    <Upload className="h-3.5 w-3.5" />
+                    {"Choisir un fichier"}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file || file.size > 500_000) {
+                          alert("Le fichier doit faire moins de 500 Ko.");
+                          return;
+                        }
+                        // Convert to base64 data URL for simplicity
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          update("school_logo_url", reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                  </label>
+                  <span className="text-[10px] text-zinc-400">PNG, JPG ou SVG — max 500 Ko</span>
+                </div>
+              </div>
             </div>
             <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
               {"Ces informations seront utilisées dans l'en-tête des documents générés."}
