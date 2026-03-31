@@ -18,34 +18,49 @@ export function SchoolHeader({
   if (!schoolName) return null;
 
   return (
-    <div className="mb-8 border-b-2 border-zinc-300 pb-5">
-      <div className="flex items-start gap-4">
-        {/* Logo or fallback icon */}
+    <div style={{ marginBottom: "24px", paddingBottom: "16px", borderBottom: "1.5px solid #a1a1aa" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+        {/* Logo — preserve aspect ratio, max height 50px */}
         {schoolLogoUrl ? (
           <img
             src={schoolLogoUrl}
             alt={schoolName}
-            className="h-16 w-16 object-contain"
             crossOrigin="anonymous"
+            style={{
+              height: "50px",
+              width: "auto",
+              maxWidth: "120px",
+              objectFit: "contain",
+              flexShrink: 0,
+            }}
           />
         ) : (
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-zinc-100">
-            <Building2 className="h-6 w-6 text-zinc-400" />
+          <div style={{
+            width: "44px",
+            height: "44px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "8px",
+            backgroundColor: "#f4f4f5",
+            flexShrink: 0,
+          }}>
+            <Building2 style={{ width: "20px", height: "20px", color: "#a1a1aa" }} />
           </div>
         )}
 
         {/* School info */}
-        <div className="min-w-0 flex-1" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
-          <p className="text-base font-bold text-zinc-900" style={{ fontSize: "15px" }}>
+        <div style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
+          <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#18181b" }}>
             {schoolName}
           </p>
           {schoolAddress && (
-            <p className="mt-0.5 whitespace-pre-line text-sm text-zinc-600" style={{ fontSize: "12px", lineHeight: "1.5" }}>
+            <p style={{ margin: "2px 0 0", fontSize: "10.5px", lineHeight: "1.4", color: "#52525b", whiteSpace: "pre-line" }}>
               {schoolAddress}
             </p>
           )}
           {(schoolPhone || schoolEmail) && (
-            <p className="mt-1 text-sm text-zinc-500" style={{ fontSize: "11px" }}>
+            <p style={{ margin: "3px 0 0", fontSize: "10px", color: "#71717a" }}>
               {[schoolPhone, schoolEmail].filter(Boolean).join(" — ")}
             </p>
           )}

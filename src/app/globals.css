@@ -51,43 +51,43 @@ body {
    ============================================================ */
 .document-print-layout {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 1.65;
+  font-size: 11px;
+  line-height: 1.5;
   color: #171717;
 }
 
 .document-print-layout .document-body {
-  font-size: 12px;
-  line-height: 1.65;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .document-print-layout .document-body p {
-  margin-bottom: 0.7em;
+  margin-bottom: 0.6em;
 }
 
 .document-print-layout .document-body h1,
 .document-print-layout .document-body h2,
 .document-print-layout .document-body h3 {
-  margin-top: 1em;
-  margin-bottom: 0.4em;
+  margin-top: 0.8em;
+  margin-bottom: 0.3em;
+  font-size: 13px;
 }
 
 .document-print-layout .document-body strong {
   font-weight: 600;
 }
 
-/* PDF export mode — force all colors to simple hex/rgb (html2canvas
+/* PDF export mode — force all colors to hex (html2canvas
    does not support Tailwind v4 lab() color functions) */
 .pdf-export-mode {
   background-color: #ffffff !important;
   color: #171717 !important;
-  padding: 40px 48px !important;
   border: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
   font-family: Arial, Helvetica, sans-serif !important;
-  font-size: 12px !important;
-  line-height: 1.65 !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
 }
 
 .pdf-export-mode * {
@@ -103,15 +103,10 @@ body {
   column-rule-color: transparent !important;
 }
 
-/* Restore white bg on root export element */
-.pdf-export-mode {
-  background-color: #ffffff !important;
-}
-
 .pdf-export-mode .document-body p {
-  margin-bottom: 0.7em !important;
-  font-size: 12px !important;
-  line-height: 1.65 !important;
+  margin-bottom: 0.6em !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
 }
 
 .pdf-export-mode .document-body strong {
@@ -119,22 +114,21 @@ body {
 }
 
 .pdf-export-mode .document-signature {
-  margin-top: 48px !important;
-  border-color: #e4e4e7 !important;
+  margin-top: 32px !important;
 }
 
 .pdf-export-mode .document-signature p {
   color: #3f3f46 !important;
+  font-size: 11px !important;
+}
+
+.pdf-export-mode .document-footer {
+  font-size: 9px !important;
+  color: #71717a !important;
 }
 
 .pdf-export-mode img {
-  max-height: 64px !important;
   background-color: transparent !important;
-}
-
-/* Force the school header border */
-.pdf-export-mode > div:first-child {
-  border-color: #a1a1aa !important;
 }
 
 /* Subtle grid pattern for hero depth */

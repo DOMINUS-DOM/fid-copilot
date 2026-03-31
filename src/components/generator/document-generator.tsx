@@ -514,32 +514,32 @@ export function DocumentGenerator() {
                   </div>
 
                   {/* Formule de politesse + Signature (source unique : préférences) */}
-                  {prefs && (prefs.closing_formula || prefs.signature) && (
-                    <div className="document-signature mt-8" style={{ fontSize: "12px", lineHeight: "1.6" }}>
+                  {prefs && (prefs.closing_formula || prefs.first_name) && (
+                    <div className="document-signature" style={{ marginTop: "28px", fontSize: "11px", lineHeight: "1.5" }}>
                       {prefs.closing_formula && (
-                        <p className="text-zinc-700">{prefs.closing_formula}</p>
+                        <p style={{ margin: 0, color: "#3f3f46" }}>{prefs.closing_formula}</p>
                       )}
-                      <div className="mt-8">
+                      <div style={{ marginTop: "24px" }}>
                         {prefs.first_name && prefs.last_name && (
-                          <p className="font-semibold text-zinc-900">{prefs.first_name} {prefs.last_name}</p>
+                          <p style={{ margin: 0, fontWeight: 600, color: "#18181b" }}>{prefs.first_name} {prefs.last_name}</p>
                         )}
                         {prefs.job_title && (
-                          <p className="text-zinc-600">{prefs.job_title}</p>
+                          <p style={{ margin: 0, color: "#52525b" }}>{prefs.job_title}</p>
                         )}
                         {prefs.school_name && (
-                          <p className="text-zinc-600">{prefs.school_name}</p>
+                          <p style={{ margin: 0, color: "#52525b" }}>{prefs.school_name}</p>
                         )}
                       </div>
                     </div>
                   )}
 
-                  {/* Footer école (séparé de la signature) */}
+                  {/* Footer école */}
                   {prefs && prefs.school_name && (
-                    <div className="document-footer mt-12 border-t border-zinc-200 pt-4" style={{ fontSize: "10px", color: "#71717a", textAlign: "center" }}>
-                      <p>{prefs.school_name}</p>
-                      {prefs.school_address && <p>{prefs.school_address}</p>}
+                    <div className="document-footer" style={{ marginTop: "40px", paddingTop: "12px", borderTop: "1px solid #d4d4d8", fontSize: "9px", color: "#71717a", textAlign: "center", lineHeight: "1.5" }}>
+                      <p style={{ margin: 0 }}>{prefs.school_name}</p>
+                      {prefs.school_address && <p style={{ margin: 0 }}>{prefs.school_address}</p>}
                       {(prefs.school_phone || prefs.school_email || prefs.school_website) && (
-                        <p>
+                        <p style={{ margin: 0 }}>
                           {[prefs.school_phone, prefs.school_email, prefs.school_website]
                             .filter(Boolean)
                             .join(" — ")}
