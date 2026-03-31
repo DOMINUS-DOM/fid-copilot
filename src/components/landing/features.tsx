@@ -2,94 +2,49 @@
 
 import { motion } from "framer-motion";
 import { MessageSquare, Scale, BookOpen, GraduationCap, Building2 } from "lucide-react";
+import { type Messages } from "@/lib/i18n/locales";
 
-const modules = [
-  {
-    icon: <MessageSquare className="h-5 w-5" />,
-    title: "Assistant juridique",
-    description: "Posez votre question, recevez une analyse structurée avec citations exactes des textes en vigueur.",
-    color: "from-blue-500 to-blue-600",
-    tag: "Examen · Terrain · Portfolio",
-  },
-  {
-    icon: <Scale className="h-5 w-5" />,
-    title: "Aide à la décision",
-    description: "Décrivez une situation. Recevez les options, une analyse des risques et une recommandation tranchée.",
-    color: "from-indigo-500 to-indigo-600",
-    tag: "Options · Risques · Plan d'action",
-  },
-  {
-    icon: <GraduationCap className="h-5 w-5" />,
-    title: "Préparation FID",
-    description: "Format aligné sur l'évaluation certificative. Auto-évaluation calibrée sur les barèmes réels.",
-    color: "from-violet-500 to-violet-600",
-    tag: "Objectif 16-18/20",
-  },
-  {
-    icon: <BookOpen className="h-5 w-5" />,
-    title: "Portfolio professionnel",
-    description: "Structurez votre réflexion sans que l'IA n'écrive à votre place. Guidage, pas substitution.",
-    color: "from-emerald-500 to-emerald-600",
-    tag: "Structurer · Améliorer · Challenger",
-  },
-  {
-    icon: <Building2 className="h-5 w-5" />,
-    title: "Contexte de votre école",
-    description: "Uploadez votre ROI et vos documents internes. L'assistant les croise avec le cadre légal.",
-    color: "from-amber-500 to-amber-600",
-    tag: "Loi > document interne",
-  },
+interface FeaturesProps {
+  t: Messages["features"];
+}
+
+const icons = [MessageSquare, Scale, GraduationCap, BookOpen, Building2];
+const colors = [
+  "from-blue-500 to-blue-600",
+  "from-indigo-500 to-indigo-600",
+  "from-violet-500 to-violet-600",
+  "from-emerald-500 to-emerald-600",
+  "from-amber-500 to-amber-600",
 ];
 
-export function Features() {
+export function Features({ t }: FeaturesProps) {
   return (
     <section id="features" className="bg-gradient-to-b from-slate-50/80 to-white px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <span className="text-sm font-semibold uppercase tracking-widest text-blue-600">
-            Plateforme complète
-          </span>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Un seul outil pour tout ce qui compte
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
-            {"Juridique, décisionnel, FID et pilotage — toujours aligné sur les derniers textes."}
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="text-center">
+          <span className="text-sm font-semibold uppercase tracking-widest text-blue-600">{t.label}</span>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{t.title}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">{t.subtitle}</p>
         </motion.div>
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((m, i) => (
-            <motion.div
-              key={m.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.07 }}
-              whileHover={{ y: -3 }}
-              className="group flex flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-slate-200 hover:shadow-lg hover:shadow-slate-100"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${m.color} text-white`}
-                >
-                  {m.icon}
+          {t.modules.map((m, i) => {
+            const Icon = icons[i] || MessageSquare;
+            return (
+              <motion.div key={m.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.07 }} whileHover={{ y: -3 }} className="group flex flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-slate-200 hover:shadow-lg hover:shadow-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${colors[i]} text-white`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900">{m.title}</h3>
                 </div>
-                <h3 className="text-base font-semibold text-slate-900">{m.title}</h3>
-              </div>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-500">
-                {m.description}
-              </p>
-              <div className="mt-4 rounded-lg bg-slate-50 px-3 py-1.5">
-                <p className="text-xs font-medium text-slate-400">{m.tag}</p>
-              </div>
-            </motion.div>
-          ))}
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-500">{m.description}</p>
+                <div className="mt-4 rounded-lg bg-slate-50 px-3 py-1.5">
+                  <p className="text-xs font-medium text-slate-400">{m.tag}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

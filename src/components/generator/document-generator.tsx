@@ -170,7 +170,10 @@ export function DocumentGenerator() {
     try {
       const templateLabel = template ? DOC_GEN_TEMPLATES[template]?.label : "document";
       const filename = `FID-Copilot-${templateLabel?.replace(/\s+/g, "-") || "document"}.pdf`;
-      await exportToPdf("document-for-pdf", filename);
+      await exportToPdf(
+        { content: displayContent, prefs, showHeader },
+        filename
+      );
     } catch (err) {
       console.error("PDF export error:", err);
       const msg = err instanceof Error ? err.message : "Erreur inconnue";

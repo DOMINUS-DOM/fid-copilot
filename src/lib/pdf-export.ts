@@ -1,129 +1,250 @@
 /**
- * Export PDF client-side via html2canvas + jsPDF.
- * Force une largeur A4 fixe pour un rendu professionnel.
+ * Export PDF natif via jsPDF — texte réel, pas de capture d'écran.
+ * Mise en page courrier administratif A4.
  */
+
+import { type UserPreferences } from "@/types";
+
+interface PdfDocumentData {
+  content: string;
+  prefs: UserPreferences | null;
+  showHeader: boolean;
+}
+
+// A4 dimensions in mm
+const PAGE_W = 210;
+const PAGE_H = 297;
+const MARGIN_LEFT = 25;
+const MARGIN_RIGHT = 25;
+const MARGIN_TOP = 25;
+const MARGIN_BOTTOM = 30;
+const CONTENT_W = PAGE_W - MARGIN_LEFT - MARGIN_RIGHT;
+
 export async function exportToPdf(
-  elementId: string,
+  data: PdfDocumentData,
   filename: string = "document.pdf"
 ): Promise<void> {
-  const element = document.getElementById(elementId);
-  if (!element) throw new Error("Élément introuvable");
-
   const jspdfMod = await import("jspdf");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const JsPDF = (jspdfMod as any).jsPDF || (jspdfMod as any).default;
-  const h2cMod = await import("html2canvas");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const html2canvas: (el: HTMLElement, opts?: Record<string, unknown>) => Promise<HTMLCanvasElement> =
-    (h2cMod as any).default || (h2cMod as any);
-
   if (typeof JsPDF !== "function") throw new Error("jsPDF non disponible");
-  if (typeof html2canvas !== "function") throw new Error("html2canvas non disponible");
 
-  // ---- SAVE original styles ----
-  const origStyle = element.style.cssText;
-  const origParentOverflow = element.parentElement?.style.overflow ?? "";
+  const pdf = new JsPDF("p", "mm", "a4");
+  let y = MARGIN_TOP;
 
-  // ---- FORCE A4 layout ----
-  // A4 = 210mm. At 96dpi, 210mm ≈ 794px. With 20mm margins each side (76px), content = 642px.
-  // We set the element to exactly this width so text wraps correctly for A4.
-  const A4_CONTENT_WIDTH = 642; // px — represents ~170mm of printable area
-  const A4_PADDING = 76; // px — represents ~20mm margins
+  // ============================================================
+  // HEADER — Logo + School info
+  // ============================================================
+  if (data.showHeader && data.prefs?.school_name) {
+    const p = data.prefs;
+    let logoEndX = MARGIN_LEFT;
 
-  element.classList.add("pdf-export-mode");
-  element.style.cssText = `
-    position: fixed !important;
-    left: -9999px !important;
-    top: 0 !important;
-    width: ${A4_CONTENT_WIDTH}px !important;
-    max-width: ${A4_CONTENT_WIDTH}px !important;
-    padding: ${A4_PADDING}px !important;
-    background: white !important;
-    z-index: -1 !important;
-  `;
-  if (element.parentElement) {
-    element.parentElement.style.overflow = "visible";
-  }
-
-  // Fix lab() colors
-  const allEls = element.querySelectorAll("*");
-  const overrides: Array<{ el: HTMLElement; prev: string }> = [];
-  allEls.forEach((node) => {
-    const el = node as HTMLElement;
-    const cs = getComputedStyle(el);
-    const colorProps = ["color", "backgroundColor", "borderColor", "borderTopColor", "borderBottomColor", "borderLeftColor", "borderRightColor"];
-    for (const prop of colorProps) {
-      const val = cs.getPropertyValue(prop);
-      if (val && (val.includes("lab(") || val.includes("oklch(") || val.includes("lch("))) {
-        overrides.push({ el, prev: el.style.cssText });
-        el.style.color = "#171717";
-        el.style.backgroundColor = "transparent";
-        el.style.borderColor = "#d4d4d8";
-        break;
+    // Logo
+    if (p.school_logo_url) {
+      try {
+        const img = await loadImage(p.school_logo_url);
+        const maxH = 18; // mm
+        const maxW = 35; // mm
+        const ratio = img.width / img.height;
+        let w = maxH * ratio;
+        let h = maxH;
+        if (w > maxW) { w = maxW; h = w / ratio; }
+        pdf.addImage(img.src, "PNG", MARGIN_LEFT, y, w, h);
+        logoEndX = MARGIN_LEFT + w + 5;
+      } catch {
+        // Logo failed to load — skip silently
       }
     }
-  });
 
-  await new Promise((r) => setTimeout(r, 300));
+    // School text next to logo
+    const textX = logoEndX;
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
+    pdf.setTextColor(24, 24, 27);
+    pdf.text(p.school_name, textX, y + 5);
 
-  let canvas: HTMLCanvasElement;
-  try {
-    canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      logging: false,
-      width: A4_CONTENT_WIDTH + 2 * A4_PADDING,
-    });
-  } finally {
-    // ---- RESTORE everything ----
-    element.classList.remove("pdf-export-mode");
-    element.style.cssText = origStyle;
-    if (element.parentElement) {
-      element.parentElement.style.overflow = origParentOverflow;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(82, 82, 91);
+    let infoY = y + 9;
+
+    if (p.school_address) {
+      const lines = p.school_address.split("\n");
+      for (const line of lines) {
+        pdf.text(line.trim(), textX, infoY);
+        infoY += 3.5;
+      }
     }
-    overrides.forEach(({ el, prev }) => { el.style.cssText = prev; });
+    if (p.school_phone || p.school_email) {
+      pdf.setFontSize(8);
+      pdf.setTextColor(113, 113, 122);
+      pdf.text(
+        [p.school_phone, p.school_email].filter(Boolean).join(" — "),
+        textX, infoY
+      );
+      infoY += 3.5;
+    }
+
+    y = Math.max(y + 20, infoY + 2);
+
+    // Separator line
+    pdf.setDrawColor(161, 161, 170);
+    pdf.setLineWidth(0.3);
+    pdf.line(MARGIN_LEFT, y, PAGE_W - MARGIN_RIGHT, y);
+    y += 10;
   }
 
-  // ---- BUILD PDF ----
-  const pdf = new JsPDF("p", "mm", "a4");
-  const PAGE_W = 210; // mm
-  const PAGE_H = 297;
-  const MARGIN = 0; // margins are already baked into the canvas via padding
+  // ============================================================
+  // BODY — Document content (markdown → plain text)
+  // ============================================================
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(11);
+  pdf.setTextColor(24, 24, 27);
 
-  const imgW = canvas.width;
-  const imgH = canvas.height;
-  const ratio = PAGE_W / imgW;
-  const totalH = imgH * ratio;
+  const bodyText = markdownToPlainText(data.content);
+  const paragraphs = bodyText.split("\n\n").filter((p) => p.trim());
 
-  if (totalH <= PAGE_H) {
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
-    pdf.addImage(imgData, "JPEG", 0, 0, PAGE_W, totalH);
-  } else {
-    const slicePx = Math.floor(PAGE_H / ratio);
-    const pages = Math.ceil(imgH / slicePx);
+  for (const para of paragraphs) {
+    const trimmed = para.trim();
 
-    for (let i = 0; i < pages; i++) {
-      const srcY = i * slicePx;
-      const srcH = Math.min(slicePx, imgH - srcY);
+    // Detect headings (lines starting with bold marker or "Objet :")
+    const isHeading = trimmed.startsWith("__") || trimmed.toLowerCase().startsWith("objet");
+    const cleanText = trimmed.replace(/__/g, "");
 
-      // Skip near-empty slices (< 5% of a page)
-      if (srcH < slicePx * 0.05) continue;
+    if (isHeading) {
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+    } else {
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(11);
+    }
 
-      if (i > 0) pdf.addPage();
+    const lines = pdf.splitTextToSize(cleanText, CONTENT_W);
 
-      const slice = document.createElement("canvas");
-      slice.width = imgW;
-      slice.height = srcH;
-      const ctx = slice.getContext("2d");
-      if (!ctx) continue;
-      ctx.drawImage(canvas, 0, srcY, imgW, srcH, 0, 0, imgW, srcH);
+    // Check page break
+    const blockHeight = lines.length * 5;
+    if (y + blockHeight > PAGE_H - MARGIN_BOTTOM) {
+      pdf.addPage();
+      y = MARGIN_TOP;
+    }
 
-      const sliceImg = slice.toDataURL("image/jpeg", 0.92);
-      pdf.addImage(sliceImg, "JPEG", 0, 0, PAGE_W, srcH * ratio);
+    for (const line of lines) {
+      pdf.text(line, MARGIN_LEFT, y);
+      y += 5;
+    }
+
+    y += 3; // paragraph spacing
+  }
+
+  // ============================================================
+  // SIGNATURE — Closing formula + name + title + school
+  // ============================================================
+  if (data.prefs) {
+    const p = data.prefs;
+    const sigLines: string[] = [];
+
+    if (p.closing_formula) sigLines.push(p.closing_formula);
+    sigLines.push(""); // spacing
+    if (p.first_name && p.last_name) sigLines.push(`__${p.first_name} ${p.last_name}__`);
+    if (p.job_title) sigLines.push(p.job_title);
+    if (p.school_name) sigLines.push(p.school_name);
+
+    if (sigLines.some((l) => l.trim())) {
+      y += 5;
+
+      // Check page break
+      if (y + sigLines.length * 5 + 10 > PAGE_H - MARGIN_BOTTOM) {
+        pdf.addPage();
+        y = MARGIN_TOP;
+      }
+
+      for (const line of sigLines) {
+        if (!line.trim()) { y += 3; continue; }
+        const isBold = line.startsWith("__") && line.endsWith("__");
+        const clean = line.replace(/__/g, "");
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
+        pdf.setFontSize(11);
+        pdf.setTextColor(isBold ? 24 : 82, isBold ? 24 : 82, isBold ? 27 : 91);
+        pdf.text(clean, MARGIN_LEFT, y);
+        y += 5;
+      }
+    }
+  }
+
+  // ============================================================
+  // FOOTER — School info (centré, bas de dernière page)
+  // ============================================================
+  if (data.prefs?.school_name) {
+    const p = data.prefs;
+    const footerY = PAGE_H - 15;
+
+    // Separator
+    pdf.setDrawColor(212, 212, 216);
+    pdf.setLineWidth(0.2);
+    pdf.line(MARGIN_LEFT, footerY - 5, PAGE_W - MARGIN_RIGHT, footerY - 5);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(113, 113, 122);
+
+    const footerParts: string[] = [p.school_name!];
+    if (p.school_address) footerParts.push(p.school_address.replace(/\n/g, ", "));
+    const contactParts = [p.school_phone, p.school_email, p.school_website].filter(Boolean);
+    if (contactParts.length) footerParts.push(contactParts.join(" — "));
+
+    let fY = footerY;
+    for (const part of footerParts) {
+      const tw = pdf.getTextWidth(part);
+      pdf.text(part, (PAGE_W - tw) / 2, fY);
+      fY += 3.5;
     }
   }
 
   pdf.save(filename);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+/** Convert markdown to clean plain text, preserving paragraph structure */
+function markdownToPlainText(md: string): string {
+  let text = md;
+
+  // Remove markdown headers (## Title → __Title__)
+  text = text.replace(/^#{1,3}\s+(.+)$/gm, "__$1__");
+
+  // Bold: **text** or __text__ → __text__
+  text = text.replace(/\*\*(.+?)\*\*/g, "__$1__");
+
+  // Italic: *text* or _text_ → text
+  text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "$1");
+  text = text.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, "$1");
+
+  // Lists: - item or * item → • item
+  text = text.replace(/^[\-\*]\s+/gm, "• ");
+
+  // Numbered lists: 1. item → 1. item (keep as is)
+
+  // Links: [text](url) → text
+  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+
+  // Remove horizontal rules
+  text = text.replace(/^---+$/gm, "");
+
+  // Clean up extra blank lines
+  text = text.replace(/\n{3,}/g, "\n\n");
+
+  return text.trim();
+}
+
+/** Load an image (data URL or URL) and return an HTMLImageElement */
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Image load failed"));
+    img.src = src;
+  });
 }
