@@ -11,10 +11,9 @@ interface HeaderProps {
 }
 
 const navLinks = [
-  { label: "Découvrir", href: "/decouvrir" },
   { label: "Guide", href: "/guide" },
   { label: "Tarifs", href: "/pricing" },
-  { label: "Europe", href: "/europe" },
+  { label: "Vision", href: "/europe" },
 ];
 
 export function Header({ isAuthenticated = false }: HeaderProps) {

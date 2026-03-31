@@ -25,10 +25,9 @@ export function Footer() {
           {/* Navigation */}
           <div className="flex flex-col items-center gap-2 text-sm sm:items-start">
             <span className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Navigation</span>
-            <Link href="/decouvrir" className="text-slate-500 transition-colors hover:text-blue-600">Découvrir</Link>
             <Link href="/guide" className="text-slate-500 transition-colors hover:text-blue-600">Guide</Link>
             <Link href="/pricing" className="text-slate-500 transition-colors hover:text-blue-600">Tarifs</Link>
-            <Link href="/europe" className="text-slate-500 transition-colors hover:text-blue-600">Europe</Link>
+            <Link href="/europe" className="text-slate-500 transition-colors hover:text-blue-600">Vision</Link>
           </div>
 
           {/* Contact */}
