@@ -3,11 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/landing/footer";
 import { Check, Sparkles, ArrowRight } from "lucide-react";
+import { APP_VERSION_LABEL } from "@/lib/version";
 
 export const metadata = {
   title: "Tarifs | FID Copilot",
   description:
-    "Accédez à toutes les fonctionnalités de FID Copilot gratuitement. Assistant juridique, aide à la décision, préparation FID et portfolio.",
+    "FID Copilot est gratuit pendant toute la phase bêta. Assistant juridique, aide à la décision, préparation FID et portfolio pour les directions d'école.",
 };
 
 const freeFeatures = [
@@ -21,6 +22,7 @@ const freeFeatures = [
   "Auto-évaluation calibrée /20",
   "Sources CDA avec liens Gallilex",
   "Base juridique mise à jour en continu",
+  "Système de feedback intégré",
 ];
 
 const proFeatures = [
@@ -50,31 +52,56 @@ export default async function PricingPage() {
         <section className="bg-gradient-to-b from-slate-50 to-white px-6 pb-4 pt-20 text-center sm:pt-24">
           <span className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/80 px-4 py-1.5 text-sm font-medium text-blue-700 shadow-sm">
             <Sparkles className="h-4 w-4" />
-            Tarification transparente
+            {APP_VERSION_LABEL}
           </span>
           <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Choisissez votre plan
+            {"Gratuit pendant la bêta"}
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
-            {"Commencez gratuitement avec toutes les fonctionnalités essentielles. Passez au Pro quand votre équipe grandit."}
+          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500">
+            {"Pendant toute la phase de développement, FID Copilot est entièrement gratuit. Profitez de toutes les fonctionnalités sans aucune limite, et aidez-nous à construire l'outil idéal pour vous."}
           </p>
+        </section>
+
+        {/* Beta notice */}
+        <section className="px-6 pt-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-5">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+                  <Check className="h-4 w-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-emerald-900">
+                    {"Accès complet et gratuit pour les testeurs bêta"}
+                  </p>
+                  <p className="mt-1 text-sm text-emerald-700">
+                    {"Vous êtes directeur ? Inscrivez-vous et utilisez FID Copilot sans aucun frais pendant toute la durée du développement. Vos retours nous aident à créer un outil sur mesure pour les directions d'école en Fédération Wallonie-Bruxelles."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Pricing cards */}
         <section className="px-6 py-16 sm:py-20">
           <div className="mx-auto grid max-w-4xl gap-8 lg:grid-cols-2">
-            {/* Free plan */}
-            <div className="relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-lg shadow-slate-100">
+            {/* Free plan (Beta) */}
+            <div className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-emerald-200 bg-white p-8 shadow-lg shadow-emerald-50">
+              <div className="absolute right-4 top-4 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                {"Phase bêta"}
+              </div>
+
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">Gratuit</h3>
+                <h3 className="text-lg font-semibold text-slate-900">{"Bêta — Gratuit"}</h3>
                 <p className="mt-1 text-sm text-slate-500">
-                  Pour découvrir et utiliser au quotidien
+                  {"Toutes les fonctionnalités, sans limite"}
                 </p>
               </div>
 
               <div className="mt-6">
                 <span className="text-5xl font-bold text-slate-900">{"0€"}</span>
-                <span className="ml-1 text-sm text-slate-400">/mois</span>
+                <span className="ml-1 text-sm text-slate-400">{"pendant toute la bêta"}</span>
               </div>
 
               <ul className="mt-8 flex flex-1 flex-col gap-3">
@@ -90,30 +117,30 @@ export default async function PricingPage() {
                 href={isAuthenticated ? "/dashboard" : "/signup"}
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:brightness-110"
               >
-                {isAuthenticated ? "Ouvrir l'application" : "Commencer gratuitement"}
+                {isAuthenticated ? "Ouvrir l'application" : "Créer mon compte gratuit"}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <p className="mt-3 text-center text-xs text-slate-400">
-                Aucune carte bancaire requise
+                {"Aucune carte bancaire requise — Accès immédiat"}
               </p>
             </div>
 
-            {/* Pro plan (coming soon) */}
+            {/* Pro plan (coming after beta) */}
             <div className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-blue-200 bg-blue-50/30 p-8">
               <div className="absolute right-4 top-4 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                Bientôt
+                {"Après la bêta"}
               </div>
 
               <div>
                 <h3 className="text-lg font-semibold text-slate-900">Pro</h3>
                 <p className="mt-1 text-sm text-slate-500">
-                  Pour les équipes de direction
+                  {"Pour les équipes de direction"}
                 </p>
               </div>
 
               <div className="mt-6">
                 <span className="text-5xl font-bold text-slate-900">{"—"}</span>
-                <span className="ml-2 text-sm text-slate-400">prix à venir</span>
+                <span className="ml-2 text-sm text-slate-400">{"prix à définir"}</span>
               </div>
 
               <ul className="mt-8 flex flex-1 flex-col gap-3">
@@ -129,10 +156,10 @@ export default async function PricingPage() {
                 disabled
                 className="mt-8 inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-3.5 text-base font-semibold text-slate-400"
               >
-                Bientôt disponible
+                {"Disponible après la bêta"}
               </button>
               <p className="mt-3 text-center text-xs text-slate-400">
-                Soyez informé du lancement
+                {"Les testeurs bêta seront informés en priorité"}
               </p>
             </div>
           </div>
@@ -147,10 +174,10 @@ export default async function PricingPage() {
             <div className="mt-10 grid gap-8 text-left sm:grid-cols-2">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">
-                  {"Le plan gratuit est-il vraiment illimité ?"}
+                  {"Combien de temps dure la phase bêta ?"}
                 </h3>
                 <p className="mt-2 text-sm text-slate-500">
-                  {"Oui. Toutes les fonctionnalités principales sont accessibles sans limite de temps ni de nombre de requêtes."}
+                  {"La bêta dure pendant toute la phase de développement. Vous serez prévenu avant tout changement de tarification, et les testeurs bêta bénéficieront d'un accès privilégié."}
                 </p>
               </div>
               <div>
@@ -163,18 +190,18 @@ export default async function PricingPage() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">
-                  {"Quand le plan Pro sera-t-il disponible ?"}
+                  {"Comment donner mon avis sur l'outil ?"}
                 </h3>
                 <p className="mt-2 text-sm text-slate-500">
-                  {"Nous travaillons sur les fonctionnalités équipe. Inscrivez-vous pour être informé du lancement."}
+                  {"Depuis l'application, cliquez sur « Feedback » dans le menu. Vos remarques et suggestions sont envoyées directement à notre équipe."}
                 </p>
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">
-                  {"Puis-je annuler à tout moment ?"}
+                  {"Y a-t-il des limites pendant la bêta ?"}
                 </h3>
                 <p className="mt-2 text-sm text-slate-500">
-                  {"Le plan gratuit ne nécessite aucun engagement. Pour le Pro, vous pourrez annuler à tout moment."}
+                  {"Non. Toutes les fonctionnalités sont accessibles sans aucune restriction. Utilisez l'outil autant que vous le souhaitez."}
                 </p>
               </div>
             </div>
