@@ -53,7 +53,7 @@ export async function PUT(request: Request) {
     const fields = [
       "first_name", "last_name", "job_title", "school_name",
       "school_network", "school_level", "school_address", "school_phone",
-      "school_email", "school_logo_url", "default_tone", "default_mode",
+      "school_email", "school_logo_url", "school_website", "default_tone", "default_mode",
       "default_length", "signature", "closing_formula", "theme",
     ];
     for (const f of fields) {
@@ -112,6 +112,7 @@ function getDefaults(userId: string) {
     school_phone: null,
     school_email: null,
     school_logo_url: null,
+    school_website: null,
     default_tone: "neutre",
     default_mode: "terrain",
     default_length: "standard",

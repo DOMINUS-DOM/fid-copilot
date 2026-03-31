@@ -222,6 +222,12 @@ export function SettingsWorkspace() {
                 placeholder="Ex : direction@monecole.be"
               />
             </div>
+            <TextField
+              label="Site web (optionnel)"
+              value={prefs.school_website ?? ""}
+              onChange={(v) => update("school_website", v)}
+              placeholder="Ex : www.monecole.be"
+            />
             {/* Logo upload */}
             <div>
               <label className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">{"Logo de l'école"}</label>

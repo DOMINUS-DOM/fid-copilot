@@ -508,22 +508,41 @@ export function DocumentGenerator() {
                     />
                   )}
 
-                  {/* Document content */}
+                  {/* Document content (corps uniquement — pas de signature) */}
                   <div className="document-body">
                     <MarkdownContent content={displayContent} />
                   </div>
 
-                  {/* Signature block */}
-                  {prefs && (prefs.signature || prefs.closing_formula) && (
-                    <div className="document-signature mt-10 border-t border-zinc-100 pt-6">
+                  {/* Formule de politesse + Signature (source unique : préférences) */}
+                  {prefs && (prefs.closing_formula || prefs.signature) && (
+                    <div className="document-signature mt-8" style={{ fontSize: "12px", lineHeight: "1.6" }}>
                       {prefs.closing_formula && (
-                        <p className="text-sm text-zinc-700" style={{ fontSize: "12px", lineHeight: "1.6" }}>
-                          {prefs.closing_formula}
-                        </p>
+                        <p className="text-zinc-700">{prefs.closing_formula}</p>
                       )}
-                      {prefs.signature && (
-                        <p className="mt-6 whitespace-pre-line text-sm font-medium text-zinc-900" style={{ fontSize: "12px" }}>
-                          {prefs.signature}
+                      <div className="mt-8">
+                        {prefs.first_name && prefs.last_name && (
+                          <p className="font-semibold text-zinc-900">{prefs.first_name} {prefs.last_name}</p>
+                        )}
+                        {prefs.job_title && (
+                          <p className="text-zinc-600">{prefs.job_title}</p>
+                        )}
+                        {prefs.school_name && (
+                          <p className="text-zinc-600">{prefs.school_name}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Footer école (séparé de la signature) */}
+                  {prefs && prefs.school_name && (
+                    <div className="document-footer mt-12 border-t border-zinc-200 pt-4" style={{ fontSize: "10px", color: "#71717a", textAlign: "center" }}>
+                      <p>{prefs.school_name}</p>
+                      {prefs.school_address && <p>{prefs.school_address}</p>}
+                      {(prefs.school_phone || prefs.school_email || prefs.school_website) && (
+                        <p>
+                          {[prefs.school_phone, prefs.school_email, prefs.school_website]
+                            .filter(Boolean)
+                            .join(" — ")}
                         </p>
                       )}
                     </div>

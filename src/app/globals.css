@@ -76,9 +76,10 @@ body {
   font-weight: 600;
 }
 
-/* PDF export mode — force clean rendering */
+/* PDF export mode — force all colors to simple hex/rgb (html2canvas
+   does not support Tailwind v4 lab() color functions) */
 .pdf-export-mode {
-  background: white !important;
+  background-color: #ffffff !important;
   color: #171717 !important;
   padding: 40px 48px !important;
   border: none !important;
@@ -91,7 +92,20 @@ body {
 
 .pdf-export-mode * {
   color: #171717 !important;
+  background-color: transparent !important;
+  border-color: #d4d4d8 !important;
   font-family: Arial, Helvetica, sans-serif !important;
+  box-shadow: none !important;
+  text-decoration-color: #171717 !important;
+  outline-color: transparent !important;
+  accent-color: auto !important;
+  caret-color: #171717 !important;
+  column-rule-color: transparent !important;
+}
+
+/* Restore white bg on root export element */
+.pdf-export-mode {
+  background-color: #ffffff !important;
 }
 
 .pdf-export-mode .document-body p {
@@ -100,12 +114,27 @@ body {
   line-height: 1.65 !important;
 }
 
+.pdf-export-mode .document-body strong {
+  color: #171717 !important;
+}
+
 .pdf-export-mode .document-signature {
   margin-top: 48px !important;
+  border-color: #e4e4e7 !important;
+}
+
+.pdf-export-mode .document-signature p {
+  color: #3f3f46 !important;
 }
 
 .pdf-export-mode img {
   max-height: 64px !important;
+  background-color: transparent !important;
+}
+
+/* Force the school header border */
+.pdf-export-mode > div:first-child {
+  border-color: #a1a1aa !important;
 }
 
 /* Subtle grid pattern for hero depth */

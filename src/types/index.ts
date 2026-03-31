@@ -41,6 +41,7 @@ export interface UserPreferences {
   school_phone: string | null;
   school_email: string | null;
   school_logo_url: string | null;
+  school_website: string | null;
   // Génération
   signature: string | null;
   closing_formula: string | null;

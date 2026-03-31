@@ -22,8 +22,29 @@ export async function exportToPdf(
   if (typeof JsPDF !== "function") throw new Error("jsPDF non disponible");
   if (typeof html2canvas !== "function") throw new Error("html2canvas non disponible");
 
-  // Apply export styles
+  // Apply export styles — force simple colors to avoid lab() parsing errors
   element.classList.add("pdf-export-mode");
+
+  // Override any remaining lab()/oklch() inline styles that html2canvas can't parse
+  const allEls = element.querySelectorAll("*");
+  const overrides: Array<{ el: HTMLElement; prev: string }> = [];
+  allEls.forEach((el) => {
+    const htmlEl = el as HTMLElement;
+    const cs = getComputedStyle(htmlEl);
+    // Check if any color property contains "lab(" or "oklch("
+    const props = ["color", "backgroundColor", "borderColor", "borderTopColor", "borderBottomColor", "borderLeftColor", "borderRightColor"];
+    for (const prop of props) {
+      const val = cs.getPropertyValue(prop);
+      if (val && (val.includes("lab(") || val.includes("oklch(") || val.includes("lch("))) {
+        overrides.push({ el: htmlEl, prev: htmlEl.style.cssText });
+        if (prop === "color") htmlEl.style.color = "#171717";
+        if (prop === "backgroundColor") htmlEl.style.backgroundColor = "transparent";
+        if (prop.startsWith("border")) htmlEl.style.borderColor = "#d4d4d8";
+        break;
+      }
+    }
+  });
+
   await new Promise((r) => setTimeout(r, 250));
 
   let canvas: HTMLCanvasElement;
@@ -37,10 +58,13 @@ export async function exportToPdf(
     });
   } catch (err) {
     element.classList.remove("pdf-export-mode");
+    overrides.forEach(({ el, prev }) => { el.style.cssText = prev; });
     throw err;
   }
 
   element.classList.remove("pdf-export-mode");
+  // Restore original inline styles
+  overrides.forEach(({ el, prev }) => { el.style.cssText = prev; });
 
   // Create PDF A4
   const pdf = new JsPDF("p", "mm", "a4");

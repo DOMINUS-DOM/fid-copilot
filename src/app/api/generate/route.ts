@@ -85,8 +85,6 @@ export async function POST(request: Request) {
             userName,
             jobTitle: prefs?.job_title || undefined,
             schoolName: prefs?.school_name || undefined,
-            signature: prefs?.signature || undefined,
-            closingFormula: prefs?.closing_formula || undefined,
           }),
         },
       ],
