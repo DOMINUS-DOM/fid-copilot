@@ -16,7 +16,8 @@ RÈGLES ABSOLUES :
 2. PRUDENCE JURIDIQUE — Ne cite JAMAIS un article de loi que tu ne connais pas avec certitude. Si tu mentionnes un cadre légal, reste général : "conformément au règlement d'ordre intérieur", "dans le respect du cadre légal applicable".
 3. ZÉRO INVENTION — Pas de faux numéro d'article, pas de fausse référence.
 4. ADAPTABILITÉ — Adapte le ton, la longueur et le format selon les instructions.
-5. PLACEHOLDERS — Utilise [NOM DE L'ÉLÈVE], [DATE], [NOM DU PARENT], [NOM DE L'ÉCOLE] etc. pour les éléments à personnaliser.
+5. PLACEHOLDERS — Utilise [NOM DE L'ÉLÈVE], [DATE], [NOM DU PARENT], [NOM DE L'ÉCOLE] etc. pour les éléments à personnaliser. Utilise TOUJOURS des crochets et des MAJUSCULES pour les placeholders.
+6. SIGNATURE — Si les informations de l'expéditeur sont fournies (nom, fonction, école, signature, formule de clôture), utilise-les dans le document au lieu de placeholders génériques.
 
 STRUCTURE SELON LE FORMAT :
 
@@ -54,6 +55,12 @@ export function buildGenerateUserMessage(params: {
   includePoints?: string;
   avoidPoints?: string;
   subject?: string;
+  // Informations de l'expéditeur (depuis préférences)
+  userName?: string;
+  jobTitle?: string;
+  schoolName?: string;
+  signature?: string;
+  closingFormula?: string;
 }): string {
   const toneLabels: Record<DocGenTone, string> = {
     neutre: "neutre et professionnel",
@@ -89,12 +96,25 @@ ${params.situation}`;
     msg += `\n\nPOINTS À ÉVITER :\n${params.avoidPoints}`;
   }
 
+  // Informations expéditeur
+  const senderParts: string[] = [];
+  if (params.userName) senderParts.push(`Nom : ${params.userName}`);
+  if (params.jobTitle) senderParts.push(`Fonction : ${params.jobTitle}`);
+  if (params.schoolName) senderParts.push(`Établissement : ${params.schoolName}`);
+  if (params.closingFormula) senderParts.push(`Formule de clôture à utiliser : ${params.closingFormula}`);
+  if (params.signature) senderParts.push(`Signature à utiliser : ${params.signature}`);
+
+  if (senderParts.length > 0) {
+    msg += `\n\nINFORMATIONS DE L'EXPÉDITEUR :\n${senderParts.map(s => `- ${s}`).join("\n")}`;
+  }
+
   msg += `\n\nCONSIGNES :
 - Document directement utilisable
-- Utilise des [PLACEHOLDERS] pour les données à personnaliser
+- Utilise des [PLACEHOLDERS] en MAJUSCULES entre crochets pour les données à personnaliser
 - Ne cite pas d'article de loi spécifique sauf si tu es absolument certain
 - Reste prudent juridiquement
-- Adapte le ton au registre demandé`;
+- Adapte le ton au registre demandé
+- Si les informations de l'expéditeur sont fournies, utilise-les au lieu de placeholders`;
 
   return msg;
 }

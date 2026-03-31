@@ -46,6 +46,18 @@ body {
 .float-2 { animation: float-slow 8s ease-in-out infinite 1s; }
 .float-3 { animation: float-slow 7s ease-in-out infinite 2s; }
 
+/* PDF export mode — force light theme */
+.pdf-export-mode {
+  background: white !important;
+  color: #171717 !important;
+  padding: 32px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.pdf-export-mode * {
+  color: #171717 !important;
+}
+
 /* Subtle grid pattern for hero depth */
 .hero-grid {
   background-image:

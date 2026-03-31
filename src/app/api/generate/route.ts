@@ -47,6 +47,17 @@ export async function POST(request: Request) {
       );
     }
 
+    // Fetch user preferences server-side
+    const { data: prefs } = await supabase
+      .from("user_preferences")
+      .select("first_name, last_name, job_title, school_name, signature, closing_formula")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    const userName = prefs?.first_name && prefs?.last_name
+      ? `${prefs.first_name} ${prefs.last_name}`
+      : undefined;
+
     // Log
     const { data: logRow } = await supabase
       .from("assistant_logs")
@@ -71,6 +82,11 @@ export async function POST(request: Request) {
             subject: subject?.trim() || undefined,
             includePoints: includePoints?.trim() || undefined,
             avoidPoints: avoidPoints?.trim() || undefined,
+            userName,
+            jobTitle: prefs?.job_title || undefined,
+            schoolName: prefs?.school_name || undefined,
+            signature: prefs?.signature || undefined,
+            closingFormula: prefs?.closing_formula || undefined,
           }),
         },
       ],

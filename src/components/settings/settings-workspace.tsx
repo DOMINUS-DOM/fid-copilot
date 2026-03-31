@@ -11,6 +11,7 @@ import {
   MessageSquare,
   FileText,
   Building2,
+  MapPin,
   Loader2,
   Save,
   CheckCircle,
@@ -185,6 +186,44 @@ export function SettingsWorkspace() {
             <TextField label="Établissement" value={prefs.school_name ?? ""} onChange={(v) => update("school_name", v)} placeholder="Ex : Athénée Royal de Liège" />
             <TextField label="Réseau" value={prefs.school_network ?? ""} onChange={(v) => update("school_network", v)} placeholder="Ex : WBE, Libre, Provincial..." />
             <TextField label="Niveau" value={prefs.school_level ?? ""} onChange={(v) => update("school_level", v)} placeholder="Ex : Secondaire ordinaire" />
+          </div>
+        </Card>
+      </section>
+
+      {/* ============================================================ */}
+      {/* Section: Coordonnées école */}
+      {/* ============================================================ */}
+      <section>
+        <div className="mb-4 flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-zinc-400" />
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-white">{"Coordonnées de l'école"}</h2>
+        </div>
+        <Card>
+          <div className="flex flex-col gap-4">
+            <TextField
+              label="Adresse complète"
+              value={prefs.school_address ?? ""}
+              onChange={(v) => update("school_address", v)}
+              placeholder="Ex : Rue de la Loi 1, 1000 Bruxelles"
+              multiline
+            />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label="Téléphone"
+                value={prefs.school_phone ?? ""}
+                onChange={(v) => update("school_phone", v)}
+                placeholder="Ex : 02 123 45 67"
+              />
+              <TextField
+                label="Email de l'école"
+                value={prefs.school_email ?? ""}
+                onChange={(v) => update("school_email", v)}
+                placeholder="Ex : direction@monecole.be"
+              />
+            </div>
+            <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
+              {"Ces informations seront utilisées dans l'en-tête des documents générés."}
+            </p>
           </div>
         </Card>
       </section>

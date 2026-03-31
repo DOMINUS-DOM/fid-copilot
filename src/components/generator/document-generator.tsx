@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/ui/markdown-content";
+import { SchoolHeader } from "@/components/generator/school-header";
+import {
+  autoFillPlaceholders,
+  extractPlaceholders,
+  replacePlaceholder,
+} from "@/lib/placeholders";
+import { exportToPdf } from "@/lib/pdf-export";
 import {
   type DocGenCategory,
   type DocGenTone,
   type DocGenFormat,
+  type UserPreferences,
   DOC_GEN_TEMPLATES,
   DOC_GEN_TONE_LABELS,
   DOC_GEN_FORMAT_LABELS,
@@ -23,6 +31,10 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
+  Download,
+  Eye,
+  Pencil,
+  Building2,
 } from "lucide-react";
 
 // ============================================================
@@ -60,12 +72,49 @@ export function DocumentGenerator() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
+  // New: preferences, placeholders, view mode, header, PDF
+  const [prefs, setPrefs] = useState<UserPreferences | null>(null);
+  const [placeholderValues, setPlaceholderValues] = useState<Record<string, string>>({});
+  const [viewMode, setViewMode] = useState<"preview" | "edit">("preview");
+  const [showHeader, setShowHeader] = useState(true);
+  const [exportingPdf, setExportingPdf] = useState(false);
+
+  // Fetch preferences on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch("/api/preferences");
+        const data = await res.json();
+        if (res.ok && data.preferences) setPrefs(data.preferences);
+      } catch { /* silent */ }
+    }
+    load();
+  }, []);
+
+  // Compute display content with placeholders filled
+  const displayContent = useMemo(() => {
+    let result = content;
+    for (const [key, val] of Object.entries(placeholderValues)) {
+      if (val.trim()) {
+        result = replacePlaceholder(result, key, val);
+      }
+    }
+    return result;
+  }, [content, placeholderValues]);
+
+  // Remaining unfilled placeholders
+  const remainingPlaceholders = useMemo(() => {
+    return extractPlaceholders(displayContent);
+  }, [displayContent]);
+
   async function handleGenerate(e?: React.FormEvent) {
     e?.preventDefault();
     if (!situation.trim() || situation.trim().length < 10) return;
 
     setError("");
     setContent("");
+    setPlaceholderValues({});
+    setViewMode("preview");
     setLoading(true);
 
     try {
@@ -89,7 +138,15 @@ export function DocumentGenerator() {
         setError(data.error || "Erreur lors de la génération");
         return;
       }
-      setContent(data.content);
+
+      // Auto-fill known placeholders from preferences
+      const { text: filled, remaining } = autoFillPlaceholders(data.content, prefs);
+      setContent(filled);
+
+      // Initialize empty values for remaining placeholders
+      const initValues: Record<string, string> = {};
+      for (const p of remaining) initValues[p] = "";
+      setPlaceholderValues(initValues);
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -98,7 +155,7 @@ export function DocumentGenerator() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(content);
+    navigator.clipboard.writeText(displayContent);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -107,8 +164,27 @@ export function DocumentGenerator() {
     handleGenerate();
   }
 
+  async function handleExportPdf() {
+    setExportingPdf(true);
+    try {
+      const templateLabel = template ? DOC_GEN_TEMPLATES[template]?.label : "document";
+      const filename = `FID-Copilot-${templateLabel?.replace(/\s+/g, "-") || "document"}.pdf`;
+      await exportToPdf("document-for-pdf", filename);
+    } catch (err) {
+      console.error("PDF export error:", err);
+    } finally {
+      setExportingPdf(false);
+    }
+  }
+
+  function updatePlaceholder(key: string, value: string) {
+    setPlaceholderValues((prev) => ({ ...prev, [key]: value }));
+  }
+
   const hasEnoughText = situation.trim().length >= 10;
   const selectedTemplate = template ? DOC_GEN_TEMPLATES[template] : null;
+  const filledCount = Object.values(placeholderValues).filter((v) => v.trim()).length;
+  const totalPlaceholders = Object.keys(placeholderValues).length;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -313,7 +389,7 @@ export function DocumentGenerator() {
         {content && (
           <>
             {/* Action bar */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={handleCopy}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 transition-all hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.97] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400"
@@ -329,6 +405,45 @@ export function DocumentGenerator() {
                 <RefreshCw className="h-3.5 w-3.5" />
                 Régénérer
               </button>
+
+              {/* View toggle */}
+              <button
+                onClick={() => setViewMode(viewMode === "preview" ? "edit" : "preview")}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all active:scale-[0.97]",
+                  viewMode === "edit"
+                    ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950/30 dark:text-blue-300"
+                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400"
+                )}
+              >
+                {viewMode === "preview" ? <Pencil className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                {viewMode === "preview" ? "Modifier" : "Aperçu"}
+              </button>
+
+              {/* Header toggle */}
+              <button
+                onClick={() => setShowHeader(!showHeader)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all active:scale-[0.97]",
+                  showHeader
+                    ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950/30 dark:text-blue-300"
+                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400"
+                )}
+              >
+                <Building2 className="h-3.5 w-3.5" />
+                En-tête
+              </button>
+
+              {/* PDF export */}
+              <button
+                onClick={handleExportPdf}
+                disabled={exportingPdf}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 disabled:opacity-50 active:scale-[0.97]"
+              >
+                {exportingPdf ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                PDF
+              </button>
+
               {selectedTemplate && (
                 <span className="ml-auto rounded-lg bg-violet-50 px-2.5 py-1 text-[11px] font-medium text-violet-700 dark:bg-violet-900/30 dark:text-violet-400">
                   {selectedTemplate.label}
@@ -336,19 +451,77 @@ export function DocumentGenerator() {
               )}
             </div>
 
+            {/* Placeholder completion bar */}
+            {totalPlaceholders > 0 && (
+              <Card className="border-amber-200 bg-amber-50/50 dark:border-amber-800 dark:bg-amber-900/10">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+                    {"Complétez les champs"}
+                  </p>
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                    {filledCount}/{totalPlaceholders}
+                  </span>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {Object.keys(placeholderValues).map((key) => (
+                    <div key={key}>
+                      <label className="mb-0.5 block text-[10px] font-medium text-amber-700 dark:text-amber-400">
+                        {key}
+                      </label>
+                      <input
+                        type="text"
+                        value={placeholderValues[key]}
+                        onChange={(e) => updatePlaceholder(key, e.target.value)}
+                        placeholder={`Saisir ${key.toLowerCase()}...`}
+                        className="w-full rounded-lg border border-amber-200 bg-white px-2.5 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:border-amber-400 focus:outline-none dark:border-amber-800 dark:bg-zinc-900 dark:text-white"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
             {/* Document output */}
-            <Card className="relative">
-              <div className="absolute right-4 top-4">
-                <FileText className="h-4 w-4 text-zinc-200 dark:text-zinc-700" />
-              </div>
-              <div className="pr-8">
-                <MarkdownContent content={content} />
-              </div>
-            </Card>
+            {viewMode === "edit" ? (
+              <Card>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={20}
+                  className="w-full resize-y rounded-lg border-0 bg-transparent font-mono text-sm leading-relaxed text-zinc-900 focus:outline-none dark:text-white"
+                />
+              </Card>
+            ) : (
+              <Card className="relative">
+                <div id="document-for-pdf">
+                  {/* School header */}
+                  {showHeader && prefs && (
+                    <SchoolHeader
+                      schoolName={prefs.school_name}
+                      schoolAddress={prefs.school_address}
+                      schoolPhone={prefs.school_phone}
+                      schoolEmail={prefs.school_email}
+                    />
+                  )}
+
+                  {/* Document content */}
+                  <div className="pr-8">
+                    <MarkdownContent content={displayContent} />
+                  </div>
+                </div>
+
+                {/* Remaining placeholders indicator */}
+                {remainingPlaceholders.length > 0 && (
+                  <div className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-[11px] text-amber-700 dark:bg-amber-900/10 dark:text-amber-400">
+                    {remainingPlaceholders.length} champ{remainingPlaceholders.length > 1 ? "s" : ""} restant{remainingPlaceholders.length > 1 ? "s" : ""} à compléter
+                  </div>
+                )}
+              </Card>
+            )}
 
             {/* Disclaimer */}
             <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">
-              Document généré par IA — à relire et adapter avant envoi. Aucune valeur juridique contraignante.
+              {"Document généré par IA — à relire et adapter avant envoi. Aucune valeur juridique contraignante."}
             </p>
           </>
         )}

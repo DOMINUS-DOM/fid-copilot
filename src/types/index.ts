@@ -36,6 +36,11 @@ export interface UserPreferences {
   default_tone: string;
   default_mode: string;
   default_length: string;
+  // Coordonnées école
+  school_address: string | null;
+  school_phone: string | null;
+  school_email: string | null;
+  school_logo_url: string | null;
   // Génération
   signature: string | null;
   closing_formula: string | null;
