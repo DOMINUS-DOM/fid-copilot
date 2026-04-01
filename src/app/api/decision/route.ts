@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
+import { searchGallilex, formatGallilexContext } from "@/lib/ai/gallilex";
 import {
   buildDecisionSystemPrompt,
   buildDecisionUserMessage,
@@ -206,6 +207,12 @@ export async function POST(request: Request) {
     if (schoolExtracts) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE ÉCOLE (informatif)\n═══════════════════════════════════════\n${schoolExtracts}`;
     }
+
+    // Gallilex — additional references
+    const existingCdas = cdaCodes;
+    const gallilexResults = await searchGallilex(keywords, existingCdas);
+    const gallilexCtx = formatGallilexContext(gallilexResults);
+    if (gallilexCtx) userMsg += gallilexCtx;
 
     const analysis = await geminiChat({
       systemPrompt: buildDecisionSystemPrompt(selectedDocs),

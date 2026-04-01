@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
+import { searchGallilex, formatGallilexContext } from "@/lib/ai/gallilex";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
 import {
   type Document,
@@ -386,6 +387,14 @@ export async function POST(request: Request) {
 
     if (schoolExtracts) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE LOCAL — DOCUMENTS DE L'ÉCOLE (informatif, NE REMPLACE PAS la loi)\n═══════════════════════════════════════\n${schoolExtracts}`;
+    }
+
+    // 6b. Gallilex — search for additional legal references not in local chunks
+    const existingCdaCodes = selectedDocs.map((d) => d.cda_code).filter(Boolean) as string[];
+    const gallilexResults = await searchGallilex(keywords, existingCdaCodes);
+    const gallilexContext = formatGallilexContext(gallilexResults);
+    if (gallilexContext) {
+      userMsg += gallilexContext;
     }
 
     const answer = await geminiChat({

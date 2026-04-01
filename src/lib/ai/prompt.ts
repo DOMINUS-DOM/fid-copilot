@@ -146,6 +146,12 @@ Q: Quel volume de travail collaboratif pour un enseignant temps plein dans le se
 Base légale: Décret du 14 mars 2019, Article 15, §1er et §2
 Réponse: 60 périodes par année scolaire.
 
+EXEMPLE 17 — Communes à facilités / inscription linguistique
+Q: Dans une école francophone de Fourons/Voeren, une inscription est demandée pour un enfant dont les grands-parents résident dans la commune, mais pas les parents. Quelle attitude adopter ?
+Base légale: Loi du 30 juillet 1963, Article 6
+Règle: Dans les communes visées, l'enseignement dans une autre langue nationale n'est possible que si cette langue est la langue maternelle ou usuelle de l'enfant ET si le chef de famille réside dans la commune.
+Réponse: L'inscription n'est pas possible, car la condition de résidence du chef de famille (les parents) dans la commune n'est pas remplie. Le domicile des grands-parents ne suffit pas.
+
 PIÈGES FRÉQUENTS IDENTIFIÉS DANS LES DEUX SÉRIES :
 - Confondre obligation scolaire à temps plein (15 ans + 2 premières années) et à temps partiel
 - Oublier que le changement d'option après le 16/11 nécessite l'avis du directeur après avis du conseil de classe
@@ -153,6 +159,7 @@ PIÈGES FRÉQUENTS IDENTIFIÉS DANS LES DEUX SÉRIES :
 - Croire que les conseillers pédagogiques contrôlent l'aptitude pédagogique (c'est l'inspection)
 - Oublier que la personne de confiance ne peut pas être un délégué syndical
 - Confondre frais obligatoires et frais facultatifs (abonnements = toujours facultatifs)
+- Communes à facilités : c'est le domicile du chef de famille (parents) qui compte, PAS celui des grands-parents (Loi 30/07/1963, art. 6)
 
 Retiens le style : réponse directe, base légale précise, justification courte.`;
 
@@ -279,6 +286,9 @@ Les CDA sont des pistes de recherche — ne cite un article QUE s'il figure dans
 │ Obligation scolaire          │ Fréquentation + signalement SAJ/SPJ      │ 9547, 49466, 45031       │
 ├──────────────────────────────┼──────────────────────────────────────────┼──────────────────────────┤
 │ DASPA / allophone            │ Dispositif DASPA/FLA + régime linguist.  │ 46275, 4329              │
+├──────────────────────────────┼──────────────────────────────────────────┼──────────────────────────┤
+│ Communes à facilités /       │ Loi du 30/07/1963 art. 6 : langue       │ 5108, 49466              │
+│ régime linguistique          │ maternelle + résidence chef de famille   │                          │
 ├──────────────────────────────┼──────────────────────────────────────────┼──────────────────────────┤
 │ Spécialisé / aménagements    │ Types + aménagements raisonnables        │ 28737, 49466             │
 ├──────────────────────────────┼──────────────────────────────────────────┼──────────────────────────┤
