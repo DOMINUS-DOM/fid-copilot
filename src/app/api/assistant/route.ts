@@ -282,22 +282,30 @@ export async function POST(request: Request) {
         : allDocuments.slice(0, 5);
 
     // 5. Recherche de chunks légaux pertinents (full-text PostgreSQL)
-    const selectedCdaCodes = selectedDocs
+    // Use BOTH document CDA codes AND Gallilex-identified CDA codes
+    const docCdaCodes = selectedDocs
       .map((d) => d.cda_code)
       .filter(Boolean) as string[];
 
+    // Gallilex mapping: find additional relevant CDA codes from the theme index
+    const gallilexResults = searchGallilex(keywords, docCdaCodes);
+    const gallilexCdaCodes = gallilexResults.map((r) => r.cdaCode);
+
+    // Merge: document CDAs + Gallilex CDAs (deduplicated)
+    const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexCdaCodes])];
+
     let legalExtracts = "";
 
-    if (selectedCdaCodes.length > 0 && keywords.length > 0) {
+    if (allCdaCodes.length > 0 && keywords.length > 0) {
       // Construire la requête full-text avec les mots-clés
       const tsQuery = keywords.slice(0, 5).join(" | ");
 
       const { data: chunks } = await supabase
         .from("legal_chunks")
         .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
-        .in("cda_code", selectedCdaCodes)
+        .in("cda_code", allCdaCodes)
         .textSearch("content", tsQuery, { config: "french" })
-        .limit(MAX_LEGAL_CHUNKS)
+        .limit(MAX_LEGAL_CHUNKS + 3) // Allow more chunks since we search more CDAs
         .returns<LegalChunk[]>();
 
       if (chunks && chunks.length > 0) {
@@ -389,10 +397,8 @@ export async function POST(request: Request) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE LOCAL — DOCUMENTS DE L'ÉCOLE (informatif, NE REMPLACE PAS la loi)\n═══════════════════════════════════════\n${schoolExtracts}`;
     }
 
-    // 6b. Gallilex — search for additional legal references not in local chunks
-    const existingCdaCodes = selectedDocs.map((d) => d.cda_code).filter(Boolean) as string[];
-    const gallilexResults = await searchGallilex(keywords, existingCdaCodes);
-    const gallilexContext = formatGallilexContext(gallilexResults);
+    // 6b. Gallilex — add reference context (already computed above)
+    const gallilexContext = formatGallilexContext(gallilexResults, docCdaCodes);
     if (gallilexContext) {
       userMsg += gallilexContext;
     }

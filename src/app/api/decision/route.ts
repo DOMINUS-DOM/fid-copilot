@@ -118,18 +118,20 @@ export async function POST(request: Request) {
       selectedDocs.push(...allDocuments.slice(0, 5));
     }
 
-    // 6. Legal chunks FTS
-    const cdaCodes = selectedDocs.map((d) => d.cda_code).filter(Boolean) as string[];
+    // 6. Legal chunks FTS — enhanced with Gallilex CDA mapping
+    const docCdaCodes = selectedDocs.map((d) => d.cda_code).filter(Boolean) as string[];
+    const gallilexResults = searchGallilex(keywords, docCdaCodes);
+    const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexResults.map((r) => r.cdaCode)])];
     let legalExtracts = "";
 
-    if (cdaCodes.length > 0 && keywords.length > 0) {
+    if (allCdaCodes.length > 0 && keywords.length > 0) {
       const tsQuery = keywords.slice(0, 5).join(" | ");
       const { data: chunks } = await supabase
         .from("legal_chunks")
         .select("cda_code, chunk_title, content, citation_display")
-        .in("cda_code", cdaCodes)
+        .in("cda_code", allCdaCodes)
         .textSearch("content", tsQuery, { config: "french" })
-        .limit(MAX_LEGAL_CHUNKS)
+        .limit(MAX_LEGAL_CHUNKS + 3)
         .returns<LegalChunk[]>();
 
       if (chunks && chunks.length > 0) {
@@ -208,10 +210,8 @@ export async function POST(request: Request) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE ÉCOLE (informatif)\n═══════════════════════════════════════\n${schoolExtracts}`;
     }
 
-    // Gallilex — additional references
-    const existingCdas = cdaCodes;
-    const gallilexResults = await searchGallilex(keywords, existingCdas);
-    const gallilexCtx = formatGallilexContext(gallilexResults);
+    // Gallilex — add reference context
+    const gallilexCtx = formatGallilexContext(gallilexResults, docCdaCodes);
     if (gallilexCtx) userMsg += gallilexCtx;
 
     const analysis = await geminiChat({
