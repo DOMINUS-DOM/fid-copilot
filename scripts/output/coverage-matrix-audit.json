@@ -1,0 +1,377 @@
+[
+  {
+    "id": "voeren",
+    "name": "Voeren / Fourons / grands-parents",
+    "theme": "Régime linguistique",
+    "cda": "4329",
+    "articles": [
+      "6"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "6": {
+        "exists": true,
+        "preview": "Article 6. - Dans les communes visées à l'article 3, l'enseignement gardien et  primaire peut être d"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "6",
+      "7"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "ise",
+    "name": "Indice socio-économique",
+    "theme": "Encadrement différencié",
+    "cda": "34295",
+    "articles": [
+      "3"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "3": {
+        "exists": true,
+        "preview": "Article 3. - Le Gouvernement de la Communauté française établit l'indice socio- économique moyen, su"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "3"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "exclusion-15-janv",
+    "name": "Exclusion après 15 janvier / subventions",
+    "theme": "Pacte scolaire",
+    "cda": "5108",
+    "articles": [
+      "73"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "73": {
+        "exists": true,
+        "preview": "§ 4. Les subventions de fonctionnement sont consacrées pour au moins 20 p.c. dans  l'enseignement ga"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "3",
+      "30",
+      "73"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "absences-heure",
+    "name": "Relevé absences à chaque heure",
+    "theme": "Fréquentation",
+    "cda": "49466",
+    "articles": [
+      "1.7.1-9"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.7.1-9": {
+        "exists": true,
+        "preview": "§3. Est considéré comme demi-jour d'absence injustifiée :    1°. dans l'enseignement fondamental, l'"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.7.1-10",
+      "1.7.1-10",
+      "1.7.1-10",
+      "1.7.1-10",
+      "1.7.1-9"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "amenagements",
+    "name": "Aménagements raisonnables",
+    "theme": "Besoins spécifiques",
+    "cda": "49466",
+    "articles": [
+      "1.7.8-1"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.7.8-1": {
+        "exists": true,
+        "preview": "Article 1.7.8-1. - § 1er. Tout élève de l'enseignement ordinaire,  fondamental et secondaire, qui pr"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.3.1-1",
+      "1.5.2-2",
+      "1.7.7-37",
+      "1.7.7-37",
+      "6.2.6-3"
+    ],
+    "fts_has_pivot": false
+  },
+  {
+    "id": "exclusion-ecartement",
+    "name": "Exclusion définitive / écartement",
+    "theme": "Discipline",
+    "cda": "49466",
+    "articles": [
+      "1.7.9-4",
+      "1.7.9-5",
+      "1.7.9-6"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.7.9-4": {
+        "exists": true,
+        "preview": "§3. A la suite d'une décision d'exclusion définitive, l'école qui a exclu  fournit aux parents de l'"
+      },
+      "1.7.9-5": {
+        "exists": true,
+        "preview": "§ 2. Après avoir pris l'avis du conseil de classe dans l'enseignement  secondaire ou de [l'équipe pé"
+      },
+      "1.7.9-6": {
+        "exists": true,
+        "preview": "§ 1er. Lorsque le pouvoir organisateur délègue le droit de  prononcer l'exclusion à un membre de son"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.7.9-5",
+      "1.7.9-7/1",
+      "1.10.2-3"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "dacce-parents",
+    "name": "Parents et accès au DAccE",
+    "theme": "DAccE",
+    "cda": "49466",
+    "articles": [
+      "1.10.2-2",
+      "1.10.2-3",
+      "1.10.3-1"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.10.2-2": {
+        "exists": true,
+        "preview": "Article 1.10.2 – 2. - § 1er Le DAccE constitue un outil de soutien à la  réussite de l'élève qui per"
+      },
+      "1.10.2-3": {
+        "exists": true,
+        "preview": "Article 1.10.2 – 3. -  Le DAccE est personnel, propre à chaque élève, ne  concerne que l'élève et co"
+      },
+      "1.10.3-1": {
+        "exists": true,
+        "preview": "Article 1.10.3 – 1. -  § 1er. Chaque membre de l'équipe éducative et de  l'équipe pluridisciplinaire"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.10.4-7",
+      "1.10.2-3",
+      "1.10.3-1",
+      "1.10.3-1",
+      "1.10.5-2"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "evaluations-ext",
+    "name": "Évaluations externes",
+    "theme": "Évaluation",
+    "cda": "49466",
+    "articles": [
+      "1.6.3-10"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.6.3-10": {
+        "exists": true,
+        "preview": "Article 1.6.3-10. - Le respect des consignes et des modalités de passation  est placé sous la respon"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.6.3-7",
+      "1.6.3-18",
+      "1.7.7-37",
+      "2.3.2-5",
+      "2.3.3-5"
+    ],
+    "fts_has_pivot": false
+  },
+  {
+    "id": "implantations",
+    "name": "Deux implantations / règlement études",
+    "theme": "Organisation",
+    "cda": "49466",
+    "articles": [
+      "1.5.1-8"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1.5.1-8": {
+        "exists": true,
+        "preview": "Article 1.5.1-8. - § 1er. Tout pouvoir organisateur établit, pour chaque  niveau d'enseignement, son"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1.5.1-8"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "personne-confiance",
+    "name": "Personne de confiance / harcèlement",
+    "theme": "Bien-être",
+    "cda": "45031",
+    "articles": [
+      "32sexies"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "32sexies": {
+        "exists": true,
+        "preview": "Article 32sexies. - § 1er. L'employeur peut désigner une ou plusieurs personnes de confiance parmi l"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "32sexies"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "changement-option",
+    "name": "Changement d'option après 15/11",
+    "theme": "Admission / inscription",
+    "cda": "10450",
+    "articles": [
+      "12",
+      "19"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "12": {
+        "exists": true,
+        "preview": "§ 1er, 1°, du décret du 3 juillet 1991  organisant l'enseignement secondaire en alternance; [complét"
+      },
+      "19": {
+        "exists": true,
+        "preview": "§ 1er, de l'arrêté du  Gouvernement de la Communauté française du 31 août 1992 exécutant le Décret d"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [],
+    "fts_has_pivot": false
+  },
+  {
+    "id": "periodes-45min",
+    "name": "Périodes de 45 minutes",
+    "theme": "Organisation horaire",
+    "cda": "10450",
+    "articles": [
+      "2"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "2": {
+        "exists": true,
+        "preview": "Article 2. - Pour l'application du présent arrêté :  1° «Enseignement secondaire de type I» désigne "
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "1er"
+    ],
+    "fts_has_pivot": false
+  },
+  {
+    "id": "daspa",
+    "name": "DASPA / primo-arrivants",
+    "theme": "DASPA / FLA",
+    "cda": "46275",
+    "articles": [
+      "2",
+      "3"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "2": {
+        "exists": true,
+        "preview": "Article 2. - Pour l'application du présent décret, on entend par : 1° élève primo-arrivant : l'élève"
+      },
+      "3": {
+        "exists": true,
+        "preview": "Article 3. - Le décret poursuit les objectifs suivants :    1° assurer l'accueil, l'orientation et l"
+      }
+    },
+    "all_articles_ok": true,
+    "fts_results": [
+      "2",
+      "5",
+      "11",
+      "18",
+      "10"
+    ],
+    "fts_has_pivot": true
+  },
+  {
+    "id": "obligation-scolaire",
+    "name": "Obligation scolaire à temps plein",
+    "theme": "Obligation scolaire",
+    "cda": "9547",
+    "articles": [
+      "1"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "1": {
+        "exists": false,
+        "preview": null
+      }
+    },
+    "all_articles_ok": false,
+    "fts_results": [
+      "13",
+      "10",
+      "1er",
+      "12"
+    ],
+    "fts_has_pivot": false
+  },
+  {
+    "id": "missions-prioritaires",
+    "name": "Missions prioritaires de l'enseignement",
+    "theme": "Missions",
+    "cda": "21557",
+    "articles": [
+      "6"
+    ],
+    "cda_in_db": true,
+    "articles_present": {
+      "6": {
+        "exists": false,
+        "preview": null
+      }
+    },
+    "all_articles_ok": false,
+    "fts_results": [
+      "24",
+      "5",
+      "34",
+      "125",
+      "109"
+    ],
+    "fts_has_pivot": false
+  }
+]

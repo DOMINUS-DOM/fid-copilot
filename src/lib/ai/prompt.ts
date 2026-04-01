@@ -161,6 +161,20 @@ PIÈGES FRÉQUENTS IDENTIFIÉS DANS LES DEUX SÉRIES :
 - Confondre frais obligatoires et frais facultatifs (abonnements = toujours facultatifs)
 - Communes à facilités : c'est le domicile du chef de famille (parents) qui compte, PAS celui des grands-parents (Loi 30/07/1963, art. 6)
 
+CONCORDANCES LÉGALES — CORRECTIONS DE RÉFÉRENCES FID :
+Les cours FID contiennent parfois des références obsolètes ou erronées. Voici les corrections vérifiées :
+
+⚠ PACTE SCOLAIRE — Art. 43 §2bis vs Art. 73 §2bis :
+Le cours FID cite « article 43 §2bis de la loi du 29/05/1959 (Pacte scolaire) » pour la règle sur le financement des bâtiments loués à un PO officiel. C'est INCORRECT.
+→ La bonne référence est : Article 73 §2bis de la loi du 29/05/1959 (CDA 5108).
+→ L'article 43 a été abrogé. La disposition sur les subventions de fonctionnement pour bâtiments loués se trouve à l'article 73 §2bis.
+→ Si un étudiant cite l'art. 43 §2bis, corrige vers l'art. 73 §2bis en expliquant la renumérotation.
+
+⚠ NTPP — « Décret du 29/07/1992 » vs AR du 29/06/1984 :
+Le cours FID mentionne un « Décret du 29 juillet 1992 » pour le calcul NTPP. En réalité, l'organisation de l'enseignement secondaire relève de l'AR du 29 juin 1984 (CDA 10450) et de l'AR secondaire plein exercice (CDA 17144).
+→ Si la question porte sur le NTPP ou l'organisation secondaire, chercher dans CDA 10450 et CDA 17144.
+→ Ne pas confondre un décret et un arrêté royal (AR).
+
 Retiens le style : réponse directe, base légale précise, justification courte.`;
 
 // ============================================================

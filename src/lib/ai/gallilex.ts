@@ -40,7 +40,10 @@ export const CDA_REGISTRY: Record<string, { title: string; shortTitle: string }>
   "47165": { title: "Décret — Socles de compétences / Gouvernance", shortTitle: "Socles / Gouvernance" },
   "47237": { title: "Décret du 10 janvier 2019 — Inspection", shortTitle: "Inspection" },
   "49466": { title: "Code de l'enseignement fondamental et secondaire", shortTitle: "Code enseignement" },
+  "51683": { title: "Décret relatif à l'évaluation des membres du personnel", shortTitle: "Évaluation personnels" },
   "51784": { title: "Décret — Normes d'encadrement / Conditions d'admission", shortTitle: "Normes encadrement" },
+  "25174": { title: "Décret du 5 juillet 2000 — Régime des congés, disponibilités et mises en disponibilité", shortTitle: "Régime des congés" },
+  "23189": { title: "Décret relatif à la formation en cours de carrière dans l'enseignement — ESAHR", shortTitle: "Formation carrière ESAHR" },
 };
 
 // ============================================================
@@ -148,7 +151,8 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   // Inspection
   "inspection": ["5108", "46239", "47237"],
   "manquement": ["47237", "46239"],
-  "évaluation externe": ["47237", "49466"],
+  "évaluation externe": ["49466", "47237"],
+  "passation": ["49466"],
 
   // Langue et régime linguistique
   "langue": ["4329", "46275"],
@@ -172,7 +176,7 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "répertoire des options": ["45721"],
 
   // Personnel
-  "personnel": ["31886", "40701", "5556", "46287"],
+  "personnel": ["31886", "40701", "5556", "46287", "25174"],
   "titres": ["5108", "31886", "40701", "45721", "32365"],
   "barèmes": ["40701", "5556"],
   "ancienneté": ["31886", "40701", "5556"],
@@ -181,12 +185,19 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "travail collaboratif": ["46287"],
   "référent numérique": ["46287"],
   "éducateur": ["47114"],
+  "congé": ["25174"],
+  "disponibilité": ["25174"],
+  "maladie": ["25174"],
+  "mise en disponibilité": ["25174"],
+  "traitement attente": ["25174"],
 
   // Relations école-parents
   "parents": ["5108", "31886", "21557", "49466"],
   "relations école-parents": ["5108", "31886"],
   "frais scolaires": ["49466"],
   "gratuité": ["49466"],
+  "règlement études": ["49466", "10450"],
+  "règlement des études": ["49466", "10450"],
 
   // Sécurité
   "sécurité": ["31886", "28737", "45031", "46239"],
@@ -205,11 +216,19 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "type 7": ["28737"], "type 8": ["28737"],
 
   // Formation continue
-  "formation continue": ["49466", "46287"],
+  "formation continue": ["49466", "46287", "23189"],
   "formation collective": ["49466"],
   "journée pédagogique": ["49466"],
-  "formation professionnelle": ["49466", "46287"],
+  "formation professionnelle": ["49466", "46287", "23189"],
   "plan de formation": ["45593", "46287"],
+  "ESAHR": ["23189"],
+  "formation carrière": ["23189"],
+
+  // Évaluation des personnels
+  "évaluation personnel": ["51683"],
+  "évaluation membres du personnel": ["51683"],
+  "rapport évaluation": ["51683"],
+  "bulletin de signalement": ["51683"],
 
   // Structures
   "premier degré": ["30998", "10450"],
@@ -226,6 +245,218 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "sportif": ["9226"],
   "sportif rémunéré": ["9226"],
 };
+
+// ============================================================
+// PIVOT ARTICLES — direct article injection for FID exam accuracy
+// Maps question keywords to specific article_numbers that MUST
+// be fetched, because FTS alone may not surface them reliably.
+// ============================================================
+
+export interface PivotArticle {
+  cdaCode: string;
+  articleNumber: string;
+  label: string;
+}
+
+const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
+  // Frais scolaires / gratuité
+  "frais scolaires": [
+    { cdaCode: "49466", articleNumber: "1.7.2-2", label: "Frais scolaires autorisés" },
+    { cdaCode: "49466", articleNumber: "1.7.2-1", label: "Interdiction du minerval" },
+  ],
+  "minerval": [
+    { cdaCode: "49466", articleNumber: "1.7.2-1", label: "Interdiction du minerval" },
+    { cdaCode: "49466", articleNumber: "1.7.2-2", label: "Frais scolaires autorisés" },
+  ],
+  "gratuité": [
+    { cdaCode: "49466", articleNumber: "1.7.2-1", label: "Gratuité d'accès" },
+    { cdaCode: "49466", articleNumber: "1.7.2-2", label: "Frais scolaires autorisés" },
+  ],
+
+  // Absences / fréquentation
+  "absence": [
+    { cdaCode: "49466", articleNumber: "1.7.1-9", label: "Registre de fréquentation / absences injustifiées" },
+    { cdaCode: "49466", articleNumber: "1.7.1-8", label: "Contrôle de la fréquentation" },
+  ],
+  "absence justifiée": [
+    { cdaCode: "49466", articleNumber: "1.7.1-8", label: "Contrôle fréquentation / motifs d'absence" },
+  ],
+  "fréquentation": [
+    { cdaCode: "49466", articleNumber: "1.7.1-9", label: "Registre de fréquentation" },
+    { cdaCode: "49466", articleNumber: "1.7.1-8", label: "Contrôle de la fréquentation" },
+  ],
+  "registre": [
+    { cdaCode: "49466", articleNumber: "1.7.1-9", label: "Registre de fréquentation" },
+  ],
+
+  // Aménagements raisonnables
+  "aménagements raisonnables": [
+    { cdaCode: "49466", articleNumber: "1.7.8-1", label: "Aménagements raisonnables" },
+  ],
+  "aménagement": [
+    { cdaCode: "49466", articleNumber: "1.7.8-1", label: "Aménagements raisonnables" },
+  ],
+  "besoins spécifiques": [
+    { cdaCode: "49466", articleNumber: "1.7.8-1", label: "Aménagements raisonnables" },
+  ],
+
+  // Exclusion / écartement
+  "exclusion": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Exclusion définitive" },
+    { cdaCode: "49466", articleNumber: "1.7.9-5", label: "Écartement provisoire" },
+    { cdaCode: "49466", articleNumber: "1.7.9-6", label: "Procédure d'exclusion" },
+  ],
+  "exclusion définitive": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Exclusion définitive" },
+    { cdaCode: "49466", articleNumber: "1.7.9-6", label: "Procédure d'exclusion" },
+  ],
+  "écartement": [
+    { cdaCode: "49466", articleNumber: "1.7.9-5", label: "Écartement provisoire" },
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Exclusion définitive" },
+  ],
+
+  // DAccE
+  "DAccE": [
+    { cdaCode: "49466", articleNumber: "1.10.2-2", label: "DAccE — volets et contenu" },
+    { cdaCode: "49466", articleNumber: "1.10.2-3", label: "DAccE — données disciplinaires interdites" },
+    { cdaCode: "49466", articleNumber: "1.10.3-1", label: "DAccE — accès" },
+  ],
+  "dossier accompagnement": [
+    { cdaCode: "49466", articleNumber: "1.10.2-2", label: "DAccE — volets et contenu" },
+    { cdaCode: "49466", articleNumber: "1.10.3-1", label: "DAccE — accès" },
+  ],
+
+  // Évaluations externes
+  "évaluation externe": [
+    { cdaCode: "49466", articleNumber: "1.6.3-10", label: "Responsabilités évaluations externes" },
+  ],
+  "évaluations externes": [
+    { cdaCode: "49466", articleNumber: "1.6.3-10", label: "Responsabilités évaluations externes" },
+  ],
+  "passation": [
+    { cdaCode: "49466", articleNumber: "1.6.3-10", label: "Responsabilités évaluations externes" },
+  ],
+
+  // Règlement des études / implantations
+  "règlement des études": [
+    { cdaCode: "49466", articleNumber: "1.5.1-8", label: "Règlement des études" },
+  ],
+  "règlement études": [
+    { cdaCode: "49466", articleNumber: "1.5.1-8", label: "Règlement des études" },
+  ],
+  "implantation": [
+    { cdaCode: "49466", articleNumber: "1.5.1-8", label: "Règlement des études par implantation" },
+  ],
+
+  // Personne de confiance
+  "personne de confiance": [
+    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance" },
+  ],
+  "harcèlement": [
+    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance" },
+  ],
+
+  // Obligation scolaire
+  "obligation scolaire": [
+    { cdaCode: "9547", articleNumber: "1er", label: "Obligation scolaire" },
+  ],
+
+  // Changement d'option (secondaire)
+  "changement option": [
+    { cdaCode: "10450", articleNumber: "12", label: "Conditions de changement de forme/section/option" },
+    { cdaCode: "10450", articleNumber: "19", label: "Délais changement d'option" },
+  ],
+  "option": [
+    { cdaCode: "10450", articleNumber: "12", label: "Conditions de changement de forme/section/option" },
+  ],
+
+  // Périodes de cours
+  "période": [
+    { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+  ],
+  "45 minutes": [
+    { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+  ],
+  "horaire": [
+    { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+  ],
+
+  // DASPA / primo-arrivants
+  "DASPA": [
+    { cdaCode: "46275", articleNumber: "2", label: "Définitions DASPA / primo-arrivant" },
+    { cdaCode: "46275", articleNumber: "3", label: "Objectifs du DASPA" },
+  ],
+  "primo-arrivant": [
+    { cdaCode: "46275", articleNumber: "2", label: "Définitions — élève primo-arrivant" },
+  ],
+
+  // Missions prioritaires
+  "missions prioritaires": [
+    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires de l'enseignement" },
+  ],
+  "missions": [
+    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires de l'enseignement" },
+  ],
+
+  // Contrats d'objectifs
+  "contrat d'objectifs": [
+    { cdaCode: "49466", articleNumber: "1.5.2-10", label: "Suivi rapproché" },
+  ],
+
+  // Formation continue
+  "formation collective": [
+    { cdaCode: "49466", articleNumber: "6.1.3-2", label: "Formation collective obligatoire" },
+  ],
+  "journée pédagogique": [
+    { cdaCode: "49466", articleNumber: "6.1.3-2", label: "Formation collective obligatoire" },
+  ],
+
+  // Travail collaboratif
+  "travail collaboratif": [
+    { cdaCode: "46287", articleNumber: "15", label: "Volume travail collaboratif" },
+  ],
+};
+
+/**
+ * Find pivot articles that should be directly fetched based on question keywords.
+ * These articles are critical for FID exam accuracy and may not surface via FTS alone.
+ */
+export function findPivotArticles(keywords: string[]): PivotArticle[] {
+  const questionLower = keywords.join(" ").toLowerCase();
+  const found: PivotArticle[] = [];
+  const seen = new Set<string>();
+
+  for (const [trigger, articles] of Object.entries(PIVOT_ARTICLE_MAP)) {
+    const triggerLower = trigger.toLowerCase();
+    let matched = false;
+
+    // Check if any keyword contains the trigger or vice versa
+    for (const kw of keywords) {
+      const kwLower = kw.toLowerCase();
+      if (kwLower.includes(triggerLower) || triggerLower.includes(kwLower)) {
+        matched = true;
+        break;
+      }
+    }
+
+    // Also check full question text
+    if (!matched && questionLower.includes(triggerLower)) {
+      matched = true;
+    }
+
+    if (matched) {
+      for (const art of articles) {
+        const key = `${art.cdaCode}:${art.articleNumber}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          found.push(art);
+        }
+      }
+    }
+  }
+
+  return found.slice(0, 5); // Max 5 pivot articles
+}
 
 // ============================================================
 // SEARCH FUNCTION — find CDA codes relevant to a question

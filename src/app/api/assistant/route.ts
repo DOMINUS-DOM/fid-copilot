@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
-import { searchGallilex, formatGallilexContext } from "@/lib/ai/gallilex";
+import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
 import {
   type Document,
@@ -308,10 +308,56 @@ export async function POST(request: Request) {
         .limit(MAX_LEGAL_CHUNKS + 3) // Allow more chunks since we search more CDAs
         .returns<LegalChunk[]>();
 
-      if (chunks && chunks.length > 0) {
+      // Pivot article injection: fetch known-critical articles by article_number
+      // This ensures FID exam pivot articles appear even if FTS doesn't rank them
+      const pivotArticles = findPivotArticles(keywords);
+      let pivotChunks: LegalChunk[] = [];
+      if (pivotArticles.length > 0) {
+        const pivotQueries = pivotArticles.map((p) =>
+          supabase
+            .from("legal_chunks")
+            .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
+            .eq("cda_code", p.cdaCode)
+            .eq("article_number", p.articleNumber)
+            .limit(1)
+            .returns<LegalChunk[]>()
+        );
+        const pivotResults = await Promise.all(pivotQueries);
+        for (const { data } of pivotResults) {
+          if (data && data.length > 0) {
+            pivotChunks.push(data[0]);
+          }
+        }
+      }
+
+      // Merge: pivot chunks first (deduplicated), then FTS chunks
+      const allChunks: LegalChunk[] = [];
+      const seenArticles = new Set<string>();
+
+      // Add pivot chunks first (highest priority)
+      for (const pc of pivotChunks) {
+        const key = `${pc.cda_code}:${pc.article_number}`;
+        if (!seenArticles.has(key)) {
+          seenArticles.add(key);
+          allChunks.push(pc);
+        }
+      }
+
+      // Add FTS chunks (dedup against pivots)
+      if (chunks) {
+        for (const c of chunks) {
+          const key = `${c.cda_code}:${c.article_number}`;
+          if (!seenArticles.has(key)) {
+            seenArticles.add(key);
+            allChunks.push(c);
+          }
+        }
+      }
+
+      if (allChunks.length > 0) {
         let totalChars = 0;
-        const kept: typeof chunks = [];
-        for (const chunk of chunks) {
+        const kept: typeof allChunks = [];
+        for (const chunk of allChunks) {
           if (totalChars + chunk.content.length > MAX_CHUNK_CHARS) break;
           kept.push(chunk);
           totalChars += chunk.content.length;
