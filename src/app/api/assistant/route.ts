@@ -535,13 +535,50 @@ export async function POST(request: Request) {
         .eq("id", logRow.id);
     }
 
+    // 11. Build legal references for the frontend
+    // Verified citations first, then complement with pivot/context articles
+    const verifiedSet = new Set(guardResult.citationsVerified.map((a) => a.toLowerCase()));
+    const legalRefs: { articleNumber: string; cdaCode: string; citationDisplay: string | null }[] = [];
+    const seenRefs = new Set<string>();
+
+    // Add verified citations (articles the LLM actually cited)
+    for (const chunk of allChunks) {
+      if (!chunk.article_number) continue;
+      const norm = chunk.article_number.toLowerCase();
+      if (verifiedSet.has(norm) && !seenRefs.has(norm)) {
+        seenRefs.add(norm);
+        legalRefs.push({
+          articleNumber: chunk.article_number,
+          cdaCode: chunk.cda_code,
+          citationDisplay: chunk.citation_display ?? null,
+        });
+      }
+    }
+
+    // Complement with other injected articles (pivots + FTS), up to 6 total
+    for (const chunk of allChunks) {
+      if (legalRefs.length >= 6) break;
+      if (!chunk.article_number) continue;
+      const norm = chunk.article_number.toLowerCase();
+      if (!seenRefs.has(norm)) {
+        seenRefs.add(norm);
+        legalRefs.push({
+          articleNumber: chunk.article_number,
+          cdaCode: chunk.cda_code,
+          citationDisplay: chunk.citation_display ?? null,
+        });
+      }
+    }
+
     return NextResponse.json({
       answer: sanitizedAnswer,
       sources,
       confidence,
       gallilex,
       mode,
+      logId: logRow?.id ?? null,
       schoolContextUsed: schoolExtracts.length > 0,
+      legalRefs,
       citationGuard: guardResult.hadUnverifiedCitations
         ? {
             unverified: guardResult.citationsUnverified,

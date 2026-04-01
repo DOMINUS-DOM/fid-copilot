@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/ui/markdown-content";
+import { LegalReferences } from "@/components/assistant/legal-references";
 import {
   type AssistantMode,
   type AssistantSource,
@@ -14,6 +15,17 @@ import {
   CATEGORY_LABELS,
   CONFIDENCE_CONFIG,
 } from "@/types";
+
+interface LegalRef {
+  articleNumber: string;
+  cdaCode: string;
+  citationDisplay: string | null;
+}
+
+interface CitationGuardResult {
+  citationsVerified: string[];
+  unverified: string[];
+}
 
 // ============================================================
 // Section design system
@@ -105,6 +117,10 @@ export function AssistantChat() {
   const [schoolContextUsed, setSchoolContextUsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [logId, setLogId] = useState<string | null>(null);
+  const [legalRefs, setLegalRefs] = useState<LegalRef[]>([]);
+  const [citationGuard, setCitationGuard] = useState<CitationGuardResult | null>(null);
+  const [rating, setRating] = useState<"up" | "down" | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -117,6 +133,10 @@ export function AssistantChat() {
     setConfidence(null);
     setGallilex([]);
     setSchoolContextUsed(false);
+    setLogId(null);
+    setLegalRefs([]);
+    setCitationGuard(null);
+    setRating(null);
     setLoading(true);
 
     try {
@@ -135,6 +155,9 @@ export function AssistantChat() {
       setConfidence(data.confidence ?? null);
       setGallilex(data.gallilex ?? []);
       setSchoolContextUsed(data.schoolContextUsed ?? false);
+      setLogId(data.logId ?? null);
+      setLegalRefs(data.legalRefs ?? []);
+      setCitationGuard(data.citationGuard ?? null);
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -207,14 +230,105 @@ export function AssistantChat() {
         </div>
       )}
 
+      {/* Citation guard warning */}
+      {citationGuard && citationGuard.unverified.length > 0 && (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 sm:p-5 dark:border-amber-900/40 dark:bg-amber-950/10">
+          <svg className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          <div>
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+              Certaines références n&apos;ont pas pu être vérifiées
+            </p>
+            <p className="mt-1 text-xs text-amber-700/80 dark:text-amber-400/70">
+              {citationGuard.unverified.length === 1
+                ? `L'article ${citationGuard.unverified[0]} cité dans la réponse ne figure pas dans les sources consultées. Vérifiez-le sur Gallilex.`
+                : `Les articles ${citationGuard.unverified.join(", ")} cités dans la réponse ne figurent pas dans les sources consultées. Vérifiez-les sur Gallilex.`}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Response */}
       {answer && <StructuredResponse content={answer} />}
+
+      {/* Feedback */}
+      {answer && logId && (
+        <FeedbackButtons logId={logId} rating={rating} onRate={setRating} />
+      )}
+
+      {/* Legal references */}
+      {legalRefs.length > 0 && <LegalReferences refs={legalRefs} />}
 
       {/* Gallilex */}
       {gallilex.length > 0 && <GallilexFallback hints={gallilex} />}
 
       {/* Sources */}
       {sources.length > 0 && <SourcesPanel sources={sources} />}
+    </div>
+  );
+}
+
+// ============================================================
+// Feedback Buttons
+// ============================================================
+
+function FeedbackButtons({
+  logId,
+  rating,
+  onRate,
+}: {
+  logId: string;
+  rating: "up" | "down" | null;
+  onRate: (r: "up" | "down" | null) => void;
+}) {
+  async function handleRate(value: "up" | "down") {
+    const newRating = rating === value ? null : value;
+    onRate(newRating);
+    try {
+      await fetch(`/api/history/${logId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating: newRating }),
+      });
+    } catch {
+      // Silently fail — UI already updated optimistically
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-1">
+      <span className="mr-2 text-xs text-zinc-400 dark:text-zinc-600">Cette réponse vous a-t-elle aidé ?</span>
+      <button
+        type="button"
+        onClick={() => handleRate("up")}
+        className={cn(
+          "rounded-lg p-1.5 transition-colors",
+          rating === "up"
+            ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400"
+            : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-400"
+        )}
+        aria-label="Réponse utile"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904m.729-5.305V10.25m0 5.305A2.25 2.25 0 014.383 17.5H3.75a.75.75 0 01-.75-.75V10a.75.75 0 01.75-.75h.633c.803 0 1.5.532 1.75 1.305" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={() => handleRate("down")}
+        className={cn(
+          "rounded-lg p-1.5 transition-colors",
+          rating === "down"
+            ? "bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400"
+            : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-400"
+        )}
+        aria-label="Réponse peu utile"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 012.25 12.25c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23h1.294M7.498 15.25c.618 0 1.02.532 1.303 1.08a9.04 9.04 0 002.861 2.4c.723.384 1.35.956 1.653 1.715a4.498 4.498 0 01.322 1.672V21a.75.75 0 00.75.75 2.25 2.25 0 002.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H13.51" />
+        </svg>
+      </button>
     </div>
   );
 }
