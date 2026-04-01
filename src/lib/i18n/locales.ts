@@ -154,6 +154,55 @@ export interface Messages {
     visionCta: string;
     visionCtaSecondary: string;
   };
+  narrative: {
+    sectionTitle: string;
+    sectionSubtitle: string;
+    scenes: {
+      complexity: { title: string; subtitle: string };
+      chaos: { title: string; subtitle: string; labels: string[] };
+      appear: { subtitle: string; tagline: string };
+      import: { badge: string; title: string; files: string[] };
+      adapt: { title: string; keyMessage: string };
+      generate: { title: string };
+      secure: { title: string; subtitle: string; badges: string[] };
+      difference: { title: string; genericLabel: string; copilotLabel: string; genericPoints: string[]; copilotPoints: string[] };
+      conclusion: { title: string; subtitle: string; badges: string[] };
+    };
+    structureLabels: string[];
+  };
+  demoAssistant: {
+    sectionLabel: string;
+    sectionTitle: string;
+    scenarios: {
+      theme: string;
+      question: string;
+      reference: string;
+      answer: string;
+      legalPoints: string[];
+    }[];
+  };
+  demoDocument: {
+    sectionLabel: string;
+    sectionTitle: string;
+    inputPlaceholder: string;
+    typedText: string;
+    analyzeLabel: string;
+    analyzeSteps: string[];
+    generateLabel: string;
+    docHeader: string;
+    docAddress: string;
+    docSubject: string;
+    docBody: string[];
+    legalHighlight: string;
+    legalBadgeTitle: string;
+    legalBadgeRef: string;
+    legalHighlight2: string;
+    interactTitle: string;
+    interactButtons: string[];
+    interactVariants: string[];
+    exportButton: string;
+    exportSuccess: string;
+  };
 }
 
 // ============================================================
