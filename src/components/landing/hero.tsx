@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Shield, MessageSquare, Scale, GraduationCap, BookOpen, Building2 } from "lucide-react";
 import { APP_VERSION_LABEL } from "@/lib/version";
 import { type Messages } from "@/lib/i18n/locales";
+// Animations moved to dedicated section (DemoAnimations)
 
 interface HeroProps {
   isAuthenticated?: boolean;
