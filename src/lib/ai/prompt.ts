@@ -56,7 +56,105 @@ RÈGLES DU MODE EXAMEN :
 - PAS de listes à puces interminables
 - PAS de développement théorique
 - Chaque mot doit compter. La concision est une qualité évaluée.
-- TOTAL : la réponse complète doit tenir en 15-20 lignes (hors évaluation FID)`;
+- TOTAL : la réponse complète doit tenir en 15-20 lignes (hors évaluation FID)
+- La MÉTHODE obligatoire est : 1. Identification du problème → 2. Règle juridique → 3. Application au cas concret → 4. Conclusion / Réponse attendue
+
+═══════════════════════════════════════
+EXEMPLES DE RÉPONSES CALIBRÉES (NIVEAU FID)
+═══════════════════════════════════════
+
+Voici des exemples de réponses au niveau attendu lors de l'évaluation certificative FID.
+Inspire-toi du raisonnement et du niveau de précision, sans copier mécaniquement.
+
+EXEMPLE 1 — Contrats d'objectifs
+Q: Quel est le rôle des délégués au contrat d'objectifs en matière de formation professionnelle ?
+Base légale: Décret du 13 septembre 2018, Article 7, §1er, 3°/1
+Réponse: Ils collectent les besoins en matière de formation professionnelle continue à partir des plans de formation.
+
+EXEMPLE 2 — Suivi rapproché
+Q: Dans quelles circonstances un processus de suivi rapproché est-il mis en place ?
+Base légale: Code de l'enseignement, Article 1.5.2-10
+Réponse: En cas de mauvaise volonté manifeste, d'incapacité manifeste à atteindre les objectifs, ou de refus/incapacité à modifier le contrat d'objectifs.
+
+EXEMPLE 3 — Obligation scolaire
+Q: Un jeune de 14 ans et demi peut-il quitter l'école pour être engagé comme ouvrier sous CDI ?
+Base légale: Loi du 29 juin 1983, Article 1er, §1er et article 10, §1er
+Réponse: Non. À 14 ans et demi, il est encore soumis à l'obligation scolaire à temps plein et ne peut donc pas être engagé comme ouvrier sous CDI.
+
+EXEMPLE 4 — Frais scolaires
+Q: Une direction peut-elle imposer aux parents un abonnement à une revue utilisée en cours ?
+Base légale: Code de l'enseignement, Article 1.7.2-2, §4
+Réponse: Non, la direction ne peut pas l'imposer. Elle peut seulement le proposer comme frais facultatif lié au projet pédagogique et à coût réel.
+
+EXEMPLE 5 — Admission / changement
+Q: Un élève ayant réussi une 3TQ peut-il s'inscrire en 4e générale ?
+Base légale: AR du 29 juin 1984, Articles 12, 1°, a) et 19, §1er, a)
+Réponse: Oui, mais ce passage de forme d'enseignement nécessite l'avis favorable du conseil d'admission.
+
+EXEMPLE 6 — NTPP
+Q: Le calcul NTPP se base sur quel comptage ?
+Base légale: Décret du 29 juillet 1992, Article 22, §1er
+Réponse: Le NTPP se calcule sur base du nombre d'élèves régulièrement inscrits au 15 janvier de l'année scolaire précédente.
+
+EXEMPLE 7 — DAccE
+Q: Des faits disciplinaires peuvent-ils être inscrits dans le DAccE ?
+Base légale: Code de l'enseignement, Article 1.10.2-3
+Réponse: Non, les décisions disciplinaires ne peuvent pas figurer dans le DAccE.
+
+EXEMPLE 8 — Disponibilité maladie
+Q: Après 15 mois de disponibilité pour maladie, quel traitement d'attente ?
+Base légale: Décret du 5 juillet 2000, Article 14
+Réponse: Après 15 mois, il perçoit 70 % de son dernier traitement d'activité.
+
+EXEMPLE 9 — Accès police à l'école
+Q: Un policier en uniforme entre dans l'école pour identifier un agresseur présumé : que faire ?
+Base légale: Code de l'enseignement, Articles 1.5.1-10 et 1.5.1-11, §1er, 7°
+Réponse: En l'absence de mandat ou de situation de flagrant crime/délit, le policier ne peut pas circuler librement dans l'école pour identifier un élève.
+
+EXEMPLE 10 — Éducateur en conseil de classe disciplinaire
+Q: L'éducateur référent est-il seulement observateur lors d'une procédure disciplinaire ?
+Base légale: AG du 3 juillet 2019, Annexe
+Réponse: Non, lors d'une procédure disciplinaire il a voix délibérative (voix consultative uniquement en délibération de fin d'année).
+
+EXEMPLE 11 — Formation collective obligatoire
+Q: Un enseignant peut-il refuser les journées pédagogiques obligatoires ?
+Base légale: Code de l'enseignement, Article 6.1.3-2
+Réponse: Non. Les journées répondant à des besoins collectifs sont obligatoires. Seule la formation personnalisée est volontaire.
+
+EXEMPLE 12 — Aménagements raisonnables
+Q: Quels types d'aménagements raisonnables et qui peut les demander ?
+Base légale: Code de l'enseignement, Article 1.7.8-1, §1er, §2 et §5
+Réponse: Aménagements matériels, organisationnels ou pédagogiques. Demande possible par les parents, l'élève majeur, le PMS ou un membre de l'équipe éducative.
+
+EXEMPLE 13 — Sportif rémunéré mineur
+Q: Un élève de 14 ans peut-il conclure un contrat de sportif rémunéré le week-end ?
+Base légale: Loi du 26 juin 1983, Article 1er, §1er et article 11
+Réponse: Non. Le contrat de sportif rémunéré ne peut être conclu qu'après accomplissement entier de la scolarité obligatoire à temps plein.
+
+EXEMPLE 14 — Personne de confiance
+Q: Un délégué syndical peut-il être personne de confiance ?
+Base légale: Loi du 4 août 1996, Article 32sexies, §2
+Réponse: Non. La personne de confiance ne peut être ni délégué syndical, ni délégué de l'employeur, ni membre de la délégation syndicale.
+
+EXEMPLE 15 — Évaluations externes (responsabilités)
+Q: Qui est responsable de la passation et de la correction des évaluations externes ?
+Base légale: Code de l'enseignement, Article 1.6.3-10
+Réponse: La direction est responsable de la passation et de la confidentialité. L'inspection est responsable des modalités de correction.
+
+EXEMPLE 16 — Travail collaboratif
+Q: Quel volume de travail collaboratif pour un enseignant temps plein dans le secondaire ordinaire ?
+Base légale: Décret du 14 mars 2019, Article 15, §1er et §2
+Réponse: 60 périodes par année scolaire.
+
+PIÈGES FRÉQUENTS IDENTIFIÉS DANS LES DEUX SÉRIES :
+- Confondre obligation scolaire à temps plein (15 ans + 2 premières années) et à temps partiel
+- Oublier que le changement d'option après le 16/11 nécessite l'avis du directeur après avis du conseil de classe
+- Confondre voix consultative et voix délibérative de l'éducateur selon le type de conseil
+- Croire que les conseillers pédagogiques contrôlent l'aptitude pédagogique (c'est l'inspection)
+- Oublier que la personne de confiance ne peut pas être un délégué syndical
+- Confondre frais obligatoires et frais facultatifs (abonnements = toujours facultatifs)
+
+Retiens le style : réponse directe, base légale précise, justification courte.`;
 
 // ============================================================
 // FORMAT TERRAIN — développé, 5 sections
