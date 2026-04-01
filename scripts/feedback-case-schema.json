@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "date", "question", "category", "actionDecidee", "statut"],
+        "properties": {
+          "id": { "type": "string", "description": "Identifiant unique du cas (ex: fb-001)" },
+          "logId": { "type": "string", "description": "UUID du log assistant_logs" },
+          "date": { "type": "string", "format": "date", "description": "Date du feedback" },
+          "question": { "type": "string", "description": "Question posée par l'utilisateur" },
+          "category": {
+            "type": "string",
+            "enum": ["MISSING_ARTICLE", "BAD_INDEX", "BAD_ROUTING", "MISSING_PIVOT", "BAD_CITATION", "VAGUE_RESPONSE", "STALE_REF", "OTHER"],
+            "description": "Catégorie unique de l'erreur"
+          },
+          "causeProbable": { "type": "string", "description": "Diagnostic en une phrase" },
+          "pivotAttendu": { "type": "string", "description": "Article pivot qui aurait dû être injecté" },
+          "articlesSentToLlm": { "type": "array", "items": { "type": "string" }, "description": "Articles effectivement envoyés au LLM" },
+          "cdaRouted": { "type": "array", "items": { "type": "string" }, "description": "CDA codes routés" },
+          "actionDecidee": { "type": "string", "description": "Correctif à appliquer" },
+          "fichiers": { "type": "array", "items": { "type": "string" }, "description": "Fichiers à modifier" },
+          "statut": {
+            "type": "string",
+            "enum": ["open", "in-progress", "fixed", "wont-fix", "example"],
+            "description": "État du traitement"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "./feedback-case-schema.json",
+  "cases": [
+    {
+      "id": "example-001",
+      "logId": "uuid-from-assistant-logs",
+      "date": "2026-04-01",
+      "question": "Un élève refuse de participer au cours de natation pour raisons religieuses",
+      "category": "MISSING_PIVOT",
+      "causeProbable": "Pas de pivot pour 'dispense cours' ou 'natation' → FTS seul ne remonte pas l'article pertinent",
+      "pivotAttendu": "Art. 30 CDA 49466",
+      "articlesSentToLlm": ["79", "80"],
+      "cdaRouted": ["49466"],
+      "actionDecidee": "Ajouter pivot 'dispense' → article 30 dans PIVOT_ARTICLE_MAP",
+      "fichiers": ["src/lib/ai/gallilex.ts", "src/__tests__/gallilex-routing.test.ts"],
+      "statut": "example"
+    }
+  ]
+}
