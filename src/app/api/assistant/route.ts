@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { geminiChat } from "@/lib/ai/gemini";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
 import {
   type Document,
@@ -9,14 +9,6 @@ import {
   type GallilexHint,
   type LegalChunk,
 } from "@/types";
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
-  }
-  return new OpenAI({ apiKey });
-}
 
 const MAX_CONTEXT_DOCS = 7;
 const MAX_LEGAL_CHUNKS = 5;
@@ -384,8 +376,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 6. OpenAI (avec mode + extraits légaux + contexte école)
-    const openai = getOpenAIClient();
+    // 6. Gemini (avec mode + extraits légaux + contexte école)
     const systemPrompt = buildSystemPrompt(selectedDocs, mode);
     let userMsg = buildUserMessage(question, mode);
 
@@ -397,17 +388,12 @@ export async function POST(request: Request) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE LOCAL — DOCUMENTS DE L'ÉCOLE (informatif, NE REMPLACE PAS la loi)\n═══════════════════════════════════════\n${schoolExtracts}`;
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMsg },
-      ],
+    const answer = await geminiChat({
+      systemPrompt,
+      userMessage: userMsg,
       temperature: 0.15,
-      max_tokens: 3500,
+      maxTokens: 3500,
     });
-
-    const answer = completion.choices[0]?.message?.content;
 
     if (!answer) {
       return NextResponse.json(

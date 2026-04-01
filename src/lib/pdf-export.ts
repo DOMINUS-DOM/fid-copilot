@@ -39,7 +39,7 @@ export async function exportToPdf(
     const p = data.prefs;
     let logoEndX = MARGIN_LEFT;
 
-    // Logo
+    // Logo — convert to canvas PNG data URL for jsPDF compatibility
     if (p.school_logo_url) {
       try {
         const img = await loadImage(p.school_logo_url);
@@ -49,10 +49,20 @@ export async function exportToPdf(
         let w = maxH * ratio;
         let h = maxH;
         if (w > maxW) { w = maxW; h = w / ratio; }
-        pdf.addImage(img.src, "PNG", MARGIN_LEFT, y, w, h);
-        logoEndX = MARGIN_LEFT + w + 5;
-      } catch {
-        // Logo failed to load — skip silently
+
+        // Render image to canvas to get a clean PNG data URL
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const pngDataUrl = canvas.toDataURL("image/png");
+          pdf.addImage(pngDataUrl, "PNG", MARGIN_LEFT, y, w, h);
+          logoEndX = MARGIN_LEFT + w + 5;
+        }
+      } catch (e) {
+        console.warn("[PDF] Logo failed to load:", e);
       }
     }
 

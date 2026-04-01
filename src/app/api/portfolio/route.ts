@@ -1,19 +1,11 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { geminiChat } from "@/lib/ai/gemini";
 import {
   buildPortfolioSystemPrompt,
   buildPortfolioUserMessage,
 } from "@/lib/ai/portfolio-prompt";
 import { type PortfolioAction, type PortfolioContext } from "@/types";
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
-  }
-  return new OpenAI({ apiKey });
-}
 
 const VALID_ACTIONS: PortfolioAction[] = ["structurer", "ameliorer", "challenger"];
 const VALID_CONTEXTS: PortfolioContext[] = ["posture", "module", "situation", "autoevaluation", "ecrit"];
@@ -61,26 +53,13 @@ export async function POST(request: Request) {
       .select("id")
       .single();
 
-    // 4. OpenAI
-    const openai = getOpenAIClient();
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: buildPortfolioSystemPrompt(action, context) },
-        { role: "user", content: buildPortfolioUserMessage(text, action, context) },
-      ],
+    // 4. Gemini
+    const answer = await geminiChat({
+      systemPrompt: buildPortfolioSystemPrompt(action, context),
+      userMessage: buildPortfolioUserMessage(text, action, context),
       temperature: 0.4,
-      max_tokens: 2000,
+      maxTokens: 2000,
     });
-
-    const answer = completion.choices[0]?.message?.content;
-
-    if (!answer) {
-      return NextResponse.json(
-        { error: "Réponse vide du modèle" },
-        { status: 500 }
-      );
-    }
 
     if (logRow?.id) {
       await supabase.from("assistant_logs").update({ response: answer }).eq("id", logRow.id);

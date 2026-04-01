@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { geminiChat } from "@/lib/ai/gemini";
 import {
   buildDecisionSystemPrompt,
   buildDecisionUserMessage,
@@ -11,12 +11,6 @@ import {
   type DecisionUrgency,
   type LegalChunk,
 } from "@/types";
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
-  return new OpenAI({ apiKey });
-}
 
 const MAX_CONTEXT_DOCS = 7;
 const MAX_LEGAL_CHUNKS = 5;
@@ -203,8 +197,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 8. OpenAI
-    const openai = getOpenAIClient();
+    // 8. Gemini
     let userMsg = buildDecisionUserMessage(situation, category ?? undefined, urgency ?? undefined);
 
     if (legalExtracts) {
@@ -214,20 +207,12 @@ export async function POST(request: Request) {
       userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE ÉCOLE (informatif)\n═══════════════════════════════════════\n${schoolExtracts}`;
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: buildDecisionSystemPrompt(selectedDocs) },
-        { role: "user", content: userMsg },
-      ],
+    const analysis = await geminiChat({
+      systemPrompt: buildDecisionSystemPrompt(selectedDocs),
+      userMessage: userMsg,
       temperature: 0.2,
-      max_tokens: 3000,
+      maxTokens: 3000,
     });
-
-    const analysis = completion.choices[0]?.message?.content;
-    if (!analysis) {
-      return NextResponse.json({ error: "Réponse vide du modèle" }, { status: 500 });
-    }
 
     // 9. Generate title from first line of situation
     const title = situation.length > 80

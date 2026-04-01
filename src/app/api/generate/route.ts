@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { geminiChat } from "@/lib/ai/gemini";
 import {
   buildGenerateSystemPrompt,
   buildGenerateUserMessage,
 } from "@/lib/ai/generate-prompt";
 import { type DocGenTone, type DocGenFormat } from "@/types";
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
-  return new OpenAI({ apiKey });
-}
 
 const VALID_TONES: DocGenTone[] = ["neutre", "ferme", "apaisant", "formel"];
 const VALID_FORMATS: DocGenFormat[] = ["email", "courrier", "note"];
@@ -66,36 +60,24 @@ export async function POST(request: Request) {
       .single();
 
     // Generate
-    const openai = getOpenAIClient();
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: buildGenerateSystemPrompt() },
-        {
-          role: "user",
-          content: buildGenerateUserMessage({
-            template: template || "document libre",
-            situation: situation.trim(),
-            tone,
-            format,
-            recipient: recipient?.trim() || undefined,
-            subject: subject?.trim() || undefined,
-            includePoints: includePoints?.trim() || undefined,
-            avoidPoints: avoidPoints?.trim() || undefined,
-            userName,
-            jobTitle: prefs?.job_title || undefined,
-            schoolName: prefs?.school_name || undefined,
-          }),
-        },
-      ],
+    const content = await geminiChat({
+      systemPrompt: buildGenerateSystemPrompt(),
+      userMessage: buildGenerateUserMessage({
+        template: template || "document libre",
+        situation: situation.trim(),
+        tone,
+        format,
+        recipient: recipient?.trim() || undefined,
+        subject: subject?.trim() || undefined,
+        includePoints: includePoints?.trim() || undefined,
+        avoidPoints: avoidPoints?.trim() || undefined,
+        userName,
+        jobTitle: prefs?.job_title || undefined,
+        schoolName: prefs?.school_name || undefined,
+      }),
       temperature: 0.4,
-      max_tokens: 2000,
+      maxTokens: 2000,
     });
-
-    const content = completion.choices[0]?.message?.content;
-    if (!content) {
-      return NextResponse.json({ error: "Réponse vide du modèle" }, { status: 500 });
-    }
 
     if (logRow?.id) {
       await supabase.from("assistant_logs").update({ response: content }).eq("id", logRow.id);

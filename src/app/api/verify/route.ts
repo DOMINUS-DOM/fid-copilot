@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { geminiChat } from "@/lib/ai/gemini";
 import { buildVerifySystemPrompt, buildVerifyUserMessage } from "@/lib/ai/verify-prompt";
 import { type VerifyType, type VerifyDepth } from "@/types";
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured");
-  return new OpenAI({ apiKey });
-}
 
 const VALID_TYPES: VerifyType[] = ["document", "courrier", "decision", "formulation"];
 const VALID_DEPTHS: VerifyDepth[] = ["rapide", "standard", "approfondi"];
@@ -38,23 +32,14 @@ export async function POST(request: Request) {
       .select("id")
       .single();
 
-    const openai = getOpenAIClient();
     const maxTokens = depth === "rapide" ? 1500 : depth === "standard" ? 2500 : 3500;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: buildVerifySystemPrompt() },
-        { role: "user", content: buildVerifyUserMessage({ type, content, context, depth }) },
-      ],
+    const analysis = await geminiChat({
+      systemPrompt: buildVerifySystemPrompt(),
+      userMessage: buildVerifyUserMessage({ type, content, context, depth }),
       temperature: 0.2,
-      max_tokens: maxTokens,
+      maxTokens,
     });
-
-    const analysis = completion.choices[0]?.message?.content;
-    if (!analysis) {
-      return NextResponse.json({ error: "Réponse vide du modèle" }, { status: 500 });
-    }
 
     if (logRow?.id) {
       await supabase.from("assistant_logs").update({ response: analysis }).eq("id", logRow.id);
