@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
 import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
+import { guardCitations } from "@/lib/ai/citation-guard";
 import {
   buildDecisionSystemPrompt,
   buildDecisionUserMessage,
@@ -123,6 +124,7 @@ export async function POST(request: Request) {
     const gallilexResults = searchGallilex(keywords, docCdaCodes);
     const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexResults.map((r) => r.cdaCode)])];
     let legalExtracts = "";
+    const allChunks: LegalChunk[] = [];
 
     if (allCdaCodes.length > 0 && keywords.length > 0) {
       const tsQuery = keywords.slice(0, 5).join(" | ");
@@ -154,7 +156,6 @@ export async function POST(request: Request) {
       }
 
       // Merge: pivot chunks first, then FTS chunks (deduplicated)
-      const allChunks: LegalChunk[] = [];
       const seenArticles = new Set<string>();
       for (const pc of pivotChunks) {
         const key = `${pc.cda_code}:${pc.article_number}`;
@@ -247,12 +248,30 @@ export async function POST(request: Request) {
     const gallilexCtx = formatGallilexContext(gallilexResults, docCdaCodes);
     if (gallilexCtx) userMsg += gallilexCtx;
 
-    const analysis = await geminiChat({
+    const t0 = Date.now();
+    const aiResult = await geminiChat({
       systemPrompt: buildDecisionSystemPrompt(selectedDocs),
       userMessage: userMsg,
       temperature: 0.2,
       maxTokens: 3000,
     });
+    const latencyMs = Date.now() - t0;
+
+    const analysis = aiResult.text;
+
+    // 8b. Citation guard — validate article references against injected context
+    const contextArticleNumbers = allChunks
+      .map((c: LegalChunk) => c.article_number)
+      .filter(Boolean) as string[];
+    const guardResult = guardCitations(analysis ?? "", contextArticleNumbers);
+    const sanitizedAnalysis = guardResult.sanitizedAnswer;
+
+    if (guardResult.hadUnverifiedCitations) {
+      console.warn(
+        "[Citation Guard /decision] Unverified:",
+        guardResult.citationsUnverified
+      );
+    }
 
     // 9. Generate title from first line of situation
     const title = situation.length > 80
@@ -268,7 +287,7 @@ export async function POST(request: Request) {
         situation,
         category,
         urgency,
-        analysis,
+        analysis: sanitizedAnalysis,
         status: "open",
       })
       .select("id")
@@ -287,13 +306,31 @@ export async function POST(request: Request) {
       source_url: doc.source_url,
     }));
 
+    // Pipeline metadata for audit trail
+    const pipelineMetadata = {
+      cdaRouted: allCdaCodes,
+      pivotArticles: findPivotArticles(keywords).map((p) => `${p.cdaCode}:${p.articleNumber}`),
+      articlesSentToLlm: contextArticleNumbers,
+      model: aiResult.model,
+      latencyMs,
+      category,
+      urgency,
+      citationGuard: {
+        verified: guardResult.citationsVerified,
+        unverified: guardResult.citationsUnverified,
+      },
+    };
+
     if (logRow?.id) {
-      await supabase.from("assistant_logs").update({ response: analysis }).eq("id", logRow.id);
+      await supabase
+        .from("assistant_logs")
+        .update({ response: sanitizedAnalysis, metadata: pipelineMetadata })
+        .eq("id", logRow.id);
     }
 
     return NextResponse.json({
       id: decision?.id ?? null,
-      analysis,
+      analysis: sanitizedAnalysis,
       sources,
       schoolContextUsed: schoolExtracts.length > 0,
     });

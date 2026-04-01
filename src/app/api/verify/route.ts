@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     const maxTokens = depth === "rapide" ? 1500 : depth === "standard" ? 2500 : 3500;
 
-    const analysis = await geminiChat({
+    const aiResult = await geminiChat({
       systemPrompt: buildVerifySystemPrompt(),
       userMessage: buildVerifyUserMessage({ type, content, context, depth }),
       temperature: 0.2,
@@ -42,10 +42,10 @@ export async function POST(request: Request) {
     });
 
     if (logRow?.id) {
-      await supabase.from("assistant_logs").update({ response: analysis }).eq("id", logRow.id);
+      await supabase.from("assistant_logs").update({ response: aiResult.text }).eq("id", logRow.id);
     }
 
-    return NextResponse.json({ analysis, type, depth });
+    return NextResponse.json({ analysis: aiResult.text, type, depth });
   } catch (error) {
     console.error("[API /verify]", error);
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });

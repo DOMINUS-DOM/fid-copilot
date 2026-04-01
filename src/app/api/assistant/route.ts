@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
 import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
+import { guardCitations } from "@/lib/ai/citation-guard";
 import {
   type Document,
   type AssistantMode,
@@ -295,6 +296,7 @@ export async function POST(request: Request) {
     const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexCdaCodes])];
 
     let legalExtracts = "";
+    const allChunks: LegalChunk[] = [];
 
     if (allCdaCodes.length > 0 && keywords.length > 0) {
       // Construire la requête full-text avec les mots-clés
@@ -331,7 +333,6 @@ export async function POST(request: Request) {
       }
 
       // Merge: pivot chunks first (deduplicated), then FTS chunks
-      const allChunks: LegalChunk[] = [];
       const seenArticles = new Set<string>();
 
       // Add pivot chunks first (highest priority)
@@ -449,17 +450,37 @@ export async function POST(request: Request) {
       userMsg += gallilexContext;
     }
 
-    const answer = await geminiChat({
+    const t0 = Date.now();
+    const aiResult = await geminiChat({
       systemPrompt,
       userMessage: userMsg,
       temperature: 0.15,
       maxTokens: 3500,
     });
+    const latencyMs = Date.now() - t0;
+
+    const answer = aiResult.text;
 
     if (!answer) {
       return NextResponse.json(
         { error: "Réponse vide du modèle" },
         { status: 500 }
+      );
+    }
+
+    // 6c. Citation guard — validate article references against injected context
+    const contextArticleNumbers = allChunks
+      .map((c: LegalChunk) => c.article_number)
+      .filter(Boolean) as string[];
+    const guardResult = guardCitations(answer, contextArticleNumbers);
+    const sanitizedAnswer = guardResult.sanitizedAnswer;
+
+    if (guardResult.hadUnverifiedCitations) {
+      console.warn(
+        "[Citation Guard] Unverified citations flagged:",
+        guardResult.citationsUnverified,
+        "| Verified:",
+        guardResult.citationsVerified
       );
     }
 
@@ -492,18 +513,41 @@ export async function POST(request: Request) {
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
 
-    // Update log with response
+    // 10. Build pipeline metadata for audit trail
+    const pipelineMetadata = {
+      cdaRouted: allCdaCodes,
+      pivotArticles: findPivotArticles(keywords).map((p) => `${p.cdaCode}:${p.articleNumber}`),
+      articlesSentToLlm: contextArticleNumbers,
+      model: aiResult.model,
+      confidence,
+      latencyMs,
+      citationGuard: {
+        verified: guardResult.citationsVerified,
+        unverified: guardResult.citationsUnverified,
+      },
+    };
+
+    // Update log with response + metadata
     if (logRow?.id) {
-      await supabase.from("assistant_logs").update({ response: answer }).eq("id", logRow.id);
+      await supabase
+        .from("assistant_logs")
+        .update({ response: sanitizedAnswer, metadata: pipelineMetadata })
+        .eq("id", logRow.id);
     }
 
     return NextResponse.json({
-      answer,
+      answer: sanitizedAnswer,
       sources,
       confidence,
       gallilex,
       mode,
       schoolContextUsed: schoolExtracts.length > 0,
+      citationGuard: guardResult.hadUnverifiedCitations
+        ? {
+            unverified: guardResult.citationsUnverified,
+            verified: guardResult.citationsVerified,
+          }
+        : undefined,
     });
   } catch (error) {
     console.error("[API /assistant]", error);

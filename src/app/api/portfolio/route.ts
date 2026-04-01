@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       .single();
 
     // 4. Gemini
-    const answer = await geminiChat({
+    const aiResult = await geminiChat({
       systemPrompt: buildPortfolioSystemPrompt(action, context),
       userMessage: buildPortfolioUserMessage(text, action, context),
       temperature: 0.4,
@@ -62,10 +62,10 @@ export async function POST(request: Request) {
     });
 
     if (logRow?.id) {
-      await supabase.from("assistant_logs").update({ response: answer }).eq("id", logRow.id);
+      await supabase.from("assistant_logs").update({ response: aiResult.text }).eq("id", logRow.id);
     }
 
-    return NextResponse.json({ answer, action, context });
+    return NextResponse.json({ answer: aiResult.text, action, context });
   } catch (error) {
     console.error("[API /portfolio]", error);
     return NextResponse.json(

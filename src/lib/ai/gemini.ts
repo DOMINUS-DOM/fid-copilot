@@ -4,6 +4,11 @@ import OpenAI from "openai";
 let geminiClient: GoogleGenerativeAI | null = null;
 let openaiClient: OpenAI | null = null;
 
+export interface AiChatResult {
+  text: string;
+  model: string;
+}
+
 /**
  * Appel IA avec fallback : Gemini d'abord, OpenAI si Gemini echoue.
  * Permet de basculer gratuitement sur Gemini quand le quota est actif.
@@ -13,7 +18,7 @@ export async function geminiChat(params: {
   userMessage: string;
   temperature?: number;
   maxTokens?: number;
-}): Promise<string> {
+}): Promise<AiChatResult> {
   // Try Gemini first (free)
   const geminiKey = process.env.GEMINI_API_KEY;
   if (geminiKey) {
@@ -29,7 +34,7 @@ export async function geminiChat(params: {
       });
       const result = await model.generateContent(params.userMessage);
       const text = result.response.text();
-      if (text) return text;
+      if (text) return { text, model: "gemini-2.5-flash" };
     } catch (err) {
       console.warn("[AI] Gemini failed, falling back to OpenAI:", (err as Error).message?.slice(0, 100));
     }
@@ -53,5 +58,5 @@ export async function geminiChat(params: {
 
   const text = completion.choices[0]?.message?.content;
   if (!text) throw new Error("Empty response from OpenAI");
-  return text;
+  return { text, model: "gpt-4o-mini" };
 }

@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       .single();
 
     // Generate
-    const content = await geminiChat({
+    const aiResult = await geminiChat({
       systemPrompt: buildGenerateSystemPrompt(),
       userMessage: buildGenerateUserMessage({
         template: template || "document libre",
@@ -80,10 +80,10 @@ export async function POST(request: Request) {
     });
 
     if (logRow?.id) {
-      await supabase.from("assistant_logs").update({ response: content }).eq("id", logRow.id);
+      await supabase.from("assistant_logs").update({ response: aiResult.text }).eq("id", logRow.id);
     }
 
-    return NextResponse.json({ content, template, tone, format });
+    return NextResponse.json({ content: aiResult.text, template, tone, format });
   } catch (error) {
     console.error("[API /generate]", error);
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
