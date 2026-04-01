@@ -12,6 +12,7 @@ export async function DELETE(
 
     const { id } = await params;
 
+    // Delete from assistant_logs
     const { error } = await supabase
       .from("assistant_logs")
       .delete()
@@ -22,6 +23,15 @@ export async function DELETE(
       console.error("[API history DELETE]", error);
       return NextResponse.json({ error: "Erreur suppression" }, { status: 500 });
     }
+
+    // Also delete any matching decision (linked via the log question prefix)
+    // Decisions are stored separately — clean them up too
+    await supabase
+      .from("decisions")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("id", id)
+      .then(() => {});
 
     return NextResponse.json({ success: true });
   } catch (error) {

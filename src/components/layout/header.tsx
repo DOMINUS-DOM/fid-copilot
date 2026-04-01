@@ -53,7 +53,7 @@ export function Header({ isAuthenticated = false, locale = "fr", t }: HeaderProp
           <LanguageSwitcher locale={locale} />
           {isAuthenticated ? (
             <>
-              <Link href="/assistant" className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-500/20 hover:brightness-110 active:scale-[0.97]">
+              <Link href="/dashboard" className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-blue-500/20 hover:brightness-110 active:scale-[0.97]">
                 {labels.openApp}
               </Link>
               <LogoutButton />
@@ -90,7 +90,7 @@ export function Header({ isAuthenticated = false, locale = "fr", t }: HeaderProp
             </div>
             {isAuthenticated ? (
               <>
-                <Link href="/assistant" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600">
+                <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600">
                   {labels.openApp}
                 </Link>
                 <LogoutButton />
