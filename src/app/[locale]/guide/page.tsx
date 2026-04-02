@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/header";
@@ -88,6 +89,38 @@ export default async function GuidePage({ params }: { params: Promise<{ locale: 
                   </Link>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-16 sm:py-20">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{"L\u2019application en images"}</h2>
+            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-slate-500">{"Aperçu des principaux écrans de FID Copilot."}</p>
+            <div className="mt-10 grid gap-8 sm:grid-cols-2">
+              {[
+                { src: "/images/guide/dashboard.png", label: "Tableau de bord", desc: "Vue d\u2019ensemble de votre activité, accès rapide aux modules et prochaines étapes." },
+                { src: "/images/guide/assistant.png", label: "Assistant juridique", desc: "Posez une question et recevez une analyse structurée avec base légale." },
+                { src: "/images/guide/decision.png", label: "Aide à la décision", desc: "Décrivez votre situation et obtenez des options avec risques et recommandations." },
+                { src: "/images/guide/generateur.png", label: "Générateur de documents", desc: "Créez courriers, convocations et réponses formelles avec le bon cadre légal." },
+                { src: "/images/guide/verification.png", label: "Vérification de conformité", desc: "Contrôlez la conformité juridique de vos documents avant envoi." },
+              ].map((item, i) => (
+                <div key={i} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                    <Image
+                      src={item.src}
+                      alt={item.label}
+                      fill
+                      className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-semibold text-slate-900">{item.label}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-500">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
