@@ -455,16 +455,30 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "10450", articleNumber: "12", label: "Conditions de changement de forme/section/option" },
   ],
 
-  // Périodes de cours
+  // Périodes de cours / aménagement horaire
   "période": [
     { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
   ],
   "45 minutes": [
-    { cdaCode: "10450", articleNumber: "1er", label: "Dérogation — périodes de 45 minutes" },
-    { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §2 — dérogation périodes de 45 minutes" },
+  ],
+  "périodes de 45 minutes": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §2 — dérogation périodes de 45 minutes" },
+  ],
+  "plages de 90 minutes": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §2 — plages de 90 minutes" },
+  ],
+  "temps récupéré": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §2 — temps récupéré (5 min/période)" },
+  ],
+  "horaire des cours": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §1 et §2 — horaire hebdomadaire" },
   ],
   "horaire": [
     { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+  ],
+  "aménagement horaire": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Art. 1er §2 — aménagement horaire 45/90 min" },
   ],
 
   // Alternance / CEFA

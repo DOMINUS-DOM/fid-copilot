@@ -337,7 +337,7 @@ export const FID_CORRIGE_BLOC1: FidCorrigeCase[] = [
     pivotTriggers: ["45 minutes", "périodes 45", "période cours"],
     priority: "critical",
     notes:
-      "DIVERGENCE : Le corrigé cite art. 1er §2. Le pivot existant pointe vers art. 2 (définitions). L'art. 1er contient bien le §2 sur les 45 minutes (vérifié en base : chunk 27825311). Le pivot actuel est INCORRECT pour cette question — il faudrait un pivot vers art. 1er, pas art. 2.",
+      "CORRIGÉ v3.10 : Pivot corrigé vers art. 1er (pas art. 2). Paragraph du chunk 27825311 fixé de 1 à 2. Pivot multi-chunk (limit 3) pour que §2 soit injecté. Scoring §2 > §1 validé par ratio lexical.",
   },
 
   {

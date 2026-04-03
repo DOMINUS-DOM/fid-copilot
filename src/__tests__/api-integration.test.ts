@@ -431,13 +431,13 @@ describe("API Integration — 5 nouveaux cas (partiels → sécurisés)", () => 
     expect(pivotDetected).toBe(true);
   });
 
-  it("Périodes de 45 minutes — CDA 10450, art. 2", async () => {
+  it("Périodes de 45 minutes — CDA 10450, art. 1er §2", async () => {
     const result = await runPipeline(
       "Les périodes de cours doivent-elles durer 50 minutes ou peut-on les réduire à 45 minutes ?"
     );
     expect(result.cdaCodes).toContain("10450");
     const pivotDetected = result.pivotArticles.some(
-      (p) => p.cdaCode === "10450" && p.articleNumber === "2"
+      (p) => p.cdaCode === "10450" && p.articleNumber === "1er"
     );
     expect(pivotDetected).toBe(true);
   });

@@ -115,13 +115,15 @@ export async function fetchLegalChunks(
         .select(LEGAL_CHUNK_SELECT)
         .eq("cda_code", p.cdaCode)
         .eq("article_number", p.articleNumber)
-        .limit(1)
+        .limit(3)
         .returns<LegalChunk[]>()
     );
     const pivotResults = await Promise.all(pivotQueries);
     for (const { data } of pivotResults) {
-      if (data && data.length > 0) {
-        pivotChunks.push(data[0]);
+      if (data) {
+        for (const chunk of data) {
+          pivotChunks.push(chunk);
+        }
       }
     }
   }

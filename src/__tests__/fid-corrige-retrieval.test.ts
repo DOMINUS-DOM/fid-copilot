@@ -429,6 +429,26 @@ describe("Bloc 5 — Deep content verification", () => {
     const normalized = chunk8!.content.replace(/\s+/g, " ").toLowerCase();
     expect(normalized).toContain("chambres de recours");
   });
+
+  it("[CDA 10450] art. 1er — §2 contains '45 minutes' and key terms", async () => {
+    const chunks = await fetchChunks("10450", "1er", 5);
+    expect(chunks.length).toBeGreaterThanOrEqual(3);
+    const par2 = chunks.find((c) => c.content.includes("45 minutes"));
+    expect(par2).toBeDefined();
+    const normalized = par2!.content.replace(/\s+/g, " ").toLowerCase();
+    expect(normalized).toContain("45 minutes");
+    expect(normalized).toContain("90 minutes");
+    expect(normalized).toContain("temps récupéré");
+    expect(normalized).toContain("50 minutes");
+    expect(normalized).toContain("avis favorable");
+  });
+
+  it("[CDA 10450] art. 1er §2 — paragraph field is '2'", async () => {
+    const chunks = await fetchChunks("10450", "1er", 5);
+    const par2 = chunks.find((c) => c.content.includes("45 minutes"));
+    expect(par2).toBeDefined();
+    expect(par2!.paragraph).toBe("2");
+  });
 });
 
 // ============================================================

@@ -223,6 +223,45 @@ describe("Chunk scorer — Frais scolaires", () => {
 });
 
 // ============================================================
+// 5. Périodes de 45 minutes — §2 doit primer sur §1 (même article 1er)
+// ============================================================
+
+describe("Chunk scorer — Périodes de 45 minutes (art. 1er §2 > §1)", () => {
+  const keywords = ["direction", "aménager", "horaire", "cours", "périodes", "minutes"];
+
+  const chunkPar1 = fakeChunk(
+    "10450",
+    "1er",
+    "§ 1er. Le présent arrêté s'applique à l'enseignement secondaire de plein exercice qui est dispensé aux élèves réguliers et régulièrement inscrits pendant quarante semaines par an à raison d'au moins vingt-huit périodes de 50 minutes par semaine.",
+  );
+  // Simulate the §2 chunk (paragraph field isn't used in scoring, content is)
+  const chunkPar2 = fakeChunk(
+    "10450",
+    "1er",
+    "§ 1er, au terme d'un travail collectif associant l'équipe éducative du ou des degré(s) concerné(s) et après avis favorable du comité de concertation de base, l'horaire hebdomadaire peut être organisé par périodes de cours de 45 minutes regroupées en plages de 90 minutes. Le temps récupéré, à raison de cinq minutes par période de cours, est consacré à des activités pédagogiques différenciées. La charge hebdomadaire des enseignants correspond au nombre de périodes multiplié par 50 minutes.",
+  );
+
+  const pivots = findPivotArticles(keywords);
+
+  it("§2 scores higher than §1 (more keyword hits for '45 minutes' question)", () => {
+    const scored = scoreChunks([chunkPar1, chunkPar2], pivots, keywords);
+    const par1Score = scored.find((s) => s.chunk.content.startsWith("§ 1er. Le"))!.score;
+    const par2Score = scored.find((s) => s.chunk.content.includes("45 minutes"))!.score;
+    expect(par2Score).toBeGreaterThan(par1Score);
+  });
+
+  it("§2 appears first in sorted order", () => {
+    const scored = scoreChunks([chunkPar1, chunkPar2], pivots, keywords);
+    expect(scored[0].chunk.content).toContain("45 minutes");
+  });
+
+  it("both chunks are pivot articles", () => {
+    const scored = scoreChunks([chunkPar1, chunkPar2], pivots, keywords);
+    expect(scored.every((s) => s.isPivot)).toBe(true);
+  });
+});
+
+// ============================================================
 // Edge case: all chunks are general → no crash, reasonable order
 // ============================================================
 

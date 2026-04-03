@@ -205,9 +205,9 @@ describe("Pivot article injection", () => {
       expectedCda: "10450",
     },
     {
-      name: "Périodes 45 min → 2",
-      keywords: ["période", "45", "minutes"],
-      expectedArticle: "2",
+      name: "Périodes 45 min → 1er",
+      keywords: ["45 minutes"],
+      expectedArticle: "1er",
       expectedCda: "10450",
     },
     {
