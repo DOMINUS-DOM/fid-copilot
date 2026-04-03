@@ -1,20 +1,24 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
-import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
 import { buildSystemPrompt, buildUserMessage } from "@/lib/ai/prompt";
-import { guardCitations } from "@/lib/ai/citation-guard";
+import {
+  extractKeywords,
+  fetchLegalChunks,
+  fetchSchoolChunks,
+  runCitationGuard,
+  buildPipelineMetadata,
+  buildLegalRefs,
+  appendContextToMessage,
+} from "@/lib/ai/shared-pipeline";
 import {
   type Document,
   type AssistantMode,
   type ConfidenceLevel,
   type GallilexHint,
-  type LegalChunk,
 } from "@/types";
 
 const MAX_CONTEXT_DOCS = 7;
-const MAX_LEGAL_CHUNKS = 5;
-const MAX_CHUNK_CHARS = 8000; // budget total en chars pour les chunks
 const VALID_MODES: AssistantMode[] = ["examen", "terrain", "portfolio"];
 
 // ============================================================
@@ -76,12 +80,10 @@ function detectIntent(questionLower: string): QuestionIntent {
 // Scoring des documents — adapté au mode
 // ============================================================
 
-/** L'intent est influencé par le mode sélectionné */
 function resolveIntent(
   detectedIntent: QuestionIntent,
   mode: AssistantMode
 ): QuestionIntent {
-  // Le mode force l'intent dans certains cas
   if (mode === "portfolio") return "portfolio";
   if (mode === "examen" && detectedIntent === "general") return "juridique";
   return detectedIntent;
@@ -136,14 +138,9 @@ function scoreDocument(
   intent: QuestionIntent
 ): number {
   let score = 0;
-
-  // 1. Boost catégorie
   score += CATEGORY_INTENT_BOOST[intent]?.[doc.category] ?? 0;
-
-  // 2. is_core
   if (doc.is_core) score += 4;
 
-  // 3. Boost type selon intent
   const typeBoosts: Record<string, Record<string, number>> = {
     juridique: { texte_legal: 3 },
     portfolio: { portfolio: 3, guide: 1 },
@@ -153,10 +150,8 @@ function scoreDocument(
   };
   score += typeBoosts[intent]?.[doc.type] ?? 0;
 
-  // 4. CDA bonus
   if (doc.cda_code && (intent === "juridique" || intent === "general")) score += 2;
 
-  // 5. Keywords (title > tags > summary)
   const titleLower = doc.title.toLowerCase();
   const summaryLower = (doc.summary ?? "").toLowerCase();
   const docTags = (doc.tags ?? []).map((t) => t.toLowerCase());
@@ -170,26 +165,6 @@ function scoreDocument(
   return score;
 }
 
-function extractKeywords(question: string): string[] {
-  const stopWords = new Set([
-    "le", "la", "les", "un", "une", "des", "de", "du", "au", "aux",
-    "et", "ou", "en", "dans", "par", "pour", "sur", "avec", "qui",
-    "que", "est", "sont", "son", "ses", "ce", "cette", "ces", "mon",
-    "ma", "mes", "il", "elle", "je", "nous", "vous", "ils", "elles",
-    "ne", "pas", "plus", "peut", "faire", "fait", "être", "avoir",
-    "quels", "quel", "quelle", "quelles", "comment", "quoi",
-    "tant", "comme", "entre", "vers", "chez", "sans", "sous",
-    "doit", "dois", "doivent", "faut", "pourquoi",
-  ]);
-
-  return question
-    .toLowerCase()
-    .replace(/['']/g, " ")
-    .replace(/[^a-zàâäéèêëïîôùûüÿç\s-]/g, "")
-    .split(/\s+/)
-    .filter((word) => word.length > 2 && !stopWords.has(word));
-}
-
 // ============================================================
 // Gallilex fallback
 // ============================================================
@@ -198,11 +173,9 @@ function buildGallilexHints(
   selectedDocs: Document[],
   keywords: string[]
 ): GallilexHint[] {
-  // Prendre les 2 docs les plus pertinents qui ont un CDA
   const docsWithCda = selectedDocs.filter((d) => d.cda_code);
   const topDocs = docsWithCda.slice(0, 2);
 
-  // Si aucun doc avec CDA, proposer des mots-clés généraux
   if (topDocs.length === 0) {
     return [
       {
@@ -282,173 +255,25 @@ export async function POST(request: Request) {
         ? relevant.slice(0, MAX_CONTEXT_DOCS).map((s) => s.doc)
         : allDocuments.slice(0, 5);
 
-    // 5. Recherche de chunks légaux pertinents (full-text PostgreSQL)
-    // Use BOTH document CDA codes AND Gallilex-identified CDA codes
+    // 5. Legal chunks (shared pipeline)
     const docCdaCodes = selectedDocs
       .map((d) => d.cda_code)
       .filter(Boolean) as string[];
 
-    // Gallilex mapping: find additional relevant CDA codes from the theme index
-    const gallilexResults = searchGallilex(keywords, docCdaCodes);
-    const gallilexCdaCodes = gallilexResults.map((r) => r.cdaCode);
+    const legalResult = await fetchLegalChunks(supabase, keywords, docCdaCodes);
 
-    // Merge: document CDAs + Gallilex CDAs (deduplicated)
-    const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexCdaCodes])];
+    // 5b. School chunks (shared pipeline)
+    const schoolResult = await fetchSchoolChunks(supabase, user.id, keywords);
 
-    let legalExtracts = "";
-    const allChunks: LegalChunk[] = [];
-
-    if (allCdaCodes.length > 0 && keywords.length > 0) {
-      // Construire la requête full-text avec les mots-clés
-      const tsQuery = keywords.slice(0, 5).join(" | ");
-
-      const { data: chunks } = await supabase
-        .from("legal_chunks")
-        .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
-        .in("cda_code", allCdaCodes)
-        .textSearch("content", tsQuery, { config: "french" })
-        .limit(MAX_LEGAL_CHUNKS + 3) // Allow more chunks since we search more CDAs
-        .returns<LegalChunk[]>();
-
-      // Pivot article injection: fetch known-critical articles by article_number
-      // This ensures FID exam pivot articles appear even if FTS doesn't rank them
-      const pivotArticles = findPivotArticles(keywords);
-      let pivotChunks: LegalChunk[] = [];
-      if (pivotArticles.length > 0) {
-        const pivotQueries = pivotArticles.map((p) =>
-          supabase
-            .from("legal_chunks")
-            .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
-            .eq("cda_code", p.cdaCode)
-            .eq("article_number", p.articleNumber)
-            .limit(1)
-            .returns<LegalChunk[]>()
-        );
-        const pivotResults = await Promise.all(pivotQueries);
-        for (const { data } of pivotResults) {
-          if (data && data.length > 0) {
-            pivotChunks.push(data[0]);
-          }
-        }
-      }
-
-      // Merge: pivot chunks first (deduplicated), then FTS chunks
-      const seenArticles = new Set<string>();
-
-      // Add pivot chunks first (highest priority)
-      for (const pc of pivotChunks) {
-        const key = `${pc.cda_code}:${pc.article_number}`;
-        if (!seenArticles.has(key)) {
-          seenArticles.add(key);
-          allChunks.push(pc);
-        }
-      }
-
-      // Add FTS chunks (dedup against pivots)
-      if (chunks) {
-        for (const c of chunks) {
-          const key = `${c.cda_code}:${c.article_number}`;
-          if (!seenArticles.has(key)) {
-            seenArticles.add(key);
-            allChunks.push(c);
-          }
-        }
-      }
-
-      if (allChunks.length > 0) {
-        let totalChars = 0;
-        const kept: typeof allChunks = [];
-        for (const chunk of allChunks) {
-          if (totalChars + chunk.content.length > MAX_CHUNK_CHARS) break;
-          kept.push(chunk);
-          totalChars += chunk.content.length;
-        }
-
-        if (kept.length > 0) {
-          legalExtracts = kept
-            .map((c, idx) => {
-              const lines: string[] = [`[LEGAL-${idx + 1}]`];
-              if (c.citation_display) {
-                lines.push(`Citation exacte : ${c.citation_display}`);
-              }
-              lines.push(`CDA : ${c.cda_code}`);
-              if (c.article_number) {
-                lines.push(`Article : ${c.article_number}${c.paragraph ? ` § ${c.paragraph}` : ""}`);
-              }
-              lines.push(`Extrait : ${c.content}`);
-              return lines.join("\n");
-            })
-            .join("\n\n---\n\n");
-        }
-      }
-    }
-
-    // 5c. Recherche de documents d'école (contexte local de l'utilisateur)
-    const MAX_SCHOOL_CHUNKS = 3;
-    const MAX_SCHOOL_CHARS = 4000;
-    let schoolExtracts = "";
-
-    if (keywords.length > 0) {
-      const schoolTsQuery = keywords.slice(0, 5).join(" | ");
-
-      const { data: schoolChunks } = await supabase
-        .from("school_chunks")
-        .select("chunk_title, content, school_doc_id")
-        .eq("user_id", user.id)
-        .textSearch("content", schoolTsQuery, { config: "french" })
-        .limit(MAX_SCHOOL_CHUNKS);
-
-      if (schoolChunks && schoolChunks.length > 0) {
-        let schoolTotalChars = 0;
-        const keptSchool: typeof schoolChunks = [];
-        for (const chunk of schoolChunks) {
-          if (schoolTotalChars + chunk.content.length > MAX_SCHOOL_CHARS) break;
-          keptSchool.push(chunk);
-          schoolTotalChars += chunk.content.length;
-        }
-
-        if (keptSchool.length > 0) {
-          // Fetch parent doc titles
-          const docIds = [...new Set(keptSchool.map((c) => c.school_doc_id))];
-          const { data: parentDocs } = await supabase
-            .from("school_documents")
-            .select("id, title, doc_type")
-            .in("id", docIds);
-
-          const docMap = new Map(
-            parentDocs?.map((d: { id: string; title: string; doc_type: string }) => [d.id, d]) ?? []
-          );
-
-          schoolExtracts = keptSchool
-            .map((c) => {
-              const parent = docMap.get(c.school_doc_id);
-              const label = parent
-                ? `${parent.title} (${parent.doc_type})`
-                : "Document école";
-              return `[ÉCOLE — ${label}${c.chunk_title ? ` — ${c.chunk_title}` : ""}]\n${c.content}`;
-            })
-            .join("\n\n---\n\n");
-        }
-      }
-    }
-
-    // 6. Gemini (avec mode + extraits légaux + contexte école)
+    // 6. Gemini
     const systemPrompt = buildSystemPrompt(selectedDocs, mode);
-    let userMsg = buildUserMessage(question, mode);
-
-    if (legalExtracts) {
-      userMsg += `\n\n═══════════════════════════════════════\nEXTRAITS JURIDIQUES PERTINENTS (texte officiel)\n═══════════════════════════════════════\n${legalExtracts}`;
-    }
-
-    if (schoolExtracts) {
-      userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE LOCAL — DOCUMENTS DE L'ÉCOLE (informatif, NE REMPLACE PAS la loi)\n═══════════════════════════════════════\n${schoolExtracts}`;
-    }
-
-    // 6b. Gallilex — add reference context (already computed above)
-    const gallilexContext = formatGallilexContext(gallilexResults, docCdaCodes);
-    if (gallilexContext) {
-      userMsg += gallilexContext;
-    }
+    const baseUserMsg = buildUserMessage(question, mode);
+    const userMsg = appendContextToMessage(
+      baseUserMsg,
+      legalResult.legalExtracts,
+      schoolResult.schoolExtracts,
+      legalResult.gallilexContext,
+    );
 
     const t0 = Date.now();
     const aiResult = await geminiChat({
@@ -468,21 +293,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6c. Citation guard — validate article references against injected context
-    const contextArticleNumbers = allChunks
-      .map((c: LegalChunk) => c.article_number)
-      .filter(Boolean) as string[];
-    const guardResult = guardCitations(answer, contextArticleNumbers);
-    const sanitizedAnswer = guardResult.sanitizedAnswer;
-
-    if (guardResult.hadUnverifiedCitations) {
-      console.warn(
-        "[Citation Guard] Unverified citations flagged:",
-        guardResult.citationsUnverified,
-        "| Verified:",
-        guardResult.citationsVerified
-      );
-    }
+    // 6b. Citation guard (shared pipeline)
+    const { sanitizedAnswer, guardResult } = runCitationGuard(
+      answer,
+      legalResult.contextArticleNumbers,
+      "/assistant",
+    );
 
     // 7. Sources
     const sources = selectedDocs.map((doc) => ({
@@ -513,19 +329,16 @@ export async function POST(request: Request) {
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];
 
-    // 10. Build pipeline metadata for audit trail
-    const pipelineMetadata = {
-      cdaRouted: allCdaCodes,
-      pivotArticles: findPivotArticles(keywords).map((p) => `${p.cdaCode}:${p.articleNumber}`),
-      articlesSentToLlm: contextArticleNumbers,
-      model: aiResult.model,
-      confidence,
+    // 10. Pipeline metadata (shared pipeline)
+    const pipelineMetadata = buildPipelineMetadata(
+      legalResult.allCdaCodes,
+      keywords,
+      legalResult.contextArticleNumbers,
+      aiResult.model,
       latencyMs,
-      citationGuard: {
-        verified: guardResult.citationsVerified,
-        unverified: guardResult.citationsUnverified,
-      },
-    };
+      guardResult,
+      { confidence },
+    );
 
     // Update log with response + metadata
     if (logRow?.id) {
@@ -535,40 +348,11 @@ export async function POST(request: Request) {
         .eq("id", logRow.id);
     }
 
-    // 11. Build legal references for the frontend
-    // Verified citations first, then complement with pivot/context articles
-    const verifiedSet = new Set(guardResult.citationsVerified.map((a) => a.toLowerCase()));
-    const legalRefs: { articleNumber: string; cdaCode: string; citationDisplay: string | null }[] = [];
-    const seenRefs = new Set<string>();
-
-    // Add verified citations (articles the LLM actually cited)
-    for (const chunk of allChunks) {
-      if (!chunk.article_number) continue;
-      const norm = chunk.article_number.toLowerCase();
-      if (verifiedSet.has(norm) && !seenRefs.has(norm)) {
-        seenRefs.add(norm);
-        legalRefs.push({
-          articleNumber: chunk.article_number,
-          cdaCode: chunk.cda_code,
-          citationDisplay: chunk.citation_display ?? null,
-        });
-      }
-    }
-
-    // Complement with other injected articles (pivots + FTS), up to 6 total
-    for (const chunk of allChunks) {
-      if (legalRefs.length >= 6) break;
-      if (!chunk.article_number) continue;
-      const norm = chunk.article_number.toLowerCase();
-      if (!seenRefs.has(norm)) {
-        seenRefs.add(norm);
-        legalRefs.push({
-          articleNumber: chunk.article_number,
-          cdaCode: chunk.cda_code,
-          citationDisplay: chunk.citation_display ?? null,
-        });
-      }
-    }
+    // 11. Legal references for frontend (shared pipeline)
+    const legalRefs = buildLegalRefs(
+      legalResult.chunks,
+      guardResult.citationsVerified,
+    );
 
     return NextResponse.json({
       answer: sanitizedAnswer,
@@ -577,7 +361,7 @@ export async function POST(request: Request) {
       gallilex,
       mode,
       logId: logRow?.id ?? null,
-      schoolContextUsed: schoolExtracts.length > 0,
+      schoolContextUsed: schoolResult.hasSchoolContext,
       legalRefs,
       citationGuard: guardResult.hadUnverifiedCitations
         ? {

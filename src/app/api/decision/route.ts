@@ -1,47 +1,30 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { geminiChat } from "@/lib/ai/gemini";
-import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
-import { guardCitations } from "@/lib/ai/citation-guard";
 import {
   buildDecisionSystemPrompt,
   buildDecisionUserMessage,
 } from "@/lib/ai/decision-prompt";
 import {
+  extractKeywords,
+  fetchLegalChunks,
+  fetchSchoolChunks,
+  runCitationGuard,
+  buildPipelineMetadata,
+  appendContextToMessage,
+} from "@/lib/ai/shared-pipeline";
+import {
   type Document,
   type DecisionCategory,
   type DecisionUrgency,
-  type LegalChunk,
 } from "@/types";
 
 const MAX_CONTEXT_DOCS = 7;
-const MAX_LEGAL_CHUNKS = 5;
-const MAX_CHUNK_CHARS = 8000;
-const MAX_SCHOOL_CHUNKS = 3;
-const MAX_SCHOOL_CHARS = 4000;
 
 const VALID_CATEGORIES: DecisionCategory[] = [
   "recours", "discipline", "personnel", "inspection", "parents", "autre",
 ];
 const VALID_URGENCIES: DecisionUrgency[] = ["immediat", "semaine", "planifier"];
-
-// Simplified keyword extraction (reuse pattern from assistant)
-function extractKeywords(text: string): string[] {
-  const stopWords = new Set([
-    "le", "la", "les", "un", "une", "des", "de", "du", "au", "aux",
-    "et", "ou", "en", "dans", "par", "pour", "sur", "avec", "qui",
-    "que", "est", "sont", "son", "ses", "ce", "cette", "ces", "mon",
-    "ma", "mes", "il", "elle", "je", "nous", "vous", "ils", "elles",
-    "ne", "pas", "plus", "peut", "faire", "fait", "être", "avoir",
-    "comment", "quoi", "doit", "faut", "pourquoi",
-  ]);
-  return text
-    .toLowerCase()
-    .replace(/['']/g, " ")
-    .replace(/[^a-zàâäéèêëïîôùûüÿç\s-]/g, "")
-    .split(/\s+/)
-    .filter((w) => w.length > 2 && !stopWords.has(w));
-}
 
 export async function POST(request: Request) {
   try {
@@ -119,134 +102,21 @@ export async function POST(request: Request) {
       selectedDocs.push(...allDocuments.slice(0, 5));
     }
 
-    // 6. Legal chunks FTS — enhanced with Gallilex CDA mapping
+    // 6. Legal chunks (shared pipeline)
     const docCdaCodes = selectedDocs.map((d) => d.cda_code).filter(Boolean) as string[];
-    const gallilexResults = searchGallilex(keywords, docCdaCodes);
-    const allCdaCodes = [...new Set([...docCdaCodes, ...gallilexResults.map((r) => r.cdaCode)])];
-    let legalExtracts = "";
-    const allChunks: LegalChunk[] = [];
+    const legalResult = await fetchLegalChunks(supabase, keywords, docCdaCodes);
 
-    if (allCdaCodes.length > 0 && keywords.length > 0) {
-      const tsQuery = keywords.slice(0, 5).join(" | ");
-      const { data: chunks } = await supabase
-        .from("legal_chunks")
-        .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
-        .in("cda_code", allCdaCodes)
-        .textSearch("content", tsQuery, { config: "french" })
-        .limit(MAX_LEGAL_CHUNKS + 3)
-        .returns<LegalChunk[]>();
-
-      // Pivot article injection (same as assistant route)
-      const pivotArticles = findPivotArticles(keywords);
-      let pivotChunks: LegalChunk[] = [];
-      if (pivotArticles.length > 0) {
-        const pivotQueries = pivotArticles.map((p) =>
-          supabase
-            .from("legal_chunks")
-            .select("cda_code, chunk_title, content, citation_display, article_number, paragraph")
-            .eq("cda_code", p.cdaCode)
-            .eq("article_number", p.articleNumber)
-            .limit(1)
-            .returns<LegalChunk[]>()
-        );
-        const pivotResults = await Promise.all(pivotQueries);
-        for (const { data } of pivotResults) {
-          if (data && data.length > 0) pivotChunks.push(data[0]);
-        }
-      }
-
-      // Merge: pivot chunks first, then FTS chunks (deduplicated)
-      const seenArticles = new Set<string>();
-      for (const pc of pivotChunks) {
-        const key = `${pc.cda_code}:${pc.article_number}`;
-        if (!seenArticles.has(key)) { seenArticles.add(key); allChunks.push(pc); }
-      }
-      if (chunks) {
-        for (const c of chunks) {
-          const key = `${c.cda_code}:${c.article_number}`;
-          if (!seenArticles.has(key)) { seenArticles.add(key); allChunks.push(c); }
-        }
-      }
-
-      if (allChunks.length > 0) {
-        let total = 0;
-        const kept: typeof allChunks = [];
-        for (const c of allChunks) {
-          if (total + c.content.length > MAX_CHUNK_CHARS) break;
-          kept.push(c);
-          total += c.content.length;
-        }
-        if (kept.length > 0) {
-          legalExtracts = kept
-            .map((c, idx) => {
-              const lines: string[] = [`[LEGAL-${idx + 1}]`];
-              if (c.citation_display) {
-                lines.push(`Citation exacte : ${c.citation_display}`);
-              }
-              lines.push(`CDA : ${c.cda_code}`);
-              if (c.article_number) {
-                lines.push(`Article : ${c.article_number}${c.paragraph ? ` § ${c.paragraph}` : ""}`);
-              }
-              lines.push(`Extrait : ${c.content}`);
-              return lines.join("\n");
-            })
-            .join("\n\n---\n\n");
-        }
-      }
-    }
-
-    // 7. School chunks FTS
-    let schoolExtracts = "";
-    if (keywords.length > 0) {
-      const schoolTsQuery = keywords.slice(0, 5).join(" | ");
-      const { data: schoolChunks } = await supabase
-        .from("school_chunks")
-        .select("chunk_title, content, school_doc_id")
-        .eq("user_id", user.id)
-        .textSearch("content", schoolTsQuery, { config: "french" })
-        .limit(MAX_SCHOOL_CHUNKS);
-
-      if (schoolChunks && schoolChunks.length > 0) {
-        let total = 0;
-        const kept: typeof schoolChunks = [];
-        for (const c of schoolChunks) {
-          if (total + c.content.length > MAX_SCHOOL_CHARS) break;
-          kept.push(c);
-          total += c.content.length;
-        }
-        if (kept.length > 0) {
-          const docIds = [...new Set(kept.map((c) => c.school_doc_id))];
-          const { data: parentDocs } = await supabase
-            .from("school_documents")
-            .select("id, title, doc_type")
-            .in("id", docIds);
-          const docMap = new Map(
-            parentDocs?.map((d: { id: string; title: string; doc_type: string }) => [d.id, d]) ?? []
-          );
-          schoolExtracts = kept
-            .map((c) => {
-              const p = docMap.get(c.school_doc_id);
-              const label = p ? `${p.title} (${p.doc_type})` : "Document école";
-              return `[ÉCOLE — ${label}]\n${c.content}`;
-            })
-            .join("\n\n---\n\n");
-        }
-      }
-    }
+    // 7. School chunks (shared pipeline)
+    const schoolResult = await fetchSchoolChunks(supabase, user.id, keywords);
 
     // 8. Gemini
-    let userMsg = buildDecisionUserMessage(situation, category ?? undefined, urgency ?? undefined);
-
-    if (legalExtracts) {
-      userMsg += `\n\n═══════════════════════════════════════\nEXTRAITS JURIDIQUES\n═══════════════════════════════════════\n${legalExtracts}`;
-    }
-    if (schoolExtracts) {
-      userMsg += `\n\n═══════════════════════════════════════\nCONTEXTE ÉCOLE (informatif)\n═══════════════════════════════════════\n${schoolExtracts}`;
-    }
-
-    // Gallilex — add reference context
-    const gallilexCtx = formatGallilexContext(gallilexResults, docCdaCodes);
-    if (gallilexCtx) userMsg += gallilexCtx;
+    const baseUserMsg = buildDecisionUserMessage(situation, category ?? undefined, urgency ?? undefined);
+    const userMsg = appendContextToMessage(
+      baseUserMsg,
+      legalResult.legalExtracts,
+      schoolResult.schoolExtracts,
+      legalResult.gallilexContext,
+    );
 
     const t0 = Date.now();
     const aiResult = await geminiChat({
@@ -259,19 +129,12 @@ export async function POST(request: Request) {
 
     const analysis = aiResult.text;
 
-    // 8b. Citation guard — validate article references against injected context
-    const contextArticleNumbers = allChunks
-      .map((c: LegalChunk) => c.article_number)
-      .filter(Boolean) as string[];
-    const guardResult = guardCitations(analysis ?? "", contextArticleNumbers);
-    const sanitizedAnalysis = guardResult.sanitizedAnswer;
-
-    if (guardResult.hadUnverifiedCitations) {
-      console.warn(
-        "[Citation Guard /decision] Unverified:",
-        guardResult.citationsUnverified
-      );
-    }
+    // 8b. Citation guard (shared pipeline)
+    const { sanitizedAnswer: sanitizedAnalysis, guardResult } = runCitationGuard(
+      analysis ?? "",
+      legalResult.contextArticleNumbers,
+      "/decision",
+    );
 
     // 9. Generate title from first line of situation
     const title = situation.length > 80
@@ -295,7 +158,6 @@ export async function POST(request: Request) {
 
     if (dbError) {
       console.error("[DB decision]", dbError);
-      // Return analysis even if save fails
     }
 
     // 11. Sources
@@ -306,20 +168,16 @@ export async function POST(request: Request) {
       source_url: doc.source_url,
     }));
 
-    // Pipeline metadata for audit trail
-    const pipelineMetadata = {
-      cdaRouted: allCdaCodes,
-      pivotArticles: findPivotArticles(keywords).map((p) => `${p.cdaCode}:${p.articleNumber}`),
-      articlesSentToLlm: contextArticleNumbers,
-      model: aiResult.model,
+    // Pipeline metadata (shared pipeline)
+    const pipelineMetadata = buildPipelineMetadata(
+      legalResult.allCdaCodes,
+      keywords,
+      legalResult.contextArticleNumbers,
+      aiResult.model,
       latencyMs,
-      category,
-      urgency,
-      citationGuard: {
-        verified: guardResult.citationsVerified,
-        unverified: guardResult.citationsUnverified,
-      },
-    };
+      guardResult,
+      { category, urgency },
+    );
 
     if (logRow?.id) {
       await supabase
@@ -332,7 +190,7 @@ export async function POST(request: Request) {
       id: decision?.id ?? null,
       analysis: sanitizedAnalysis,
       sources,
-      schoolContextUsed: schoolExtracts.length > 0,
+      schoolContextUsed: schoolResult.hasSchoolContext,
     });
   } catch (error) {
     console.error("[API /decision]", error);
