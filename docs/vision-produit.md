@@ -75,7 +75,22 @@ Niveau technique : faible a moyen. Attente : rapidite, simplicite, fiabilite.
 
 ---
 
-## 5. Contraintes non negociables
+## 5. Principe de fiabilite
+
+**Une reponse n'est valable que si elle est tracable a une base juridique explicitement injectee.**
+
+Ce principe est le fondement de FID Copilot. Il signifie concretement :
+
+- Le LLM ne peut citer un article que si cet article a ete injecte dans son contexte via le pipeline (FTS ou pivot).
+- Toute reference a un article non present dans le contexte est detectee par le Citation Guard et flaggee comme `[ref. non verifiee]`.
+- Une reponse sans source juridique identifiable n'est pas une reponse fiable — elle doit etre signalee comme telle a l'utilisateur (confiance "low", Gallilex fallback).
+- Le systeme ne cherche jamais a paraitre plus sur qu'il ne l'est. Si l'article n'est pas en base, il ne doit pas etre invente. Si le routage ne trouve pas de CDA pertinent, la reponse doit l'indiquer.
+
+Ce principe guide toutes les decisions techniques : le choix du FTS + pivots plutot que des embeddings purs, l'existence du Citation Guard, le calcul de confiance, et la boucle de feedback.
+
+---
+
+## 6. Contraintes non negociables
 
 Ces regles sont permanentes et ne changent pas avec les versions :
 
@@ -88,7 +103,7 @@ Ces regles sont permanentes et ne changent pas avec les versions :
 
 ---
 
-## 6. Architecture technique (resume)
+## 7. Architecture technique (resume)
 
 ```
 Frontend (Next.js 15, Tailwind, Lucide)
@@ -120,7 +135,7 @@ Detail complet : `docs/architecture.md`
 
 ---
 
-## 7. Metriques produit
+## 8. Metriques produit
 
 | Metrique | Valeur actuelle |
 |---|---|
@@ -134,7 +149,7 @@ Detail complet : `docs/architecture.md`
 
 ---
 
-## 8. Roadmap (3 horizons)
+## 9. Roadmap (3 horizons)
 
 ### Court terme (1-2 semaines)
 - Script de validation pivots vs base (detecter les pivots orphelins)
@@ -157,7 +172,7 @@ Detail complet : audit dans la session v3.5.
 
 ---
 
-## 9. Reference
+## 10. Reference
 
 | Document | Chemin |
 |---|---|
