@@ -326,9 +326,22 @@ export async function POST(request: Request) {
     }
 
     // Degrade confidence when citation guard flags unverified citations.
-    // A response citing articles not present in context cannot be trusted as "high".
     if (guardResult.hadUnverifiedCitations && confidence === "high") {
       confidence = "medium";
+    }
+
+    // Degrade confidence when specific pivot articles were injected but not cited.
+    // If the LLM ignored a directly relevant article, the response is unreliable.
+    if (confidence === "high" && legalResult.pivotArticleNumbers.length > 0) {
+      const verifiedLower = new Set(
+        guardResult.citationsVerified.map((a) => a.toLowerCase())
+      );
+      const pivotsCited = legalResult.pivotArticleNumbers.some((art) =>
+        verifiedLower.has(art.toLowerCase())
+      );
+      if (!pivotsCited) {
+        confidence = "medium";
+      }
     }
 
     // 9. Gallilex hints (si confiance faible ou moyenne)

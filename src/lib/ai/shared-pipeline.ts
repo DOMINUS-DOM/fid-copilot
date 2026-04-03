@@ -13,6 +13,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { searchGallilex, formatGallilexContext, findPivotArticles } from "@/lib/ai/gallilex";
 import { guardCitations, type CitationGuardResult } from "@/lib/ai/citation-guard";
+import { scoreChunks } from "@/lib/ai/chunk-scorer";
 import { type LegalChunk } from "@/types";
 
 // ============================================================
@@ -56,7 +57,7 @@ export function extractKeywords(text: string): string[] {
 // ============================================================
 
 export interface FetchLegalResult {
-  /** All chunks kept (within budget), pivots first */
+  /** All chunks kept (within budget), sorted by specificity score */
   chunks: LegalChunk[];
   /** Formatted text for LLM context */
   legalExtracts: string;
@@ -66,6 +67,8 @@ export interface FetchLegalResult {
   gallilexContext: string;
   /** Article numbers sent to LLM */
   contextArticleNumbers: string[];
+  /** Article numbers of pivot (specific) articles in context */
+  pivotArticleNumbers: string[];
 }
 
 export async function fetchLegalChunks(
@@ -79,6 +82,7 @@ export async function fetchLegalChunks(
     allCdaCodes: [],
     gallilexContext: "",
     contextArticleNumbers: [],
+    pivotArticleNumbers: [],
   };
 
   if (keywords.length === 0) return empty;
@@ -122,7 +126,7 @@ export async function fetchLegalChunks(
     }
   }
 
-  // Merge: pivots first (deduplicated), then FTS
+  // Merge: deduplicate pivots + FTS
   const allChunks: LegalChunk[] = [];
   const seenArticles = new Set<string>();
 
@@ -143,10 +147,14 @@ export async function fetchLegalChunks(
     }
   }
 
+  // Score & sort: specific articles first, general articles last
+  const scored = scoreChunks(allChunks, pivotArticles, keywords);
+  const sorted = scored.map((s) => s.chunk);
+
   // Budget: keep chunks within MAX_CHUNK_CHARS
   let totalChars = 0;
   const kept: LegalChunk[] = [];
-  for (const chunk of allChunks) {
+  for (const chunk of sorted) {
     if (totalChars + chunk.content.length > MAX_CHUNK_CHARS) break;
     kept.push(chunk);
     totalChars += chunk.content.length;
@@ -163,12 +171,22 @@ export async function fetchLegalChunks(
     .map((c) => c.article_number)
     .filter(Boolean) as string[];
 
+  // Pivot article numbers that made it into the kept set
+  const pivotSet = new Set(
+    pivotArticles.map((p) => `${p.cdaCode}:${p.articleNumber}`)
+  );
+  const pivotArticleNumbers = kept
+    .filter((c) => pivotSet.has(`${c.cda_code}:${c.article_number}`))
+    .map((c) => c.article_number)
+    .filter(Boolean) as string[];
+
   return {
     chunks: kept,
     legalExtracts,
     allCdaCodes,
     gallilexContext,
     contextArticleNumbers,
+    pivotArticleNumbers,
   };
 }
 
