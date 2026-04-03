@@ -1,0 +1,225 @@
+{
+  "bloc": 2,
+  "title": "Frais scolaires, obligation scolaire, fréquentation, alternance, inscription",
+  "generatedAt": "2026-04-03",
+  "exerciseCount": 14,
+  "cases": [
+    {
+      "id": "b2-ex24",
+      "theme": "Frais scolaires",
+      "article": "49466:1.7.2-2",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "BAD_INDEXING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "BAD_INDEXING",
+      "action": "Re-indexer 1.7.2-2 avec §3 et §5 complets (liste des frais autorisés : piscine, photocopies)"
+    },
+    {
+      "id": "b2-ex25",
+      "theme": "Frais scolaires",
+      "article": "49466:1.7.2-2",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "BAD_INDEXING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "BAD_INDEXING",
+      "action": "Même correctif que ex24 — §3 liste exhaustive des frais"
+    },
+    {
+      "id": "b2-ex26",
+      "theme": "Obligation scolaire",
+      "article": "9547:1er, 9547:10",
+      "presenceInBase": true,
+      "chunkCount": 3,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex27",
+      "theme": "Sportif rémunéré",
+      "article": "9547:11",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex28",
+      "theme": "Absences justifiées",
+      "article": "49466:1.7.1-8",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex29",
+      "theme": "Registre de fréquentation",
+      "article": "49466:1.7.1-9",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex30",
+      "theme": "Définitions (élève libre)",
+      "article": "10450:2",
+      "presenceInBase": true,
+      "chunkCount": 3,
+      "indexingQuality": "BAD_INDEXING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "BAD_INDEXING",
+      "action": "Re-indexer art. 2 avec item 11° complet (définition élève libre)"
+    },
+    {
+      "id": "b2-ex14",
+      "theme": "Alternance — MFI",
+      "article": "16421:2bis",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "BAD_INDEXING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "medium",
+      "status": "BAD_INDEXING",
+      "action": "Vérifier que §4 de 2bis est complet (MFI : projet de vie, mise à niveau)"
+    },
+    {
+      "id": "b2-ex36",
+      "theme": "Obligation scolaire — temps plein",
+      "article": "49466:1.7.1-2",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex38",
+      "theme": "Obligation scolaire — temps partiel",
+      "article": "49466:1.7.1-2",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex43",
+      "theme": "Réinsertion",
+      "article": "16421:10",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex49",
+      "theme": "Certificats alternance",
+      "article": "16421:9",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "medium",
+      "status": "MISSING_PIVOT",
+      "action": "Ajouter pivot 'certificat' → 16421:9"
+    },
+    {
+      "id": "b2-ex15",
+      "theme": "Régime linguistique — Voeren",
+      "article": "4329:6",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b2-ex42",
+      "theme": "Obligation scolaire 5-18 ans",
+      "article": "9547:1er",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    }
+  ],
+  "summary": {
+    "OK": 9,
+    "BAD_INDEXING": 3,
+    "MISSING_PIVOT": 1,
+    "ARTICLE_MISSING": 0
+  },
+  "pivotsAdded": [
+    { "trigger": "frais scolaires", "target": "49466:1.7.2-2", "status": "done" },
+    { "trigger": "travail mineur", "target": "9547:10", "status": "done" },
+    { "trigger": "sportif rémunéré", "target": "9547:11", "status": "done" },
+    { "trigger": "élève libre", "target": "10450:2", "status": "done" },
+    { "trigger": "obligation scolaire", "target": "49466:1.7.1-2", "status": "done" },
+    { "trigger": "alternance", "target": "16421:2bis", "status": "done" },
+    { "trigger": "CEFA", "target": "16421:2bis + 49466:1.7.1-2", "status": "done" },
+    { "trigger": "réinsertion", "target": "16421:10", "status": "done" },
+    { "trigger": "Voeren / Fourons", "target": "4329:6", "status": "done" }
+  ],
+  "pivotsToAdd": [
+    { "trigger": "certificat", "target": "16421:9", "priority": "P2", "reason": "Ex49 — certificats alternance non couverts par pivot" }
+  ],
+  "themesAdded": [
+    { "theme": "sportif / sportif rémunéré", "cdas": ["9547"], "reason": "Ex27 — art. 11 de la loi obligation scolaire concerne le sportif rémunéré" }
+  ],
+  "badIndexing": [
+    { "article": "49466:1.7.2-2", "issue": "§3/§5 tronqués — liste des frais autorisés absente (piscine, photocopies)", "priority": "P1" },
+    { "article": "10450:2", "issue": "Item 11° (définition élève libre) absent des chunks", "priority": "P1" },
+    { "article": "16421:2bis", "issue": "§4 MFI (projet de vie, mise à niveau) potentiellement tronqué", "priority": "P2" }
+  ],
+  "top5Risks": [
+    { "rank": 1, "id": "b2-ex24/25", "reason": "Frais scolaires — BAD_INDEXING sur 1.7.2-2, question très fréquente à l'examen" },
+    { "rank": 2, "id": "b2-ex30", "reason": "Élève libre — BAD_INDEXING sur art. 2 item 11°, définition critique" },
+    { "rank": 3, "id": "b2-ex14", "reason": "Alternance MFI — BAD_INDEXING §4 de 2bis, contenu MFI potentiellement absent" },
+    { "rank": 4, "id": "b2-ex49", "reason": "Certificats alternance — pivot manquant pour 16421:9" },
+    { "rank": 5, "id": "b2-ex27", "reason": "Sportif rémunéré — routing vers 9547 manquait (corrigé)" }
+  ]
+}

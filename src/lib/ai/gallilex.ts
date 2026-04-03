@@ -76,6 +76,7 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "changement d'option": ["10450", "17144", "30998"],
   "primo-arrivant": ["46275", "4329"],
   "DASPA": ["46275", "4329"],
+  "conseil d'intégration": ["46275"],
 
   // Attestations et certifications
   "attestation": ["10450", "17144", "21557", "30998"],
@@ -106,9 +107,9 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "subvention": ["5108"],
 
   // Contrats d'objectifs et pilotage
-  "contrat d'objectifs": ["21557", "45593", "47237", "34295", "46239"],
-  "plan de pilotage": ["21557", "45593", "47237", "34295", "46239"],
-  "pilotage": ["21557", "45593", "47237", "34295", "46239"],
+  "contrat d'objectifs": ["49466", "21557", "45593", "47237", "34295", "46239"],
+  "plan de pilotage": ["49466", "21557", "45593", "47237", "34295", "46239"],
+  "pilotage": ["49466", "21557", "45593", "47237", "34295", "46239"],
   "missions prioritaires": ["21557", "49466"],
   "gouvernance": ["21557", "31886", "45593", "47165", "49466"],
 
@@ -172,8 +173,6 @@ const THEME_CDA_MAP: Record<string, string[]> = {
 
   // Options
   "options": ["10450", "17144", "45721"],
-  "option de base groupée": ["10450", "17144", "45721"],
-  "répertoire des options": ["45721"],
 
   // Personnel
   "personnel": ["31886", "40701", "5556", "46287", "25174"],
@@ -190,6 +189,10 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "maladie": ["25174"],
   "mise en disponibilité": ["25174"],
   "traitement attente": ["25174"],
+
+  // Projet d'école
+  "projet d'école": ["49466", "21557"],
+  "projet école": ["49466", "21557"],
 
   // Relations école-parents
   "parents": ["5108", "31886", "21557", "49466"],
@@ -230,20 +233,63 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "rapport évaluation": ["51683"],
   "bulletin de signalement": ["51683"],
 
+  // Orientation des études
+  "orientation études": ["10450", "17144", "45721"],
+  "orientation d'études": ["10450", "17144", "45721"],
+  "OBG": ["10450", "17144", "45721"],
+  "option de base groupée": ["10450", "17144", "45721"],
+  "répertoire des options": ["45721", "10450"],
+
   // Structures
   "premier degré": ["30998", "10450"],
   "deuxième degré": ["10450", "17144"],
+  "D2": ["10450", "17144"],
   "troisième degré": ["10450", "17144"],
   "qualification": ["10450", "17144"],
   "transition": ["10450", "17144"],
+  "technique de transition": ["10450", "17144"],
   "CES": ["5108"],
+
+  // Recours / AOB
+  "AOB": ["21557", "10450"],
+  "recours interne": ["21557"],
+  "recours externe": ["21557"],
+
+  // 7e professionnelle
+  "7P": ["10450"],
+  "septième professionnelle": ["10450"],
+  "septième année": ["10450"],
+
+  // Changement forme
+  "changement forme": ["10450", "30998"],
+
+  // Passage spécialisé → ordinaire
+  "passage spécialisé": ["28737"],
+
+  // Fait grave / non-réinscription
+  "fait grave": ["49466"],
+  "non-réinscription": ["49466"],
+
+  // Accès à l'école
+  "accès école": ["49466"],
+
+  // Indemnité vélo
+  "indemnité vélo": ["27861"],
+  "bicyclette": ["27861"],
+
+  // Sanction disciplinaire enseignant
+  "sanction disciplinaire": ["5108", "45031"],
+  "chambre de recours": ["5108"],
+
+  // Aptitude pédagogique
+  "aptitude pédagogique": ["47237", "46239"],
 
   // Transport
   "transport": ["27861"],
 
   // Sportif
-  "sportif": ["9226"],
-  "sportif rémunéré": ["9226"],
+  "sportif": ["9226", "9547"],
+  "sportif rémunéré": ["9226", "9547"],
 };
 
 // ============================================================
@@ -359,6 +405,45 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   // Obligation scolaire
   "obligation scolaire": [
     { cdaCode: "9547", articleNumber: "1er", label: "Obligation scolaire" },
+    { cdaCode: "49466", articleNumber: "1.7.1-2", label: "Obligation scolaire — Code enseignement" },
+  ],
+  "travail mineur": [
+    { cdaCode: "9547", articleNumber: "10", label: "Interdiction de travail des mineurs" },
+    { cdaCode: "9547", articleNumber: "1er", label: "Obligation scolaire à temps plein" },
+  ],
+  "sportif rémunéré": [
+    { cdaCode: "9547", articleNumber: "11", label: "Contrat sportif rémunéré — scolarité obligatoire" },
+    { cdaCode: "9547", articleNumber: "1er", label: "Obligation scolaire à temps plein" },
+  ],
+  "élève libre": [
+    { cdaCode: "10450", articleNumber: "2", label: "Définitions — élève libre / régulièrement inscrit" },
+  ],
+
+  // Orientation des études (D2, technique de transition, OBG)
+  "orientation": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études — D2 et D3" },
+  ],
+  "orientation études": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études — D2 et D3" },
+  ],
+  "orientation d'études": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études — D2 et D3" },
+  ],
+  "D2": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études au D2" },
+  ],
+  "deuxième degré": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études au D2" },
+  ],
+  "technique de transition": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études — technique de transition" },
+  ],
+  "OBG": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études — OBG au répertoire" },
+  ],
+  "répertoire des options": [
+    { cdaCode: "10450", articleNumber: "5", label: "Orientation d'études et répertoire des options" },
+    { cdaCode: "10450", articleNumber: "12", label: "Conditions de changement de forme/section/option" },
   ],
 
   // Changement d'option (secondaire)
@@ -375,10 +460,47 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
   ],
   "45 minutes": [
+    { cdaCode: "10450", articleNumber: "1er", label: "Dérogation — périodes de 45 minutes" },
     { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
   ],
   "horaire": [
     { cdaCode: "10450", articleNumber: "2", label: "Définitions — période de 50 minutes" },
+  ],
+
+  // Alternance / CEFA
+  "alternance": [
+    { cdaCode: "16421", articleNumber: "2bis", label: "Organisation de l'alternance — MFI" },
+  ],
+  "CEFA": [
+    { cdaCode: "16421", articleNumber: "2bis", label: "Organisation de l'alternance — CEFA" },
+    { cdaCode: "49466", articleNumber: "1.7.1-2", label: "Obligation scolaire — conditions CEFA" },
+  ],
+  "réinsertion": [
+    { cdaCode: "16421", articleNumber: "10", label: "Attestation de réinsertion" },
+  ],
+
+  // Régime linguistique — Voeren / Fourons
+  "Voeren": [
+    { cdaCode: "4329", articleNumber: "6", label: "Choix linguistique — communes de la frontière linguistique" },
+  ],
+  "Fourons": [
+    { cdaCode: "4329", articleNumber: "6", label: "Choix linguistique — communes de la frontière linguistique" },
+  ],
+
+  // Immersion linguistique
+  "immersion": [
+    { cdaCode: "32365", articleNumber: "12", label: "Limites horaires de l'immersion linguistique" },
+  ],
+  "immersion linguistique": [
+    { cdaCode: "32365", articleNumber: "12", label: "Limites horaires de l'immersion linguistique" },
+  ],
+
+  // Répertoire options — statut R2
+  "R2": [
+    { cdaCode: "45721", articleNumber: "5", label: "Options réservées R2 — avis Conseil général" },
+  ],
+  "option réservée": [
+    { cdaCode: "45721", articleNumber: "5", label: "Options réservées R2 — avis Conseil général" },
   ],
 
   // DASPA / primo-arrivants
@@ -392,15 +514,29 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
 
   // Missions prioritaires
   "missions prioritaires": [
-    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires de l'enseignement" },
+    { cdaCode: "49466", articleNumber: "1.4.1-1", label: "Missions prioritaires — Code de l'enseignement" },
+    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires — Décret Missions" },
   ],
   "missions": [
-    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires de l'enseignement" },
+    { cdaCode: "49466", articleNumber: "1.4.1-1", label: "Missions prioritaires — Code de l'enseignement" },
+    { cdaCode: "21557", articleNumber: "6", label: "Missions prioritaires — Décret Missions" },
+  ],
+  "émancipation": [
+    { cdaCode: "49466", articleNumber: "1.4.1-1", label: "Missions prioritaires — émancipation sociale" },
   ],
 
-  // Contrats d'objectifs
+  // Contrats d'objectifs / plans de pilotage / projet d'école
   "contrat d'objectifs": [
     { cdaCode: "49466", articleNumber: "1.5.2-10", label: "Suivi rapproché" },
+  ],
+  "plan de pilotage": [
+    { cdaCode: "49466", articleNumber: "1.5.2-2", label: "Objectifs d'amélioration des plans de pilotage" },
+  ],
+  "projet d'école": [
+    { cdaCode: "49466", articleNumber: "1.5.1-5", label: "Contenu et finalité du projet d'école" },
+  ],
+  "projet école": [
+    { cdaCode: "49466", articleNumber: "1.5.1-5", label: "Contenu et finalité du projet d'école" },
   ],
 
   // Formation continue
@@ -414,6 +550,200 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   // Travail collaboratif
   "travail collaboratif": [
     { cdaCode: "46287", articleNumber: "15", label: "Volume travail collaboratif" },
+  ],
+
+  // Référent numérique
+  "référent numérique": [
+    { cdaCode: "46287", articleNumber: "9", label: "Référent numérique — conditions et procédure" },
+  ],
+
+  // Disponibilité maladie / traitement d'attente
+  "disponibilité maladie": [
+    { cdaCode: "25174", articleNumber: "14", label: "Traitement d'attente en disponibilité maladie" },
+  ],
+  "traitement d'attente": [
+    { cdaCode: "25174", articleNumber: "14", label: "Traitement d'attente en disponibilité maladie" },
+  ],
+
+  // Indemnité vélo / bicyclette
+  "indemnité vélo": [
+    { cdaCode: "27861", articleNumber: "7", label: "Indemnité kilométrique vélo" },
+  ],
+  "bicyclette": [
+    { cdaCode: "27861", articleNumber: "7", label: "Indemnité kilométrique vélo" },
+  ],
+
+  // Sanction disciplinaire / chambres de recours
+  "sanction disciplinaire": [
+    { cdaCode: "5108", articleNumber: "45", label: "Commissions paritaires — chambres de recours" },
+  ],
+  "chambre de recours": [
+    { cdaCode: "5108", articleNumber: "45", label: "Commissions paritaires — chambres de recours" },
+  ],
+
+  // Inspection — manquement
+  "manquement": [
+    { cdaCode: "47237", articleNumber: "4", label: "Inspection — contrôle sur manquement" },
+    { cdaCode: "46239", articleNumber: "4/1", label: "Inspection — manquement pôles territoriaux" },
+  ],
+  "aptitude pédagogique": [
+    { cdaCode: "47237", articleNumber: "4", label: "Inspection — aptitude pédagogique" },
+    { cdaCode: "46239", articleNumber: "4/1", label: "Inspection — aptitude pédagogique pôles" },
+  ],
+
+  // Direction — lettre de mission, accompagnement, profil
+  "lettre de mission": [
+    { cdaCode: "31886", articleNumber: "27", label: "Lettre de mission — durée et modification" },
+  ],
+  "accompagnement direction": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
+  ],
+  "formation intégration": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
+  ],
+  "profil de fonction": [
+    { cdaCode: "31886", articleNumber: "5", label: "Profil de fonction — 7 catégories de responsabilités" },
+  ],
+  "responsabilités direction": [
+    { cdaCode: "31886", articleNumber: "5", label: "Profil de fonction — 7 catégories de responsabilités" },
+  ],
+
+  // Formation — demi-jours capitalisables
+  "demi-jours": [
+    { cdaCode: "49466", articleNumber: "6.1.3-8", label: "Demi-jours de formation — capitalisables sur 6 ans" },
+  ],
+
+  // Passage spécialisé → ordinaire
+  "spécialisé ordinaire": [
+    { cdaCode: "28737", articleNumber: "65", label: "Passage enseignement spécialisé vers ordinaire" },
+  ],
+  "passage spécialisé": [
+    { cdaCode: "28737", articleNumber: "65", label: "Passage enseignement spécialisé vers ordinaire" },
+  ],
+
+  // Conditions d'âge — admission secondaire
+  "condition d'âge": [
+    { cdaCode: "10450", articleNumber: "6", label: "Conditions d'âge — 31 décembre" },
+  ],
+  "âge admission": [
+    { cdaCode: "10450", articleNumber: "6", label: "Conditions d'âge — 31 décembre" },
+  ],
+
+  // Premier degré — orientation, durée, passages
+  "1D": [
+    { cdaCode: "30998", articleNumber: "6", label: "Admission au 1er degré — 1D/1C" },
+  ],
+  "1C": [
+    { cdaCode: "30998", articleNumber: "6", label: "Admission au 1er degré — 1D/1C" },
+  ],
+  "durée premier degré": [
+    { cdaCode: "30998", articleNumber: "6ter", label: "Durée maximale au 1er degré — 3 ans" },
+  ],
+  "3 ans": [
+    { cdaCode: "30998", articleNumber: "6ter", label: "Durée maximale au 1er degré — 3 ans" },
+  ],
+  "CE1D": [
+    { cdaCode: "30998", articleNumber: "26", label: "Orientation au terme de 2C — CE1D" },
+    { cdaCode: "30998", articleNumber: "28bis", label: "Orientation au terme de 2S — sans CE1D" },
+  ],
+  "2S": [
+    { cdaCode: "30998", articleNumber: "26", label: "Orientation vers 2S — année supplémentaire" },
+    { cdaCode: "30998", articleNumber: "28bis", label: "Orientation au terme de 2S" },
+  ],
+  "année supplémentaire": [
+    { cdaCode: "30998", articleNumber: "26", label: "Orientation vers année supplémentaire (2S)" },
+  ],
+  "2D": [
+    { cdaCode: "30998", articleNumber: "28", label: "Orientation au terme de 2D" },
+  ],
+
+  // Changement de forme / option
+  "changement forme": [
+    { cdaCode: "10450", articleNumber: "19", label: "Passage entre formes d'enseignement" },
+    { cdaCode: "10450", articleNumber: "12", label: "Conditions de changement de forme/section" },
+  ],
+  "16 novembre": [
+    { cdaCode: "10450", articleNumber: "20", label: "Changement d'option — règle du 16 novembre" },
+  ],
+
+  // Recours
+  "recours": [
+    { cdaCode: "21557", articleNumber: "96", label: "Recours interne — procédure" },
+    { cdaCode: "21557", articleNumber: "98", label: "Recours externe — délais" },
+  ],
+  "recours interne": [
+    { cdaCode: "21557", articleNumber: "96", label: "Recours interne — procédure" },
+  ],
+  "AOB": [
+    { cdaCode: "21557", articleNumber: "96", label: "Recours interne contre AOB" },
+    { cdaCode: "21557", articleNumber: "98", label: "Recours externe contre AOB" },
+  ],
+
+  // PIA (plan individualisé d'apprentissage)
+  "PIA": [
+    { cdaCode: "30998", articleNumber: "7bis", label: "PIA — bases et élaboration au 1er degré" },
+    { cdaCode: "28737", articleNumber: "132", label: "PIA — intégration permanente totale" },
+  ],
+  "plan individualisé": [
+    { cdaCode: "30998", articleNumber: "7bis", label: "PIA — bases et élaboration au 1er degré" },
+    { cdaCode: "28737", articleNumber: "132", label: "PIA — intégration permanente totale" },
+  ],
+  "PIA intégration": [
+    { cdaCode: "28737", articleNumber: "132", label: "PIA — intégration permanente totale" },
+  ],
+
+  // ROI
+  "ROI": [
+    { cdaCode: "49466", articleNumber: "1.5.1-9", label: "Règlement d'ordre intérieur — adoption par le PO" },
+  ],
+  "règlement d'ordre intérieur": [
+    { cdaCode: "49466", articleNumber: "1.5.1-9", label: "Règlement d'ordre intérieur — adoption par le PO" },
+  ],
+
+  // Accès à l'école / police
+  "police": [
+    { cdaCode: "49466", articleNumber: "1.5.1-11", label: "Accès des services de police à l'école" },
+  ],
+  "accès école": [
+    { cdaCode: "49466", articleNumber: "1.5.1-10", label: "Accès des parents à l'école" },
+    { cdaCode: "49466", articleNumber: "1.5.1-11", label: "Accès des tiers et de la police" },
+  ],
+
+  // Bien-être / climat scolaire
+  "bien-être": [
+    { cdaCode: "49466", articleNumber: "1.7.10-3", label: "Climat scolaire et bien-être" },
+  ],
+  "climat scolaire": [
+    { cdaCode: "49466", articleNumber: "1.7.10-3", label: "Climat scolaire et bien-être" },
+  ],
+
+  // Non-réinscription
+  "non-réinscription": [
+    { cdaCode: "49466", articleNumber: "1.7.9-11", label: "Refus de réinscription = exclusion définitive" },
+  ],
+  "réinscription": [
+    { cdaCode: "49466", articleNumber: "1.7.9-11", label: "Refus de réinscription = exclusion définitive" },
+  ],
+
+  // Fait grave
+  "fait grave": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
+  ],
+
+  // Qualification spécialisé
+  "qualification spécialisé": [
+    { cdaCode: "28737", articleNumber: "59", label: "CQ enseignement spécialisé — stages obligatoires" },
+  ],
+  "CQ stages": [
+    { cdaCode: "28737", articleNumber: "59", label: "CQ enseignement spécialisé — stages obligatoires" },
+  ],
+
+  // 7e professionnelle
+  "7P": [
+    { cdaCode: "10450", articleNumber: "17", label: "Admission en 7e professionnelle — conditions" },
+  ],
+  "septième professionnelle": [
+    { cdaCode: "10450", articleNumber: "17", label: "Admission en 7e professionnelle — conditions" },
   ],
 };
 

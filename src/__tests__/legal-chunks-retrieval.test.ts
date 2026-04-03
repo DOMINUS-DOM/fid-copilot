@@ -91,6 +91,8 @@ describe("Legal chunks — pivot article presence", () => {
     { cda: "49466", article: "1.10.2-3", label: "DAccE données disciplinaires 1.10.2-3" },
     { cda: "49466", article: "1.10.3-1", label: "DAccE accès 1.10.3-1" },
     { cda: "45031", article: "32sexies", label: "Personne de confiance 32sexies" },
+    // Orientation D2 — article 5
+    { cda: "10450", article: "5", label: "Orientation d'études art. 5" },
     // 4 cas partiels + missions prioritaires
     { cda: "10450", article: "12", label: "Changement option art. 12" },
     { cda: "10450", article: "19", label: "Délais changement art. 19" },
@@ -124,6 +126,7 @@ describe("Legal chunks — content coherence", () => {
     { cda: "49466", article: "1.6.3-10", pattern: /Article\s+1\.6\.3[\s\-]*10/i },
     { cda: "49466", article: "1.5.1-8", pattern: /Article\s+1\.5\.1[\s\-]*8/i },
     { cda: "45031", article: "32sexies", pattern: /Article\s+32sexies/i },
+    { cda: "10450", article: "5", pattern: /Article\s+5/i },
     { cda: "10450", article: "12", pattern: /12/i },
     { cda: "46275", article: "2", pattern: /Article\s+2/i },
     { cda: "46275", article: "3", pattern: /Article\s+3/i },
@@ -182,6 +185,12 @@ describe("Legal chunks — keyword coverage", () => {
       cda: "49466",
       article: "1.10.2-3",
       keywords: ["disciplinaire"],
+    },
+    // Orientation D2 — article 5 §3
+    {
+      cda: "10450",
+      article: "5",
+      keywords: ["orientation d'études", "option de base groupée", "répertoire"],
     },
     // 4 cas partiels + missions prioritaires
     {

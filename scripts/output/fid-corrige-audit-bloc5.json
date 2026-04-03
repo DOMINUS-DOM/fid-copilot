@@ -1,0 +1,275 @@
+{
+  "bloc": 5,
+  "title": "Personnel, titres, formation, direction, bien-être au travail",
+  "generatedAt": "2026-04-03",
+  "exerciseCount": 16,
+  "cases": [
+    {
+      "id": "b5-ex66",
+      "theme": "Titres et brevets — Décret 11 avril 2024",
+      "article": "Décret 11/04/2024 (NON INDEXÉ)",
+      "presenceInBase": false,
+      "chunkCount": 0,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": false,
+      "routingExists": false,
+      "riskLevel": "high",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer le Décret du 11 avril 2024 relatif aux titres et brevets. CDA non encore créé dans Gallilex.",
+      "notes": "Décret récent (2024), absent du corpus. CDA 40701 couvre un décret antérieur (2016) sur les titres mais pas celui-ci."
+    },
+    {
+      "id": "b5-ex67",
+      "theme": "Référent numérique — désignation et missions",
+      "article": "46287:9",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex68",
+      "theme": "Formation continuée — 60 périodes",
+      "article": "46287:15",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex69",
+      "theme": "Sanctions disciplinaires — procédure et chambres de recours",
+      "article": "5108:45",
+      "presenceInBase": true,
+      "chunkCount": 19,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null,
+      "notes": "Reclassifié OK — chunk 8 (id d6ffe069) contient explicitement 'peines disciplinaires prononcées en dernière instance par des chambres de recours'. Le faux positif BAD_INDEXING venait d'un limit=5 sur les tests (l'article a 19 chunks)."
+    },
+    {
+      "id": "b5-ex70",
+      "theme": "Disponibilité pour maladie — traitement d'attente",
+      "article": "25174:14",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex71",
+      "theme": "Indemnité vélo / bicyclette",
+      "article": "27861:7",
+      "presenceInBase": true,
+      "chunkCount": 4,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex72",
+      "theme": "Éducateur — profil de fonction (AG 47114)",
+      "article": "47114:Annexe",
+      "presenceInBase": false,
+      "chunkCount": 0,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer l'Annexe de l'AG du 3 juillet 2019 (CDA 47114) avec article_number='Annexe'. CDA contient 3 chunks mais article_number=null.",
+      "notes": "Même problème identifié en Bloc 4 (b4-ex64). Fix d'indexation nécessaire."
+    },
+    {
+      "id": "b5-ex73",
+      "theme": "Aptitude pédagogique — inspection (art. 4/1)",
+      "article": "47237:4/1",
+      "presenceInBase": false,
+      "chunkCount": 0,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer art. 4/1 du Décret du 13 septembre 2018 (CDA 47237). Art. 4 est présent mais 4/1 (ajouté ultérieurement) est absent.",
+      "notes": "Art. 4 couvre l'inspection générale. Art. 4/1 porte spécifiquement sur la constatation de manquement via l'inspection."
+    },
+    {
+      "id": "b5-ex74",
+      "theme": "Inspection — mission et manquement au programme",
+      "article": "47237:4",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex75",
+      "theme": "Formation collective — journées pédagogiques",
+      "article": "49466:6.1.3-2",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex76",
+      "theme": "Demi-jours / jours blancs — capitalisable",
+      "article": "49466:6.1.3-8",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex77",
+      "theme": "Lettre de mission — durée et renouvellement",
+      "article": "31886:27",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex78",
+      "theme": "Accompagnement direction — formation d'intégration 30h",
+      "article": "31886:11",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex79",
+      "theme": "Profil de fonction directeur — 7 responsabilités",
+      "article": "31886:5",
+      "presenceInBase": true,
+      "chunkCount": 3,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b5-ex80",
+      "theme": "Harcèlement moral — personne de confiance",
+      "article": "45031:32nonies",
+      "presenceInBase": false,
+      "chunkCount": 0,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer art. 32nonies de la Loi du 4 août 1996 (CDA 45031). Traite du harcèlement moral et de la procédure interne.",
+      "notes": "Art. 32sexies (personne de confiance) est présent. Art. 32nonies (harcèlement moral — procédure) est absent."
+    },
+    {
+      "id": "b5-ex81",
+      "theme": "CPPT — composition et rôle délégué syndical",
+      "article": "45031:32sexies",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    }
+  ],
+  "summary": {
+    "OK": 11,
+    "BAD_INDEXING": 0,
+    "ARTICLE_MISSING": 4,
+    "MISSING_PIVOT": 0
+  },
+  "pivotsAdded": [
+    { "trigger": "référent numérique", "target": "46287:9", "status": "done" },
+    { "trigger": "disponibilité maladie / traitement d'attente", "target": "25174:14", "status": "done" },
+    { "trigger": "indemnité vélo / bicyclette", "target": "27861:7", "status": "done" },
+    { "trigger": "sanction disciplinaire / chambre de recours", "target": "5108:45", "status": "done" },
+    { "trigger": "manquement / aptitude pédagogique", "target": "47237:4", "status": "done" },
+    { "trigger": "lettre de mission", "target": "31886:27", "status": "done" },
+    { "trigger": "accompagnement direction / formation intégration", "target": "31886:11", "status": "done" },
+    { "trigger": "profil de fonction / responsabilités direction", "target": "31886:5", "status": "done" },
+    { "trigger": "demi-jours", "target": "49466:6.1.3-8", "status": "done" }
+  ],
+  "pivotsToAdd": [],
+  "themesAdded": [
+    { "theme": "indemnité vélo / bicyclette", "cdas": ["27861"], "reason": "Ex71 — indemnité bicyclette" },
+    { "theme": "sanction disciplinaire", "cdas": ["5108", "45031"], "reason": "Ex69 — procédure disciplinaire" },
+    { "theme": "chambre de recours", "cdas": ["5108"], "reason": "Ex69 — chambres de recours" },
+    { "theme": "aptitude pédagogique", "cdas": ["47237"], "reason": "Ex73/74 — inspection et manquement" }
+  ],
+  "badIndexing": [],
+  "articlesMissing": [
+    {
+      "article": "Décret 11/04/2024 (titres/brevets)",
+      "issue": "Décret récent non indexé. Aucun CDA existant ne le couvre.",
+      "priority": "P1"
+    },
+    {
+      "article": "47114:Annexe",
+      "issue": "AG éducateur — CDA a 3 chunks mais article_number=null. Fix d'indexation.",
+      "priority": "P2"
+    },
+    {
+      "article": "47237:4/1",
+      "issue": "Aptitude pédagogique via inspection. Art. 4 présent, 4/1 absent.",
+      "priority": "P2"
+    },
+    {
+      "article": "45031:32nonies",
+      "issue": "Harcèlement moral — procédure interne. Art. 32sexies présent, 32nonies absent.",
+      "priority": "P2"
+    }
+  ],
+  "top5Risks": [
+    { "rank": 1, "id": "b5-ex66", "reason": "Décret 11/04/2024 titres/brevets — totalement absent du corpus. Question FID très probable." },
+    { "rank": 2, "id": "b5-ex80", "reason": "Harcèlement moral (32nonies) — ARTICLE_MISSING. Sujet sensible et fréquent à l'examen." },
+    { "rank": 3, "id": "b5-ex73", "reason": "Aptitude pédagogique inspection (47237:4/1) — ARTICLE_MISSING. Procédure de manquement." },
+    { "rank": 4, "id": "b5-ex72", "reason": "Éducateur profil de fonction (47114:Annexe) — ARTICLE_MISSING. Contenu en base mais mal indexé." },
+    { "rank": 5, "id": "b5-ex69", "reason": "Sanctions disciplinaires (5108:45) — 19 chunks, contenu correct mais dense. Reclassifié OK." }
+  ]
+}

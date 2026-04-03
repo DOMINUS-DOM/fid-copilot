@@ -1,0 +1,206 @@
+{
+  "bloc": 4,
+  "title": "DAccE, PIA, besoins spécifiques, vivre ensemble, discipline",
+  "generatedAt": "2026-04-03",
+  "exerciseCount": 12,
+  "cases": [
+    {
+      "id": "b4-ex54",
+      "theme": "DAccE — volets et accès parents",
+      "article": "49466:1.10.2-2 + 49466:1.10.3-1",
+      "presenceInBase": true,
+      "chunkCount": 5,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex56",
+      "theme": "PIA — intégration permanente totale",
+      "article": "28737:132",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex57",
+      "theme": "PIA — bases en 2C",
+      "article": "30998:7bis",
+      "presenceInBase": true,
+      "chunkCount": 3,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex58",
+      "theme": "Aménagements raisonnables",
+      "article": "49466:1.7.8-1",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex63",
+      "theme": "DAccE — faits disciplinaires",
+      "article": "49466:1.10.2-3",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex65",
+      "theme": "PMS / bien-être — rencontre annuelle",
+      "article": "49466:1.7.10-3",
+      "presenceInBase": true,
+      "chunkCount": 1,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex59",
+      "theme": "ROI — modification et consultation",
+      "article": "49466:1.5.1-9 + 49466:1.5.3-1 (ABSENT)",
+      "presenceInBase": "partial",
+      "chunkCount": 1,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "medium",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer art. 1.5.3-1 (conseil de participation — avis sur ROI). Contenu partiellement couvert par 1.5.3-3.",
+      "notes": "Art. 1.5.1-9 présent et OK. Art. 1.5.3-1 absent — le §2 7° sur l'avis du conseil de participation concernant le ROI n'est pas indexé."
+    },
+    {
+      "id": "b4-ex60",
+      "theme": "Accès police à l'école",
+      "article": "49466:1.5.1-10 + 49466:1.5.1-11",
+      "presenceInBase": true,
+      "chunkCount": 2,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null
+    },
+    {
+      "id": "b4-ex61",
+      "theme": "Fait grave — complicité personne étrangère",
+      "article": "49466:1.7.9-4 §2",
+      "presenceInBase": true,
+      "chunkCount": 4,
+      "indexingQuality": "BAD_INDEXING",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "BAD_INDEXING",
+      "action": "Re-indexer art. 1.7.9-4 — le §2 (complicité/instigation/personne étrangère) est absent. Seuls §1, §3, §4 sont dans les chunks.",
+      "notes": "CRITIQUE : le §2 contient la règle clé sur la complicité d'un tiers (frère, ami) = l'élève est considéré comme auteur. Exception pour fait commis par les parents."
+    },
+    {
+      "id": "b4-ex62",
+      "theme": "Exclusion / écartement / non-réinscription",
+      "article": "49466:1.7.9-4 + 1.7.9-5 + 1.7.9-6 + 1.7.9-11",
+      "presenceInBase": true,
+      "chunkCount": 11,
+      "indexingQuality": "OK",
+      "pivotExists": true,
+      "routingExists": true,
+      "riskLevel": "low",
+      "status": "OK",
+      "action": null,
+      "notes": "Les 4 articles sont présents. Le contenu est correct pour la procédure complète."
+    },
+    {
+      "id": "b4-ex64",
+      "theme": "Éducateur — rôle au conseil de classe",
+      "article": "47114:Annexe",
+      "presenceInBase": false,
+      "chunkCount": 0,
+      "indexingQuality": "ARTICLE_MISSING",
+      "pivotExists": false,
+      "routingExists": true,
+      "riskLevel": "high",
+      "status": "ARTICLE_MISSING",
+      "action": "Indexer l'Annexe de l'AG du 3 juillet 2019 (CDA 47114) avec article_number='Annexe'. Le CDA contient 3 chunks de contenu mais sans article_number.",
+      "notes": "Le contenu existe en base (3 chunks) mais article_number est null. Nécessite un fix d'indexation pour affecter article_number='Annexe'."
+    }
+  ],
+  "summary": {
+    "OK": 9,
+    "BAD_INDEXING": 1,
+    "ARTICLE_MISSING": 2,
+    "MISSING_PIVOT": 0
+  },
+  "pivotsAdded": [
+    { "trigger": "PIA / plan individualisé", "target": "30998:7bis + 28737:132", "status": "done" },
+    { "trigger": "PIA intégration", "target": "28737:132", "status": "done" },
+    { "trigger": "ROI / règlement d'ordre intérieur", "target": "49466:1.5.1-9", "status": "done" },
+    { "trigger": "police", "target": "49466:1.5.1-11", "status": "done" },
+    { "trigger": "accès école", "target": "49466:1.5.1-10 + 1.5.1-11", "status": "done" },
+    { "trigger": "bien-être / climat scolaire", "target": "49466:1.7.10-3", "status": "done" },
+    { "trigger": "non-réinscription / réinscription", "target": "49466:1.7.9-11", "status": "done" },
+    { "trigger": "fait grave", "target": "49466:1.7.9-4", "status": "done" },
+    { "trigger": "DAccE / dossier accompagnement", "target": "49466:1.10.2-2 + 1.10.2-3 + 1.10.3-1", "status": "existed" },
+    { "trigger": "aménagement / besoins spécifiques", "target": "49466:1.7.8-1", "status": "existed" },
+    { "trigger": "exclusion / exclusion définitive / écartement", "target": "49466:1.7.9-4 + 1.7.9-5 + 1.7.9-6", "status": "existed" }
+  ],
+  "pivotsToAdd": [],
+  "themesAdded": [
+    { "theme": "fait grave", "cdas": ["49466"], "reason": "Ex61 — complicité personne étrangère" },
+    { "theme": "non-réinscription", "cdas": ["49466"], "reason": "Ex62 — refus de réinscription" },
+    { "theme": "accès école", "cdas": ["49466"], "reason": "Ex60 — accès police/parents" }
+  ],
+  "badIndexing": [
+    {
+      "article": "49466:1.7.9-4 §2",
+      "issue": "§2 absent — complicité/instigation/personne étrangère non indexé. Seuls §1, §3, §4 présents.",
+      "priority": "P1"
+    }
+  ],
+  "articlesMissing": [
+    {
+      "article": "49466:1.5.3-1",
+      "issue": "Conseil de participation — avis sur ROI. Contenu partiellement dans 1.5.3-3.",
+      "priority": "P2"
+    },
+    {
+      "article": "47114:Annexe",
+      "issue": "AG éducateur — profil de fonction. CDA contient 3 chunks avec article_number=null. Fix d'indexation nécessaire.",
+      "priority": "P2"
+    }
+  ],
+  "top5Risks": [
+    { "rank": 1, "id": "b4-ex61", "reason": "Complicité personne étrangère — BAD_INDEXING §2 de 1.7.9-4. Règle critique absente des chunks." },
+    { "rank": 2, "id": "b4-ex62", "reason": "Exclusion/écartement — procédure complète multi-articles, question très fréquente à l'examen." },
+    { "rank": 3, "id": "b4-ex54", "reason": "DAccE — nouveau dispositif, questions fréquentes sur les volets et l'accès." },
+    { "rank": 4, "id": "b4-ex64", "reason": "Éducateur conseil de classe — ARTICLE_MISSING (CDA 47114 non indexé proprement)." },
+    { "rank": 5, "id": "b4-ex59", "reason": "ROI — art. 1.5.3-1 absent, conseil de participation partiellement couvert par 1.5.3-3." }
+  ]
+}

@@ -325,6 +325,12 @@ export async function POST(request: Request) {
       confidence = "low";
     }
 
+    // Degrade confidence when citation guard flags unverified citations.
+    // A response citing articles not present in context cannot be trusted as "high".
+    if (guardResult.hadUnverifiedCitations && confidence === "high") {
+      confidence = "medium";
+    }
+
     // 9. Gallilex hints (si confiance faible ou moyenne)
     const gallilex: GallilexHint[] =
       confidence !== "high" ? buildGallilexHints(selectedDocs, keywords) : [];

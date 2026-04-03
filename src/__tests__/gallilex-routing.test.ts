@@ -85,6 +85,8 @@ describe("Gallilex CDA routing", () => {
     { keywords: ["formation", "ESAHR"], expectedCda: "23189" },
     { keywords: ["évaluation", "personnel", "membres"], expectedCda: "51683" },
     { keywords: ["changement", "option", "novembre"], expectedCda: "10450" },
+    { keywords: ["orientation", "études", "D2", "technique", "transition"], expectedCda: "10450" },
+    { keywords: ["OBG", "répertoire", "options"], expectedCda: "10450" },
     { keywords: ["période", "45", "minutes", "horaire"], expectedCda: "10450" },
     { keywords: ["DASPA", "primo-arrivant"], expectedCda: "46275" },
     { keywords: ["obligation", "scolaire"], expectedCda: "9547" },
@@ -177,6 +179,24 @@ describe("Pivot article injection", () => {
       keywords: ["travail", "collaboratif"],
       expectedArticle: "15",
       expectedCda: "46287",
+    },
+    {
+      name: "Orientation études D2 → 5",
+      keywords: ["orientation", "études", "D2", "technique", "transition"],
+      expectedArticle: "5",
+      expectedCda: "10450",
+    },
+    {
+      name: "OBG répertoire → 5",
+      keywords: ["OBG", "répertoire", "options"],
+      expectedArticle: "5",
+      expectedCda: "10450",
+    },
+    {
+      name: "Deuxième degré → 5",
+      keywords: ["deuxième", "degré", "orientation"],
+      expectedArticle: "5",
+      expectedCda: "10450",
     },
     {
       name: "Changement d'option → 12",

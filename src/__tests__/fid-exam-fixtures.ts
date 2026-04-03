@@ -167,6 +167,23 @@ export const FID_TEST_CASES: FidTestCase[] = [
     ],
   },
 
+  // ─── 10bis. Orientation des études D2 technique de transition ───
+  {
+    id: "orientation-etudes-d2",
+    name: "Orientation des études au D2 — technique de transition",
+    question:
+      "Au D2, qu'est-ce qui détermine l'orientation des études dans l'enseignement technique de transition ?",
+    expectedCdas: ["10450"],
+    pivotArticles: ["5"],
+    requiredKeywords: [
+      "option de base groupée",
+      "répertoire",
+    ],
+    expectedQcmAnswer: "4",
+    notes:
+      "Article 5 §3 de l'AR du 29/06/1984 : l'orientation est déterminée par l'OBG faisant partie du répertoire. Pas par l'OBG + sa grille.",
+  },
+
   // ─── 10. Personne de confiance ───
   {
     id: "personne-confiance",
