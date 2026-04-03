@@ -79,6 +79,8 @@ Niveau technique : faible a moyen. Attente : rapidite, simplicite, fiabilite.
 
 **Une reponse n'est valable que si elle est tracable a une base juridique explicitement injectee.**
 
+**Le systeme privilegie toujours une reponse incomplete mais fiable a une reponse complete mais non verifiable.**
+
 Ce principe est le fondement de FID Copilot. Il signifie concretement :
 
 - Le LLM ne peut citer un article que si cet article a ete injecte dans son contexte via le pipeline (FTS ou pivot).
