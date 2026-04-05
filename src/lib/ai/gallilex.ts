@@ -156,6 +156,10 @@ const THEME_CDA_MAP: Record<string, string[]> = {
 
   // Harcèlement et bien-être
   "harcèlement": ["45031"],
+  "harcèlement moral": ["45031"],
+  "harcèlement sexuel": ["45031"],
+  "intervention psychosociale": ["45031"],
+  "violence psychosociale": ["45031"],
   "bien-être": ["31886", "28737", "45031", "46239"],
   "personne de confiance": ["45031"],
   "conseiller en prévention": ["45031"],
@@ -453,12 +457,30 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "49466", articleNumber: "1.5.1-8", label: "Règlement des études par implantation" },
   ],
 
-  // Personne de confiance
-  "personne de confiance": [
-    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance" },
-  ],
+  // Harcèlement / personne de confiance / intervention psychosociale
   "harcèlement": [
-    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance" },
+    { cdaCode: "45031", articleNumber: "32nonies", label: "Intervention psychosociale — à qui s'adresser (conseiller, personne de confiance, fonctionnaire)" },
+    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance — désignation et rôle" },
+  ],
+  "personne de confiance": [
+    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance — désignation et rôle" },
+    { cdaCode: "45031", articleNumber: "32nonies", label: "Intervention psychosociale — voies de recours" },
+  ],
+  "conseiller en prévention": [
+    { cdaCode: "45031", articleNumber: "32nonies", label: "Intervention psychosociale — à qui s'adresser" },
+    { cdaCode: "45031", articleNumber: "32sexies", label: "Personne de confiance / conseiller en prévention" },
+  ],
+  "risques psychosociaux": [
+    { cdaCode: "45031", articleNumber: "32nonies", label: "Intervention psychosociale — voies de recours" },
+  ],
+  "intervention psychosociale": [
+    { cdaCode: "45031", articleNumber: "32nonies", label: "Intervention psychosociale informelle et formelle" },
+  ],
+  "harcèlement moral": [
+    { cdaCode: "45031", articleNumber: "32nonies", label: "À qui s'adresser — harcèlement moral" },
+  ],
+  "adresser": [
+    { cdaCode: "45031", articleNumber: "32nonies", label: "À qui s'adresser — intervention psychosociale" },
   ],
 
   // Obligation scolaire

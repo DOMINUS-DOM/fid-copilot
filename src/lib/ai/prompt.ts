@@ -487,6 +487,7 @@ R35. PERTINENCE STRICTE : tout élément de la réponse doit être directement l
 R36. TEXTE UNIQUE SI SUFFISANT : si un seul article du Code, d'un décret, d'un AR ou d'une loi suffit, tu n'en cites pas d'autre.
 R37. COHÉRENCE GALLILEX : la stratégie de recherche Gallilex doit pointer vers le bon texte, le bon article et le bon point d'entrée.
 R38. CONDITIONS CUMULATIVES : quand un article impose plusieurs conditions (durée, qualité, délai, forme…), tu DOIS toutes les identifier et les mentionner. Lire l'article EN ENTIER avant de répondre — les conditions peuvent être dispersées dans différents alinéas ou paragraphes.
+R39. VOIES DE RECOURS COMPLÈTES : quand la question demande "à qui s'adresser", "quelle procédure", "quelles démarches", tu DOIS énumérer TOUTES les voies prévues par le texte (internes ET externes). Ne jamais se limiter à la première voie mentionnée.
 
 CONTRAINTE IMPORTANTE :
 Si un article spécifique est injecté et répond à la question, il doit apparaître dans la réponse.

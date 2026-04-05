@@ -145,6 +145,16 @@ const SEARCH_TRAPS: SearchTrap[] = [
     trap: "Ne pas confondre les §1-§3 (formation réseau 60h) avec le §4 (accompagnement d'intégration 30h). Les conditions du §4 sont cumulatives : 30 heures, formateurs sans lien hiérarchique, sur 3 ans. Ne pas chercher dans le Code de l'enseignement (28737 ou 49466).",
     confirmation: "Le §4 mentionne « 30 heures », « entrée en fonction » et « sans lien hiérarchique avec les directeurs concernés ».",
   },
+  {
+    trigger: "45031:32nonies",
+    trap: "Ne pas confondre art. 32sexies (désignation de la personne de confiance) avec art. 32nonies (à qui s'adresser). Si la question est « à qui s'adresser », c'est 32nonies. L'article liste 3 voies : (1) conseiller en prévention ou personne de confiance pour une intervention informelle, (2) conseiller en prévention pour une intervention formelle, (3) fonctionnaire de surveillance (recours externe).",
+    confirmation: "L'article mentionne « s'adresser au conseiller en prévention ou à la personne de confiance » et « fonctionnaire chargé de la surveillance ».",
+  },
+  {
+    trigger: "45031:32sexies",
+    trap: "L'art. 32sexies concerne la désignation et le rôle de la personne de confiance, PAS la procédure de plainte. Si la question porte sur « à qui s'adresser » ou « intervention psychosociale », c'est l'art. 32nonies qu'il faut viser.",
+    confirmation: "L'article mentionne « L'employeur peut désigner une ou plusieurs personnes de confiance » — il s'agit de la désignation, pas de la procédure.",
+  },
 ];
 
 // ============================================================

@@ -273,6 +273,18 @@ describe("Pivot article injection", () => {
       expectedArticle: "11",
       expectedCda: "31886",
     },
+    {
+      name: "Harcèlement moral → 45031:32nonies (priorité sur 32sexies)",
+      keywords: ["harcèlement", "moral", "adresser"],
+      expectedArticle: "32nonies",
+      expectedCda: "45031",
+    },
+    {
+      name: "Personne de confiance → 45031:32sexies",
+      keywords: ["personne", "confiance", "désignation"],
+      expectedArticle: "32sexies",
+      expectedCda: "45031",
+    },
   ];
 
   for (const { name, keywords, expectedArticle, expectedCda } of pivotCases) {

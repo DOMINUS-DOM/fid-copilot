@@ -289,6 +289,44 @@ describe("Gallilex Search — Accompagnement directeur / 31886:11", () => {
 });
 
 // ============================================================
+// 7. Harcèlement moral — 45031:32nonies
+// ============================================================
+
+describe("Gallilex Search — Harcèlement moral / 45031:32nonies", () => {
+  const input = buildInput(
+    "Harcèlement moral à qui s'adresser ?",
+    ["harcèlement", "moral", "adresser"],
+  );
+  const strategy = buildGallilexSearch(input);
+
+  it("generates a non-null strategy", () => {
+    expect(strategy).not.toBeNull();
+  });
+
+  it("identifies CDA 45031 as primary text", () => {
+    expect(strategy!.primaryText.cdaCode).toBe("45031");
+  });
+
+  it("primary text is a loi", () => {
+    expect(strategy!.primaryText.textType).toBe("loi");
+  });
+
+  it("search keywords include '32nonies'", () => {
+    expect(strategy!.searchKeywords.some((k) => k.includes("32nonies"))).toBe(true);
+  });
+
+  it("trap warns about 32sexies vs 32nonies confusion", () => {
+    expect(strategy!.trap).toBeTruthy();
+    expect(strategy!.trap).toContain("32nonies");
+  });
+
+  it("confirmation mentions personne de confiance and fonctionnaire", () => {
+    expect(strategy!.confirmation).toBeTruthy();
+    expect(strategy!.confirmation).toContain("personne de confiance");
+  });
+});
+
+// ============================================================
 // Edge cases
 // ============================================================
 
