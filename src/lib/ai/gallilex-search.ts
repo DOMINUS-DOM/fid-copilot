@@ -112,8 +112,8 @@ const SEARCH_TRAPS: SearchTrap[] = [
   },
   {
     trigger: "49466:1.7.9-4",
-    trap: "Les motifs d'exclusion (art. 1.7.9-4) et la procédure (art. 1.7.9-6) sont dans des articles séparés. Ne pas les confondre.",
-    confirmation: "L'art. 1.7.9-4 liste les faits pouvant justifier une exclusion définitive.",
+    trap: "Les motifs d'exclusion (art. 1.7.9-4) et la procédure (art. 1.7.9-6) sont dans des articles séparés. Ne pas les confondre. Le §2 traite de la complicité avec une personne étrangère à l'école — mais l'alinéa 2 exclut le cas où le fait est commis par les parents de l'élève mineur.",
+    confirmation: "L'art. 1.7.9-4 §1 liste les faits graves. Le §2 mentionne « personne étrangère à l'école », « instigation ou complicité » et l'exception parentale.",
   },
   {
     trigger: "5108:73",
@@ -139,6 +139,11 @@ const SEARCH_TRAPS: SearchTrap[] = [
     trigger: "9547:1er",
     trap: "L'obligation scolaire à temps plein est dans la loi de 1983 (CDA 9547), pas dans le Code. Ne pas confondre avec l'art. 1.7.1-2 du Code qui y fait simplement référence.",
     confirmation: "L'article définit l'âge de l'obligation scolaire (6 à 18 ans) et la distinction temps plein / temps partiel.",
+  },
+  {
+    trigger: "31886:11",
+    trap: "Ne pas confondre les §1-§3 (formation réseau 60h) avec le §4 (accompagnement d'intégration 30h). Les conditions du §4 sont cumulatives : 30 heures, formateurs sans lien hiérarchique, sur 3 ans. Ne pas chercher dans le Code de l'enseignement (28737 ou 49466).",
+    confirmation: "Le §4 mentionne « 30 heures », « entrée en fonction » et « sans lien hiérarchique avec les directeurs concernés ».",
   },
 ];
 

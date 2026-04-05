@@ -144,6 +144,8 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "directeur": ["31886"],
   "lettre de mission": ["31886"],
   "stage directeur": ["31886"],
+  "entrée en fonction": ["31886"],
+  "insertion professionnelle": ["31886"],
   "profil de fonction": ["31886"],
 
   // Encadrement différencié
@@ -678,6 +680,15 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
   ],
   "formation intégration": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
+  ],
+  "entrée en fonction": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures (§4)" },
+  ],
+  "insertion professionnelle": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — insertion professionnelle (§4)" },
+  ],
+  "intégration directeur": [
     { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
   ],
   "profil de fonction": [

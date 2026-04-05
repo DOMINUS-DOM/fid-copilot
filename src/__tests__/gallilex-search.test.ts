@@ -243,6 +243,52 @@ describe("Gallilex Search — Subventions 15 janvier", () => {
 });
 
 // ============================================================
+// 6. Accompagnement directeur — 31886:11
+// ============================================================
+
+describe("Gallilex Search — Accompagnement directeur / 31886:11", () => {
+  const input = buildInput(
+    "Dès son entrée en fonction, un directeur suit 15h d'accompagnement assurées par un membre du PO. Est-ce problématique ?",
+    ["entrée", "fonction", "directeur", "accompagnement", "assurées", "membre"],
+  );
+  const strategy = buildGallilexSearch(input);
+
+  it("generates a non-null strategy", () => {
+    expect(strategy).not.toBeNull();
+  });
+
+  it("identifies CDA 31886 as primary text", () => {
+    expect(strategy!.primaryText.cdaCode).toBe("31886");
+  });
+
+  it("primary text is a décret", () => {
+    expect(strategy!.primaryText.textType).toBe("décret");
+  });
+
+  it("search keywords include 'Article 11'", () => {
+    expect(strategy!.searchKeywords.some((k) => k.includes("11"))).toBe(true);
+  });
+
+  it("trap warns about §4 conditions and NOT 28737", () => {
+    expect(strategy!.trap).toBeTruthy();
+    expect(strategy!.trap).toContain("30 heures");
+    expect(strategy!.trap).toContain("hiérarchique");
+  });
+
+  it("confirmation mentions lien hiérarchique", () => {
+    expect(strategy!.confirmation).toBeTruthy();
+    expect(strategy!.confirmation).toContain("hiérarchique");
+  });
+
+  it("does NOT point to 28737 (enseignement spécialisé)", () => {
+    expect(strategy!.primaryText.cdaCode).not.toBe("28737");
+    if (strategy!.secondaryText) {
+      expect(strategy!.secondaryText.cdaCode).not.toBe("28737");
+    }
+  });
+});
+
+// ============================================================
 // Edge cases
 // ============================================================
 

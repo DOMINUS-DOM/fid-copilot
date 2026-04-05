@@ -267,6 +267,12 @@ describe("Pivot article injection", () => {
       expectedArticle: "1.7.9-4",
       expectedCda: "49466",
     },
+    {
+      name: "Accompagnement directeur entrée en fonction → 31886:11",
+      keywords: ["entrée", "fonction", "directeur", "accompagnement"],
+      expectedArticle: "11",
+      expectedCda: "31886",
+    },
   ];
 
   for (const { name, keywords, expectedArticle, expectedCda } of pivotCases) {
