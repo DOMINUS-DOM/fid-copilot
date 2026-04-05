@@ -130,6 +130,14 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "sanction": ["49466", "45031"],
   "ROI": ["10450", "17144", "49466", "51784"],
   "vivre ensemble": ["47114", "45031", "49466"],
+  "violence": ["49466", "45031"],
+  "agression": ["49466"],
+  "insulte": ["49466"],
+  "gifle": ["49466"],
+  "complicité": ["49466"],
+  "instigation": ["49466"],
+  "personne étrangère": ["49466"],
+  "faits graves": ["49466"],
 
   // Direction
   "direction": ["31886", "10450", "17144", "21557", "46287", "45031", "46239"],
@@ -369,6 +377,30 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   "écartement": [
     { cdaCode: "49466", articleNumber: "1.7.9-5", label: "Écartement provisoire" },
     { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Exclusion définitive" },
+  ],
+
+  // Violence / complicité / personne étrangère à l'école
+  "complicité": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — complicité personne étrangère (§2)" },
+  ],
+  "instigation": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — instigation personne étrangère (§2)" },
+  ],
+  "personne étrangère": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — personne étrangère à l'école (§2)" },
+  ],
+  "violence": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
+    { cdaCode: "49466", articleNumber: "1.7.9-5", label: "Écartement provisoire" },
+  ],
+  "agression": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
+  ],
+  "gifle": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — coups et blessures" },
+  ],
+  "insulte": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
   ],
 
   // DAccE

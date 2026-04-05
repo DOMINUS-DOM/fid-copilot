@@ -41,6 +41,9 @@ const STOP_WORDS = new Set([
   "quels", "quel", "quelle", "quelles", "comment", "quoi",
   "tant", "comme", "entre", "vers", "chez", "sans", "sous",
   "doit", "dois", "doivent", "faut", "pourquoi",
+  // Mots génériques juridiquement vides (polluent le FTS)
+  "ans", "élève", "élèves", "école", "écoles", "professeur",
+  "classe", "cours", "jour", "jours", "cas", "sest",
 ]);
 
 export function extractKeywords(text: string): string[] {

@@ -91,6 +91,9 @@ describe("Gallilex CDA routing", () => {
     { keywords: ["DASPA", "primo-arrivant"], expectedCda: "46275" },
     { keywords: ["obligation", "scolaire"], expectedCda: "9547" },
     { keywords: ["missions", "prioritaires"], expectedCda: "21557" },
+    { keywords: ["violence", "gifle", "insulte"], expectedCda: "49466" },
+    { keywords: ["complicité", "personne", "étrangère"], expectedCda: "49466" },
+    { keywords: ["agression", "faits", "graves"], expectedCda: "49466" },
   ];
 
   for (const { keywords, expectedCda } of cdaRoutingCases) {
@@ -245,6 +248,24 @@ describe("Pivot article injection", () => {
       keywords: ["subventions", "exclusion", "15 janvier"],
       expectedArticle: "73",
       expectedCda: "5108",
+    },
+    {
+      name: "Complicité personne étrangère → 1.7.9-4",
+      keywords: ["complicité", "personne", "étrangère", "violence"],
+      expectedArticle: "1.7.9-4",
+      expectedCda: "49466",
+    },
+    {
+      name: "Violence / instigation → 1.7.9-4",
+      keywords: ["instigation", "gifle", "insulte"],
+      expectedArticle: "1.7.9-4",
+      expectedCda: "49466",
+    },
+    {
+      name: "Agression enseignant → 1.7.9-4",
+      keywords: ["agression", "frère", "violence", "trottoir"],
+      expectedArticle: "1.7.9-4",
+      expectedCda: "49466",
     },
   ];
 
