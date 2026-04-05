@@ -1,0 +1,236 @@
+/**
+ * Gallilex Guide tests — verifies the guide is correctly generated
+ * from pipeline data (legalRefs, pivots, keywords).
+ *
+ * 5 non-regression cases:
+ * 1. DAccE — accès parents
+ * 2. Plans de pilotage
+ * 3. Orientation D2
+ * 4. Frais scolaires
+ * 5. Exclusion définitive
+ */
+
+import { describe, it, expect } from "vitest";
+import { buildGallilexGuide } from "@/lib/ai/gallilex-guide";
+import { findPivotArticles } from "@/lib/ai/gallilex";
+
+// ============================================================
+// 1. DAccE — accès parents
+// ============================================================
+
+describe("Gallilex Guide — DAccE accès parents", () => {
+  const keywords = ["dacce", "volets", "parents", "accès"];
+  const pivots = findPivotArticles(keywords);
+
+  const guide = buildGallilexGuide({
+    verifiedArticles: [
+      { articleNumber: "1.10.2-2", cdaCode: "49466" },
+      { articleNumber: "1.10.3-1", cdaCode: "49466", paragraph: "2" },
+    ],
+    pivotArticles: pivots,
+    keywords,
+  });
+
+  it("generates a non-null guide", () => {
+    expect(guide).not.toBeNull();
+  });
+
+  it("includes both verified articles", () => {
+    const articles = guide!.entries.map((e) => e.articleNumber);
+    expect(articles).toContain("1.10.2-2");
+    expect(articles).toContain("1.10.3-1");
+  });
+
+  it("includes article numbers in search keywords", () => {
+    expect(guide!.searchKeywords).toContain("1.10.2-2");
+  });
+
+  it("generates max 3 steps", () => {
+    expect(guide!.steps.length).toBeLessThanOrEqual(3);
+    expect(guide!.steps.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("detects the DAccE trap (chapitre 2 vs 3)", () => {
+    expect(guide!.trap).toBeTruthy();
+    expect(guide!.trap).toContain("1.10.2-2");
+    expect(guide!.trap).toContain("1.10.3-1");
+  });
+
+  it("links to Gallilex with correct CDA", () => {
+    const entry = guide!.entries[0];
+    expect(entry.url).toContain("49466");
+    expect(entry.textTitle).toBe("Code enseignement");
+  });
+});
+
+// ============================================================
+// 2. Plans de pilotage
+// ============================================================
+
+describe("Gallilex Guide — Plans de pilotage", () => {
+  const keywords = ["plan", "pilotage", "objectifs", "amélioration"];
+  const pivots = findPivotArticles(keywords);
+
+  const guide = buildGallilexGuide({
+    verifiedArticles: [
+      { articleNumber: "1.5.2-2", cdaCode: "49466" },
+    ],
+    pivotArticles: pivots,
+    keywords,
+  });
+
+  it("generates a guide with 1.5.2-2 as primary", () => {
+    expect(guide).not.toBeNull();
+    expect(guide!.entries[0].articleNumber).toBe("1.5.2-2");
+  });
+
+  it("detects the Décret Missions trap", () => {
+    expect(guide!.trap).toBeTruthy();
+    expect(guide!.trap).toContain("Décret Missions");
+  });
+
+  it("first step opens Code enseignement", () => {
+    expect(guide!.steps[0]).toContain("CDA 49466");
+  });
+});
+
+// ============================================================
+// 3. Orientation D2
+// ============================================================
+
+describe("Gallilex Guide — Orientation D2", () => {
+  const keywords = ["orientation", "études", "deuxième", "degré", "transition"];
+  const pivots = findPivotArticles(keywords);
+
+  const guide = buildGallilexGuide({
+    verifiedArticles: [
+      { articleNumber: "5", cdaCode: "10450", paragraph: "3" },
+    ],
+    pivotArticles: pivots,
+    keywords,
+  });
+
+  it("generates a guide pointing to AR 29/06/1984", () => {
+    expect(guide).not.toBeNull();
+    expect(guide!.entries[0].cdaCode).toBe("10450");
+    expect(guide!.entries[0].articleNumber).toBe("5");
+  });
+
+  it("detects the AR vs Code trap", () => {
+    expect(guide!.trap).toBeTruthy();
+    expect(guide!.trap).toContain("10450");
+  });
+
+  it("mentions §3 in steps", () => {
+    const allSteps = guide!.steps.join(" ");
+    expect(allSteps).toContain("§3");
+  });
+
+  it("includes 'Article 5' in search keywords (not dotted notation)", () => {
+    // Article 5 doesn't have dots, so Ctrl+F should use "Article 5"
+    expect(guide!.searchKeywords).toContain("5");
+  });
+});
+
+// ============================================================
+// 4. Frais scolaires
+// ============================================================
+
+describe("Gallilex Guide — Frais scolaires", () => {
+  const keywords = ["frais", "scolaires", "parents", "secondaire"];
+  const pivots = findPivotArticles(keywords);
+
+  const guide = buildGallilexGuide({
+    verifiedArticles: [
+      { articleNumber: "1.7.2-2", cdaCode: "49466", paragraph: "4" },
+    ],
+    pivotArticles: pivots,
+    keywords,
+  });
+
+  it("generates a guide with 1.7.2-2 as primary", () => {
+    expect(guide).not.toBeNull();
+    expect(guide!.entries[0].articleNumber).toBe("1.7.2-2");
+  });
+
+  it("detects the minerval vs frais trap", () => {
+    expect(guide!.trap).toBeTruthy();
+    expect(guide!.trap).toContain("1.7.2-1");
+    expect(guide!.trap).toContain("1.7.2-2");
+  });
+
+  it("includes 1.7.2-2 in search keywords", () => {
+    expect(guide!.searchKeywords).toContain("1.7.2-2");
+  });
+});
+
+// ============================================================
+// 5. Exclusion définitive
+// ============================================================
+
+describe("Gallilex Guide — Exclusion définitive", () => {
+  const keywords = ["exclusion", "définitive", "procédure", "élève"];
+  const pivots = findPivotArticles(keywords);
+
+  const guide = buildGallilexGuide({
+    verifiedArticles: [
+      { articleNumber: "1.7.9-4", cdaCode: "49466" },
+      { articleNumber: "1.7.9-6", cdaCode: "49466" },
+    ],
+    pivotArticles: pivots,
+    keywords,
+  });
+
+  it("generates a guide with both articles", () => {
+    expect(guide).not.toBeNull();
+    const articles = guide!.entries.map((e) => e.articleNumber);
+    expect(articles).toContain("1.7.9-4");
+    expect(articles).toContain("1.7.9-6");
+  });
+
+  it("detects the motifs vs procédure trap", () => {
+    expect(guide!.trap).toBeTruthy();
+    expect(guide!.trap).toContain("1.7.9-4");
+    expect(guide!.trap).toContain("1.7.9-6");
+  });
+
+  it("primary entries point to CDA 49466", () => {
+    // Verified articles are from 49466; pivots may include other CDAs
+    const verified = guide!.entries.filter((e) =>
+      ["1.7.9-4", "1.7.9-6"].includes(e.articleNumber)
+    );
+    expect(verified.every((e) => e.cdaCode === "49466")).toBe(true);
+  });
+
+  it("third step mentions second article", () => {
+    expect(guide!.steps.length).toBe(3);
+    expect(guide!.steps[2]).toContain("1.7.9-6");
+  });
+});
+
+// ============================================================
+// Edge case: no articles → null
+// ============================================================
+
+describe("Gallilex Guide — edge cases", () => {
+  it("returns null when no articles", () => {
+    const guide = buildGallilexGuide({
+      verifiedArticles: [],
+      pivotArticles: [],
+      keywords: ["test"],
+    });
+    expect(guide).toBeNull();
+  });
+
+  it("works with only pivots (no verified articles)", () => {
+    const pivots = findPivotArticles(["frais", "scolaires"]);
+    const guide = buildGallilexGuide({
+      verifiedArticles: [],
+      pivotArticles: pivots,
+      keywords: ["frais", "scolaires"],
+    });
+    expect(guide).not.toBeNull();
+    expect(guide!.entries.length).toBeGreaterThan(0);
+    expect(guide!.entries.every((e) => e.isPivot)).toBe(true);
+  });
+});

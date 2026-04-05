@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import { LegalReferences } from "@/components/assistant/legal-references";
+import { GallilexGuide } from "@/components/assistant/gallilex-guide";
 import {
   type AssistantMode,
   type AssistantSource,
@@ -121,6 +122,8 @@ export function AssistantChat() {
   const [legalRefs, setLegalRefs] = useState<LegalRef[]>([]);
   const [citationGuard, setCitationGuard] = useState<CitationGuardResult | null>(null);
   const [rating, setRating] = useState<"up" | "down" | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [gallilexGuide, setGallilexGuide] = useState<any>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -136,6 +139,7 @@ export function AssistantChat() {
     setLogId(null);
     setLegalRefs([]);
     setCitationGuard(null);
+    setGallilexGuide(null);
     setRating(null);
     setLoading(true);
 
@@ -158,6 +162,7 @@ export function AssistantChat() {
       setLogId(data.logId ?? null);
       setLegalRefs(data.legalRefs ?? []);
       setCitationGuard(data.citationGuard ?? null);
+      setGallilexGuide(data.gallilexGuide ?? null);
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -259,6 +264,9 @@ export function AssistantChat() {
 
       {/* Legal references */}
       {legalRefs.length > 0 && <LegalReferences refs={legalRefs} />}
+
+      {/* Gallilex guide (accordion) */}
+      {gallilexGuide && <GallilexGuide guide={gallilexGuide} />}
 
       {/* Gallilex */}
       {gallilex.length > 0 && <GallilexFallback hints={gallilex} />}

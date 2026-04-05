@@ -17,6 +17,8 @@ import {
   type ConfidenceLevel,
   type GallilexHint,
 } from "@/types";
+import { buildGallilexGuide } from "@/lib/ai/gallilex-guide";
+import { findPivotArticles } from "@/lib/ai/gallilex";
 
 const MAX_CONTEXT_DOCS = 7;
 const VALID_MODES: AssistantMode[] = ["examen", "terrain", "portfolio"];
@@ -373,6 +375,29 @@ export async function POST(request: Request) {
       guardResult.citationsVerified,
     );
 
+    // 12. Gallilex guide (programmatic, anchored in actual sources)
+    const verifiedArticles = legalRefs
+      .filter((r) =>
+        guardResult.citationsVerified.some(
+          (v) => v.toLowerCase() === r.articleNumber.toLowerCase()
+        )
+      )
+      .map((r) => ({
+        articleNumber: r.articleNumber,
+        cdaCode: r.cdaCode,
+        paragraph: legalResult.chunks.find(
+          (c) =>
+            c.cda_code === r.cdaCode &&
+            c.article_number === r.articleNumber
+        )?.paragraph ?? null,
+      }));
+
+    const gallilexGuide = buildGallilexGuide({
+      verifiedArticles,
+      pivotArticles: findPivotArticles(keywords),
+      keywords,
+    });
+
     return NextResponse.json({
       answer: sanitizedAnswer,
       sources,
@@ -382,6 +407,7 @@ export async function POST(request: Request) {
       logId: logRow?.id ?? null,
       schoolContextUsed: schoolResult.hasSchoolContext,
       legalRefs,
+      gallilexGuide,
       citationGuard: guardResult.hadUnverifiedCitations
         ? {
             unverified: guardResult.citationsUnverified,
