@@ -402,6 +402,20 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   "insulte": [
     { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
   ],
+  "frappé": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — coups et blessures" },
+  ],
+  "coups": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — coups et blessures" },
+  ],
+  "menace": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — menaces" },
+    { cdaCode: "49466", articleNumber: "1.7.9-5", label: "Écartement provisoire" },
+  ],
+  "faits graves": [
+    { cdaCode: "49466", articleNumber: "1.7.9-4", label: "Faits graves — exclusion définitive" },
+    { cdaCode: "49466", articleNumber: "1.7.9-6", label: "Procédure d'exclusion" },
+  ],
 
   // DAccE
   // DAccE — accès (1.10.3-1) en premier car c'est la question la plus fréquente à l'examen
