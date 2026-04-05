@@ -18,6 +18,7 @@ import {
   type GallilexHint,
 } from "@/types";
 import { buildGallilexGuide } from "@/lib/ai/gallilex-guide";
+import { buildGallilexSearch } from "@/lib/ai/gallilex-search";
 import { findPivotArticles } from "@/lib/ai/gallilex";
 
 const MAX_CONTEXT_DOCS = 7;
@@ -392,10 +393,20 @@ export async function POST(request: Request) {
         )?.paragraph ?? null,
       }));
 
+    const pivotArticles = findPivotArticles(keywords);
+
     const gallilexGuide = buildGallilexGuide({
       verifiedArticles,
-      pivotArticles: findPivotArticles(keywords),
+      pivotArticles,
       keywords,
+    });
+
+    // 13. Gallilex Search Strategy (question-driven, independent of LLM answer)
+    const gallilexSearch = buildGallilexSearch({
+      question: question,
+      keywords,
+      routedCDAs: legalResult.allCdaCodes,
+      pivotArticles,
     });
 
     return NextResponse.json({
@@ -408,6 +419,7 @@ export async function POST(request: Request) {
       schoolContextUsed: schoolResult.hasSchoolContext,
       legalRefs,
       gallilexGuide,
+      gallilexSearch,
       citationGuard: guardResult.hadUnverifiedCitations
         ? {
             unverified: guardResult.citationsUnverified,

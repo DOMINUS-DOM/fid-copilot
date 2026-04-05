@@ -61,6 +61,16 @@ const KNOWN_TRAPS: Trap[] = [
     message:
       "Le cours FID cite parfois l'art. 43 §2bis du Pacte scolaire — c'est incorrect. La bonne référence est l'art. 73 §2bis (CDA 5108).",
   },
+  {
+    trigger: "34295:3",
+    message:
+      "L'encadrement différencié se base sur l'art. 3 du décret du 30/04/2009 (CDA 34295) et non sur le Code de l'enseignement. Les 20 classes ISE sont définies dans ce texte spécifique.",
+  },
+  {
+    trigger: "46275:6",
+    message:
+      "Les normes d'encadrement DASPA (seuil de 10 primo-arrivants) sont à l'art. 6 du décret du 07/02/2019 (CDA 46275), pas dans le Code de l'enseignement.",
+  },
 ];
 
 // ============================================================
@@ -143,10 +153,19 @@ export function buildGallilexGuide(input: BuildGuideInput): GallilexGuide | null
     });
   }
 
-  // Add pivots not already in verified
+  // Add pivots not already in verified — but ONLY from CDAs already
+  // present in verified articles (prevents cross-CDA pollution).
+  // If there are no verified articles, allow all pivots.
+  const verifiedCDAs = new Set(verifiedArticles.map((a) => a.cdaCode));
+  const hasVerified = verifiedCDAs.size > 0;
+
   for (const pivot of pivotArticles) {
     const key = `${pivot.cdaCode}:${pivot.articleNumber}`;
     if (seen.has(key)) continue;
+
+    // Filter: if we have verified articles, only include pivots from same CDAs
+    if (hasVerified && !verifiedCDAs.has(pivot.cdaCode)) continue;
+
     seen.add(key);
 
     const info = CDA_REGISTRY[pivot.cdaCode];
@@ -161,6 +180,9 @@ export function buildGallilexGuide(input: BuildGuideInput): GallilexGuide | null
       isPivot: true,
     });
   }
+
+  // Limit to max 3 entries to keep the guide focused
+  entries.splice(3);
 
   if (entries.length === 0) return null;
 

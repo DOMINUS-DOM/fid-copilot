@@ -228,6 +228,24 @@ describe("Pivot article injection", () => {
       expectedArticle: "6",
       expectedCda: "21557",
     },
+    {
+      name: "Encadrement différencié / ISE → 3",
+      keywords: ["encadrement", "différencié", "ISE"],
+      expectedArticle: "3",
+      expectedCda: "34295",
+    },
+    {
+      name: "DASPA encadrement → 6",
+      keywords: ["DASPA", "primo-arrivant", "encadrement"],
+      expectedArticle: "6",
+      expectedCda: "46275",
+    },
+    {
+      name: "Subventions / 15 janvier → 73",
+      keywords: ["subventions", "exclusion", "15 janvier"],
+      expectedArticle: "73",
+      expectedCda: "5108",
+    },
   ];
 
   for (const { name, keywords, expectedArticle, expectedCda } of pivotCases) {

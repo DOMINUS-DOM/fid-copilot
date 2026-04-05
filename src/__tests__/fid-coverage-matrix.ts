@@ -1,5 +1,5 @@
 /**
- * FID Coverage Matrix — 15 critical exam cases
+ * FID Coverage Matrix — 17 critical exam cases
  *
  * This file tracks the end-to-end coverage status of each critical FID case:
  * - presence: pivot articles exist in legal_chunks
@@ -199,16 +199,16 @@ export const FID_COVERAGE_MATRIX: CoverageCase[] = [
   },
   {
     id: "daspa",
-    name: "DASPA / primo-arrivants",
+    name: "DASPA / primo-arrivants / encadrement",
     theme: "DASPA / FLA",
     cdaCode: "46275",
-    pivotArticles: ["2", "3"],
+    pivotArticles: ["2", "3", "6"],
     presence: true,
     routing: true,
     retrieval: true,
     tested: true,
     confidence: "secured",
-    remarks: "FTS + pivot OK. Routage + présence + keywords + pipeline testés.",
+    remarks: "FTS + pivot OK. Art. 6 (normes encadrement, seuil 10 primo-arrivants) ajouté v4.2.",
   },
   {
     id: "obligation-scolaire",
@@ -248,6 +248,36 @@ export const FID_COVERAGE_MATRIX: CoverageCase[] = [
     tested: true,
     confidence: "secured",
     remarks: "Article 6 inséré (87e121e8). Pivot injection OK. Routage + présence + keywords + pipeline testés.",
+  },
+
+  // ──────────────────────────────────────────────
+  // Cas ajoutés v4.2
+  // ─────────────────────────────────���────────────
+  {
+    id: "sportif-remunere",
+    name: "Sportif rémunéré / obligation scolaire",
+    theme: "Obligation scolaire",
+    cdaCode: "9547",
+    pivotArticles: ["11", "1er"],
+    presence: true,
+    routing: true,
+    retrieval: true,
+    tested: true,
+    confidence: "secured",
+    remarks: "Art. 11 (sportif rémunéré) + art. 1er (obligation scolaire). Guide anti-pollution vérifié.",
+  },
+  {
+    id: "subventions-15janv",
+    name: "Perte subventions après exclusion 15 janvier",
+    theme: "Pacte scolaire",
+    cdaCode: "5108",
+    pivotArticles: ["73"],
+    presence: true,
+    routing: true,
+    retrieval: true,
+    tested: true,
+    confidence: "secured",
+    remarks: "Pivot 5108:73 ajouté v4.2. Trap art. 43 vs 73 dans le guide.",
   },
 ];
 

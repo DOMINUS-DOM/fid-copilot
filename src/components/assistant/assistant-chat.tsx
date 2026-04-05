@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import { LegalReferences } from "@/components/assistant/legal-references";
-import { GallilexGuide } from "@/components/assistant/gallilex-guide";
+import { GallilexSearchPanel } from "@/components/assistant/gallilex-search-panel";
 import {
   type AssistantMode,
   type AssistantSource,
@@ -123,7 +123,8 @@ export function AssistantChat() {
   const [citationGuard, setCitationGuard] = useState<CitationGuardResult | null>(null);
   const [rating, setRating] = useState<"up" | "down" | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [gallilexGuide, setGallilexGuide] = useState<any>(null);
+  const [gallilexSearch, setGallilexSearch] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"response" | "search">("response");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -139,7 +140,8 @@ export function AssistantChat() {
     setLogId(null);
     setLegalRefs([]);
     setCitationGuard(null);
-    setGallilexGuide(null);
+    setGallilexSearch(null);
+    setActiveTab("response");
     setRating(null);
     setLoading(true);
 
@@ -162,7 +164,7 @@ export function AssistantChat() {
       setLogId(data.logId ?? null);
       setLegalRefs(data.legalRefs ?? []);
       setCitationGuard(data.citationGuard ?? null);
-      setGallilexGuide(data.gallilexGuide ?? null);
+      setGallilexSearch(data.gallilexSearch ?? null);
     } catch {
       setError("Impossible de contacter le serveur");
     } finally {
@@ -254,25 +256,74 @@ export function AssistantChat() {
         </div>
       )}
 
-      {/* Response */}
-      {answer && <StructuredResponse content={answer} />}
-
-      {/* Feedback */}
-      {answer && logId && (
-        <FeedbackButtons logId={logId} rating={rating} onRate={setRating} />
+      {/* Tabs: Réponse / Recherche Gallilex */}
+      {answer && gallilexSearch && (
+        <div className="flex gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800/60">
+          <button
+            type="button"
+            onClick={() => setActiveTab("response")}
+            className={cn(
+              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+              activeTab === "response"
+                ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-slate-100"
+                : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            )}
+          >
+            Réponse
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("search")}
+            className={cn(
+              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+              activeTab === "search"
+                ? "bg-white text-emerald-700 shadow-sm dark:bg-slate-700 dark:text-emerald-400"
+                : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            )}
+          >
+            Recherche Gallilex
+          </button>
+        </div>
       )}
 
-      {/* Legal references */}
-      {legalRefs.length > 0 && <LegalReferences refs={legalRefs} />}
+      {/* Tab: Réponse (shown when active OR when no search strategy exists) */}
+      {(activeTab === "response" || !gallilexSearch) && (
+        <>
+          {/* Response */}
+          {answer && <StructuredResponse content={answer} />}
 
-      {/* Gallilex guide (accordion) */}
-      {gallilexGuide && <GallilexGuide guide={gallilexGuide} />}
+          {/* Feedback */}
+          {answer && logId && (
+            <FeedbackButtons logId={logId} rating={rating} onRate={setRating} />
+          )}
 
-      {/* Gallilex */}
-      {gallilex.length > 0 && <GallilexFallback hints={gallilex} />}
+          {/* Legal references */}
+          {legalRefs.length > 0 && <LegalReferences refs={legalRefs} />}
 
-      {/* Sources */}
-      {sources.length > 0 && <SourcesPanel sources={sources} />}
+          {/* Gallilex */}
+          {gallilex.length > 0 && <GallilexFallback hints={gallilex} />}
+
+          {/* Sources */}
+          {sources.length > 0 && <SourcesPanel sources={sources} />}
+        </>
+      )}
+
+      {/* Tab: Recherche Gallilex */}
+      {activeTab === "search" && gallilexSearch && (
+        <Card className="overflow-hidden border-emerald-200/80 dark:border-emerald-900/40">
+          <div className="border-b border-emerald-200/60 bg-emerald-50/30 px-4 py-3 dark:border-emerald-900/30 dark:bg-emerald-950/10 sm:px-5">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+              Comment chercher cette question dans Gallilex ?
+            </h3>
+          </div>
+          <div className="px-4 py-4 sm:px-5">
+            <GallilexSearchPanel strategy={gallilexSearch} />
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

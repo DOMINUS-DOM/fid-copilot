@@ -12,38 +12,47 @@ const GALLILEX_BASE = "https://gallilex.cfwb.be/textes-normatifs";
 // COMPLETE CDA REGISTRY — all texts referenced in FID exams
 // ============================================================
 
-export const CDA_REGISTRY: Record<string, { title: string; shortTitle: string }> = {
-  "4329": { title: "Loi du 30 juillet 1963 concernant le régime linguistique dans l'enseignement", shortTitle: "Loi régime linguistique" },
-  "5108": { title: "Loi du 29 mai 1959 — Pacte scolaire", shortTitle: "Pacte scolaire" },
-  "5556": { title: "Arrêté royal fixant les barèmes", shortTitle: "Barèmes" },
-  "9226": { title: "Loi du 24 février 1978 — Contrat sportif rémunéré", shortTitle: "Sportif rémunéré" },
-  "9547": { title: "Loi du 29 juin 1983 — Obligation scolaire", shortTitle: "Obligation scolaire" },
-  "10450": { title: "Arrêté royal du 29 juin 1984 — Organisation de l'enseignement secondaire", shortTitle: "AR organisation secondaire" },
-  "16421": { title: "Décret du 3 juillet 1991 — Enseignement en alternance", shortTitle: "Alternance" },
-  "17144": { title: "Arrêté royal — Organisation de l'enseignement secondaire de plein exercice", shortTitle: "AR secondaire plein exercice" },
-  "21557": { title: "Décret du 24 juillet 1997 — Missions prioritaires (Décret Missions)", shortTitle: "Décret Missions" },
-  "27861": { title: "Décret relatif au transport scolaire", shortTitle: "Transport scolaire" },
-  "28737": { title: "Décret du 3 mars 2004 — Enseignement spécialisé", shortTitle: "Enseignement spécialisé" },
-  "30998": { title: "Décret — Organisation du 1er degré du secondaire", shortTitle: "1er degré secondaire" },
-  "31723": { title: "Décret du 12 janvier 2007 — Citoyenneté à l'école", shortTitle: "Citoyenneté" },
-  "31886": { title: "Décret du 2 février 2007 — Statut des directeurs", shortTitle: "Statut directeurs" },
-  "32365": { title: "Décret du 11 mai 2007 — Immersion linguistique / CLIL", shortTitle: "Immersion linguistique" },
-  "34295": { title: "Décret du 30 avril 2009 — Encadrement différencié", shortTitle: "Encadrement différencié" },
-  "40701": { title: "Décret du 11 avril 2014 — Titres et fonctions", shortTitle: "Titres et fonctions" },
-  "45031": { title: "Loi du 4 août 1996 — Bien-être au travail", shortTitle: "Bien-être travail" },
-  "45593": { title: "Décret du 13 septembre 2018 — Contrats d'objectifs / Pilotage", shortTitle: "Contrats d'objectifs" },
-  "45721": { title: "AGCF du 6 novembre 2018 — Répertoire des options de base", shortTitle: "Répertoire options" },
-  "46239": { title: "Décret — Inspection et pilotage", shortTitle: "Inspection" },
-  "46275": { title: "Décret du 7 février 2019 — DASPA et FLA", shortTitle: "DASPA / FLA" },
-  "46287": { title: "Décret du 14 mars 2019 — Organisation du travail", shortTitle: "Organisation travail" },
-  "47114": { title: "Arrêté du 3 juillet 2019 — Fonction d'éducateur", shortTitle: "Éducateur" },
-  "47165": { title: "Décret — Socles de compétences / Gouvernance", shortTitle: "Socles / Gouvernance" },
-  "47237": { title: "Décret du 10 janvier 2019 — Inspection", shortTitle: "Inspection" },
-  "49466": { title: "Code de l'enseignement fondamental et secondaire", shortTitle: "Code enseignement" },
-  "51683": { title: "Décret relatif à l'évaluation des membres du personnel", shortTitle: "Évaluation personnels" },
-  "51784": { title: "Décret — Normes d'encadrement / Conditions d'admission", shortTitle: "Normes encadrement" },
-  "25174": { title: "Décret du 5 juillet 2000 — Régime des congés, disponibilités et mises en disponibilité", shortTitle: "Régime des congés" },
-  "23189": { title: "Décret relatif à la formation en cours de carrière dans l'enseignement — ESAHR", shortTitle: "Formation carrière ESAHR" },
+export interface CDAInfo {
+  title: string;
+  shortTitle: string;
+  /** Type de texte juridique */
+  textType: "code" | "loi" | "décret" | "arrêté royal" | "AGCF";
+  /** Pourquoi chercher dans ce texte plutôt qu'un autre (pédagogie FID) */
+  rationale: string;
+}
+
+export const CDA_REGISTRY: Record<string, CDAInfo> = {
+  "4329": { title: "Loi du 30 juillet 1963 concernant le régime linguistique dans l'enseignement", shortTitle: "Loi régime linguistique", textType: "loi", rationale: "Le régime linguistique relève d'une loi fédérale de 1963, antérieure au Code. Ne pas chercher dans le Code de l'enseignement." },
+  "5108": { title: "Loi du 29 mai 1959 — Pacte scolaire", shortTitle: "Pacte scolaire", textType: "loi", rationale: "Le Pacte scolaire régit les principes fondamentaux : subventions, neutralité, liberté d'enseignement. C'est le texte de référence pour les conditions de financement." },
+  "5556": { title: "Arrêté royal fixant les barèmes", shortTitle: "Barèmes", textType: "arrêté royal", rationale: "Les barèmes de rémunération sont dans un AR spécifique, pas dans le Code." },
+  "9226": { title: "Loi du 24 février 1978 — Contrat sportif rémunéré", shortTitle: "Sportif rémunéré", textType: "loi", rationale: "Le statut du sportif rémunéré est régi par une loi fédérale spécifique, en lien avec l'obligation scolaire." },
+  "9547": { title: "Loi du 29 juin 1983 — Obligation scolaire", shortTitle: "Obligation scolaire", textType: "loi", rationale: "L'obligation scolaire à temps plein est dans cette loi fédérale, pas dans le Code de l'enseignement." },
+  "10450": { title: "Arrêté royal du 29 juin 1984 — Organisation de l'enseignement secondaire", shortTitle: "AR organisation secondaire", textType: "arrêté royal", rationale: "L'organisation pratique du secondaire (horaires, orientation, attestations) est dans cet AR, pas dans le Code." },
+  "16421": { title: "Décret du 3 juillet 1991 — Enseignement en alternance", shortTitle: "Alternance", textType: "décret", rationale: "L'alternance (CEFA) a son propre décret. Ne pas chercher dans le Code ou le Décret Missions." },
+  "17144": { title: "Arrêté royal — Organisation de l'enseignement secondaire de plein exercice", shortTitle: "AR secondaire plein exercice", textType: "arrêté royal", rationale: "Complète l'AR 10450 pour le plein exercice." },
+  "21557": { title: "Décret du 24 juillet 1997 — Missions prioritaires (Décret Missions)", shortTitle: "Décret Missions", textType: "décret", rationale: "Les missions générales de l'enseignement et les recours sont dans le Décret Missions. Attention : ne pas l'utiliser quand le Code a un article spécifique." },
+  "27861": { title: "Décret relatif au transport scolaire", shortTitle: "Transport scolaire", textType: "décret", rationale: "Transport et indemnités vélo dans un décret spécifique." },
+  "28737": { title: "Décret du 3 mars 2004 — Enseignement spécialisé", shortTitle: "Enseignement spécialisé", textType: "décret", rationale: "Tout ce qui concerne l'enseignement spécialisé (types, intégration, PIA) est dans ce décret." },
+  "30998": { title: "Décret — Organisation du 1er degré du secondaire", shortTitle: "1er degré secondaire", textType: "décret", rationale: "Le 1er degré a son propre décret (1C, 1D, 2C, 2S, CE1D, PIA)." },
+  "31723": { title: "Décret du 12 janvier 2007 — Citoyenneté à l'école", shortTitle: "Citoyenneté", textType: "décret", rationale: "Éducation à la citoyenneté dans un décret spécifique." },
+  "31886": { title: "Décret du 2 février 2007 — Statut des directeurs", shortTitle: "Statut directeurs", textType: "décret", rationale: "Le statut, la lettre de mission et le profil de fonction du directeur sont dans ce décret spécifique." },
+  "32365": { title: "Décret du 11 mai 2007 — Immersion linguistique / CLIL", shortTitle: "Immersion linguistique", textType: "décret", rationale: "L'immersion linguistique a son propre décret. Ne pas confondre avec la loi sur le régime linguistique." },
+  "34295": { title: "Décret du 30 avril 2009 — Encadrement différencié", shortTitle: "Encadrement différencié", textType: "décret", rationale: "L'encadrement différencié (ISE, classes, moyens) est dans ce décret, pas dans le Code de l'enseignement." },
+  "40701": { title: "Décret du 11 avril 2014 — Titres et fonctions", shortTitle: "Titres et fonctions", textType: "décret", rationale: "Les titres requis et suffisants pour enseigner sont dans ce décret." },
+  "45031": { title: "Loi du 4 août 1996 — Bien-être au travail", shortTitle: "Bien-être travail", textType: "loi", rationale: "Le bien-être au travail (harcèlement, personne de confiance, risques psychosociaux) est dans une loi fédérale." },
+  "45593": { title: "Décret du 13 septembre 2018 — Contrats d'objectifs / Pilotage", shortTitle: "Contrats d'objectifs", textType: "décret", rationale: "Les contrats d'objectifs et le pilotage sont dans ce décret, en complément du Code." },
+  "45721": { title: "AGCF du 6 novembre 2018 — Répertoire des options de base", shortTitle: "Répertoire options", textType: "AGCF", rationale: "Le répertoire officiel des OBG est dans cet arrêté du Gouvernement." },
+  "46239": { title: "Décret — Inspection et pilotage", shortTitle: "Inspection", textType: "décret", rationale: "Le rôle de l'inspection et le pilotage sont dans ce décret." },
+  "46275": { title: "Décret du 7 février 2019 — DASPA et FLA", shortTitle: "DASPA / FLA", textType: "décret", rationale: "Le DASPA (primo-arrivants) a son propre décret. Les définitions, conditions et normes d'encadrement y sont." },
+  "46287": { title: "Décret du 14 mars 2019 — Organisation du travail", shortTitle: "Organisation travail", textType: "décret", rationale: "Le travail collaboratif et le référent numérique sont dans ce décret." },
+  "47114": { title: "Arrêté du 3 juillet 2019 — Fonction d'éducateur", shortTitle: "Éducateur", textType: "AGCF", rationale: "La fonction d'éducateur est définie dans cet arrêté spécifique." },
+  "47165": { title: "Décret — Socles de compétences / Gouvernance", shortTitle: "Socles / Gouvernance", textType: "décret", rationale: "Les socles de compétences et la gouvernance sont dans ce décret." },
+  "47237": { title: "Décret du 10 janvier 2019 — Inspection", shortTitle: "Inspection", textType: "décret", rationale: "Le contrôle de l'inspection (manquement, aptitude) est dans ce décret." },
+  "49466": { title: "Code de l'enseignement fondamental et secondaire", shortTitle: "Code enseignement", textType: "code", rationale: "Le Code est le texte central. Mais attention : beaucoup de matières sont dans des textes spécifiques (AR, lois fédérales, décrets). Le Code n'est pas toujours le bon point d'entrée." },
+  "51683": { title: "Décret relatif à l'évaluation des membres du personnel", shortTitle: "Évaluation personnels", textType: "décret", rationale: "L'évaluation des membres du personnel est dans ce décret spécifique." },
+  "51784": { title: "Décret — Normes d'encadrement / Conditions d'admission", shortTitle: "Normes encadrement", textType: "décret", rationale: "Les normes d'encadrement et conditions d'admission sont dans ce décret." },
+  "25174": { title: "Décret du 5 juillet 2000 — Régime des congés, disponibilités et mises en disponibilité", shortTitle: "Régime des congés", textType: "décret", rationale: "Les congés et disponibilités du personnel sont dans ce décret spécifique." },
+  "23189": { title: "Décret relatif à la formation en cours de carrière dans l'enseignement — ESAHR", shortTitle: "Formation carrière ESAHR", textType: "décret", rationale: "La formation en cours de carrière (ESAHR) est dans ce décret." },
 };
 
 // ============================================================
@@ -133,6 +142,7 @@ const THEME_CDA_MAP: Record<string, string[]> = {
   "encadrement différencié": ["34295"],
   "indice socio-économique": ["34295"],
   "ISE": ["34295"],
+  "classe ISE": ["34295"],
 
   // Harcèlement et bien-être
   "harcèlement": ["45031"],
@@ -362,10 +372,11 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   ],
 
   // DAccE
+  // DAccE — accès (1.10.3-1) en premier car c'est la question la plus fréquente à l'examen
   "DAccE": [
+    { cdaCode: "49466", articleNumber: "1.10.3-1", label: "DAccE — accès (qui peut consulter)" },
     { cdaCode: "49466", articleNumber: "1.10.2-2", label: "DAccE — volets et contenu" },
     { cdaCode: "49466", articleNumber: "1.10.2-3", label: "DAccE — données disciplinaires interdites" },
-    { cdaCode: "49466", articleNumber: "1.10.3-1", label: "DAccE — accès" },
   ],
   "dossier accompagnement": [
     { cdaCode: "49466", articleNumber: "1.10.2-2", label: "DAccE — volets et contenu" },
@@ -517,13 +528,18 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "45721", articleNumber: "5", label: "Options réservées R2 — avis Conseil général" },
   ],
 
-  // DASPA / primo-arrivants
+  // DASPA / primo-arrivants — art. 6 (normes) en premier pour les questions de seuil
   "DASPA": [
+    { cdaCode: "46275", articleNumber: "6", label: "Normes d'encadrement DASPA — seuil 10 primo-arrivants" },
     { cdaCode: "46275", articleNumber: "2", label: "Définitions DASPA / primo-arrivant" },
     { cdaCode: "46275", articleNumber: "3", label: "Objectifs du DASPA" },
   ],
   "primo-arrivant": [
     { cdaCode: "46275", articleNumber: "2", label: "Définitions — élève primo-arrivant" },
+    { cdaCode: "46275", articleNumber: "6", label: "Normes d'encadrement DASPA — 10 primo-arrivants" },
+  ],
+  "encadrement DASPA": [
+    { cdaCode: "46275", articleNumber: "6", label: "Normes d'encadrement DASPA — seuil 10 primo-arrivants" },
   ],
 
   // Missions prioritaires
@@ -758,6 +774,34 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   ],
   "septième professionnelle": [
     { cdaCode: "10450", articleNumber: "17", label: "Admission en 7e professionnelle — conditions" },
+  ],
+
+  // Encadrement différencié / ISE
+  "encadrement différencié": [
+    { cdaCode: "34295", articleNumber: "3", label: "Classes d'encadrement selon l'ISE" },
+  ],
+  "ISE": [
+    { cdaCode: "34295", articleNumber: "3", label: "Classes ISE — encadrement différencié" },
+  ],
+  "indice socio-économique": [
+    { cdaCode: "34295", articleNumber: "3", label: "Classes ISE — encadrement différencié" },
+  ],
+  "classe ISE": [
+    { cdaCode: "34295", articleNumber: "3", label: "Classes ISE — encadrement différencié" },
+  ],
+
+  // Subventions / perte après 15 janvier
+  "subvention": [
+    { cdaCode: "5108", articleNumber: "73", label: "Art. 73 §2bis — conditions de subventionnement" },
+  ],
+  "subventions": [
+    { cdaCode: "5108", articleNumber: "73", label: "Art. 73 §2bis — perte de subventions après le 15 janvier" },
+  ],
+  "15 janvier": [
+    { cdaCode: "5108", articleNumber: "73", label: "Art. 73 §2bis — exclusion après le 15 janvier" },
+  ],
+  "perte subventions": [
+    { cdaCode: "5108", articleNumber: "73", label: "Art. 73 §2bis — perte de subventions" },
   ],
 };
 
