@@ -275,6 +275,32 @@ describe("Pivot article injection", () => {
     );
     expect(art194.length).toBe(1);
   });
+
+  it("anti-pollution: 'direction' alone does not trigger 31886 pivots", () => {
+    // v4.3 bug: "direction" matched "accompagnement direction" → 31886:11 parasite
+    // Keywords from "la direction impose de noter les absences à chaque heure"
+    const pivots = findPivotArticles([
+      "note", "affichée", "valves", "direction",
+      "impose", "enseignants", "noter", "absences",
+      "chaque", "heure",
+    ]);
+    const has31886 = pivots.some((p) => p.cdaCode === "31886");
+    expect(has31886).toBe(false);
+    // Must still detect absence pivots
+    const has179 = pivots.some(
+      (p) => p.cdaCode === "49466" && p.articleNumber === "1.7.1-9"
+    );
+    expect(has179).toBe(true);
+  });
+
+  it("multi-word trigger 'accompagnement direction' requires both words", () => {
+    // Should match when both words present
+    const pivots = findPivotArticles(["accompagnement", "direction"]);
+    const has31886_11 = pivots.some(
+      (p) => p.cdaCode === "31886" && p.articleNumber === "11"
+    );
+    expect(has31886_11).toBe(true);
+  });
 });
 
 // ============================================================

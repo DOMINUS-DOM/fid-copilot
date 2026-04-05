@@ -628,6 +628,9 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
   "accompagnement direction": [
     { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
   ],
+  "accompagnement directeur": [
+    { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
+  ],
   "formation intégration": [
     { cdaCode: "31886", articleNumber: "11", label: "Accompagnement d'intégration — 30 heures" },
   ],
@@ -635,6 +638,9 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
     { cdaCode: "31886", articleNumber: "5", label: "Profil de fonction — 7 catégories de responsabilités" },
   ],
   "responsabilités direction": [
+    { cdaCode: "31886", articleNumber: "5", label: "Profil de fonction — 7 catégories de responsabilités" },
+  ],
+  "responsabilités directeur": [
     { cdaCode: "31886", articleNumber: "5", label: "Profil de fonction — 7 catégories de responsabilités" },
   ],
 
@@ -811,24 +817,39 @@ const PIVOT_ARTICLE_MAP: Record<string, PivotArticle[]> = {
  */
 export function findPivotArticles(keywords: string[]): PivotArticle[] {
   const questionLower = keywords.join(" ").toLowerCase();
+  const kwsLower = keywords.map((k) => k.toLowerCase());
   const found: PivotArticle[] = [];
   const seen = new Set<string>();
 
   for (const [trigger, articles] of Object.entries(PIVOT_ARTICLE_MAP)) {
     const triggerLower = trigger.toLowerCase();
+    const triggerWords = triggerLower.split(/\s+/);
     let matched = false;
 
-    // Check if any keyword contains the trigger or vice versa
-    for (const kw of keywords) {
-      const kwLower = kw.toLowerCase();
-      if (kwLower.includes(triggerLower) || triggerLower.includes(kwLower)) {
-        matched = true;
-        break;
+    if (triggerWords.length > 1) {
+      // Multi-word trigger: all substantive words must be present in keywords
+      // (prevents "direction" alone from matching "accompagnement direction")
+      // Skip numeric/short trigger words since extractKeywords strips digits
+      const substantive = triggerWords.filter(
+        (tw) => tw.length > 2 && /[a-zàâäéèêëïîôùûüÿç]/.test(tw),
+      );
+      matched =
+        substantive.length > 0 &&
+        substantive.every((tw) =>
+          kwsLower.some((kw) => kw.includes(tw) || tw.includes(kw)),
+        );
+    } else {
+      // Single-word trigger: substring match against any keyword
+      for (const kw of kwsLower) {
+        if (kw.includes(triggerLower) || triggerLower.includes(kw)) {
+          matched = true;
+          break;
+        }
       }
     }
 
-    // Also check full question text
-    if (!matched && questionLower.includes(triggerLower)) {
+    // Also check full question text for multi-word triggers as a phrase
+    if (!matched && triggerWords.length > 1 && questionLower.includes(triggerLower)) {
       matched = true;
     }
 
